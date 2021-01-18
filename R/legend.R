@@ -1,5 +1,11 @@
 #' Add a Legend with Images
 #'
+#' Creates a legend with images that are embedded into a leaflet map so that
+#' images do not need to be packaged when saving a leaflet map as HTML. Full
+#' control over the label and title style. The leaflet map is passed through
+#' and the output is a control so that legend is fully integrated into leaflet's
+#' functionalities.
+#'
 #' @param map
 #'
 #' a map widget object created from leaflet
@@ -31,6 +37,10 @@
 #' @param ...
 #'
 #' arguments to pass to addControl
+#'
+#' @return
+#'
+#' an object from leaflet::addControl
 #'
 #' @export
 #'
@@ -101,6 +111,7 @@ addLegendImage <- function(map,
 
 #' Create an SVG tag for the symbol
 #'
+#'
 #' @param shape
 #'
 #' the desired shape of the symbol
@@ -168,7 +179,9 @@ makeSymbol <- function(shape, label, color, labelStyle, width, height) {
 
 #' Add Customizable Legends to a Leaflet map widget
 #'
-#'
+#' Functions for more control over the styling of leaflet legends. The leaflet
+#' map is passed through and the output is a leaflet control so that
+#' the legends are integrated with leaflet's other functionality.
 #'
 #' @param map
 #'
@@ -232,7 +245,11 @@ makeSymbol <- function(shape, label, color, labelStyle, width, height) {
 #'
 #' @export
 #'
-#' @rdname addLeafLegends
+#' @return
+#'
+#' an object from leaflet::addControl
+#'
+#' @name addLeafLegends
 #'
 #' @examples
 #' library(leaflet)

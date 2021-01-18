@@ -32,8 +32,15 @@ addLegendImage(
 
 \item{...}{arguments to pass to addControl}
 }
+\value{
+an object from leaflet::addControl
+}
 \description{
-Add a Legend with Images
+Creates a legend with images that are embedded into a leaflet map so that
+images do not need to be packaged when saving a leaflet map as HTML. Full
+control over the label and title style. The leaflet map is passed through
+and the output is a control so that legend is fully integrated into leaflet's
+functionalities.
 }
 \examples{
 
