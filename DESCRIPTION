@@ -3,14 +3,11 @@ Type: Package
 Title: Add Custom Legends to Leaflet Maps
 Version: 0.1.0
 Authors@R: person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre"))
-Description: This package provides extensions to the leaflet package to 
-    customize leaflet legends without adding an outside css file to the output 
-    to style legends. The legend extensions allow the user to add images to 
-    legends, style the labels of the  legend items, change orientation of the 
-    legend items, use different symbologies, and style axis ticks. Syntax and
-    style is consistent with the leaflet package.
+Description: Provides extensions to the leaflet package to 
+    customize leaflet legends with images, text styling, orientation, sizing,
+    and symbology.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: leaflet, htmltools, stats, base64enc, scales
+Imports: leaflet, htmltools, stats, base64enc
 RoxygenNote: 7.1.0
