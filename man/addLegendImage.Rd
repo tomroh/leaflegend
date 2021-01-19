@@ -10,6 +10,7 @@ addLegendImage(
   labels,
   title = "",
   labelStyle = "font-size: 24px; vertical-align: middle;",
+  orientation = c("vertical", "horizontal"),
   width = 20,
   height = 20,
   ...
@@ -25,6 +26,8 @@ addLegendImage(
 \item{title}{the legend title, pass in HTML to style}
 
 \item{labelStyle}{character string of style argument for HTML text}
+
+\item{orientation}{stack the legend items vertically or horizontally}
 
 \item{width}{in pixels}
 

@@ -26,6 +26,10 @@
 #'
 #' character string of style argument for HTML text
 #'
+#' @param orientation
+#'
+#' stack the legend items vertically or horizontally
+#'
 #' @param width
 #'
 #' in pixels
@@ -76,18 +80,26 @@ addLegendImage <- function(map,
                            labels,
                            title = '',
                            labelStyle = 'font-size: 24px; vertical-align: middle;',
+                           orientation = c('vertical', 'horizontal'),
                            width = 20,
                            height = 20,
                            ...) {
   stopifnot(length(images) == length(labels))
+  orientation <- match.arg(orientation)
+  if ( orientation == 'vertical' ) {
+    htmlTag <- htmltools::tags$div
+  } else {
+    htmlTag <- htmltools::tags$span
+  }
   htmlElements <- Map(
     img = images,
     label = labels,
+    htmlTag = list(htmlTag),
     f =
-      function(img, label) {
+      function(img, label, htmlTag) {
         fileExt <- tolower(sub('.+(\\.)([a-zA-Z]+)', '\\2', img))
         stopifnot(fileExt %in% c('png', 'jpg', 'jpeg'))
-        htmltools::tags$div(
+        htmlTag(
           htmltools::tags$img(
             src = sprintf(
               'data:image/%s;base64,%s',
@@ -177,11 +189,13 @@ makeSymbol <- function(shape, label, color, labelStyle, width, height) {
   )
 }
 
-#' Add Customizable Legends to a Leaflet map widget
+#' Add Customizable Color Legends to a Leaflet map widget
 #'
 #' Functions for more control over the styling of leaflet legends. The leaflet
 #' map is passed through and the output is a leaflet control so that
-#' the legends are integrated with leaflet's other functionality.
+#' the legends are integrated with leaflet's other functionality. Style
+#' the text of the labels, the symbols used, orientation of the legend items,
+#' and sizing of all elements.
 #'
 #' @param map
 #'
@@ -395,7 +409,7 @@ addLegendNumeric <- function(map,
     breaks[length(breaks)] <- rng[2]
   }
   colors <- pal(breaks)
-  scaledbreaks <- scales::rescale(breaks)
+  scaledbreaks <- (breaks - rng[1]) / (rng[2] - rng[1])
   offsets <- sprintf('%f%%', scaledbreaks * 100)
   invisible(lapply(c('x1', 'y1', 'x2', 'y2'), assign, 0, pos = environment()))
   orientation <- match.arg(orientation)
