@@ -12,5 +12,13 @@ Description: This package provides extensions to the leaflet package to
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: leaflet, htmltools, stats, base64enc, scales
+Depends: 
+    R (>= 3.3.0)
+Imports: 
+    leaflet, 
+    htmltools, 
+    stats, 
+    base64enc
 RoxygenNote: 7.1.0
+URL: https://github.com/tomroh/leaflegend
+BugReports: https://github.com/tomroh/leaflegend/issues
