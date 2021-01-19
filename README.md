@@ -18,7 +18,7 @@ install.packages("leaflegend")
 
 ## Example
 
-Use `r addLegend*()` to create easily customizable legends for leaflet.
+Use `addLegend*()` to create easily customizable legends for leaflet.
 
 ``` r
 library(leaflegend)
