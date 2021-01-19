@@ -6,7 +6,7 @@
 \alias{addLegendQuantile}
 \alias{addLegendBin}
 \alias{addLegendFactor}
-\title{Add Customizable Legends to a Leaflet map widget}
+\title{Add Customizable Color Legends to a Leaflet map widget}
 \usage{
 addLegendNumeric(
   map,
@@ -104,7 +104,9 @@ an object from leaflet::addControl
 \description{
 Functions for more control over the styling of leaflet legends. The leaflet
 map is passed through and the output is a leaflet control so that
-the legends are integrated with leaflet's other functionality.
+the legends are integrated with leaflet's other functionality. Style
+the text of the labels, the symbols used, orientation of the legend items,
+and sizing of all elements.
 }
 \examples{
 library(leaflet)
