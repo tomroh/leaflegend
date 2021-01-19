@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 inst/examples/examples.R
 ^\.github$
+^cran-comments\.md$
