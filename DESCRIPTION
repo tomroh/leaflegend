@@ -1,10 +1,10 @@
 Package: leaflegend
 Type: Package
-Title: Add Custom Legends to Leaflet Maps
+Title: Add Custom Legends to 'leaflet' Maps
 Version: 0.1.0
 Authors@R: person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre"))
-Description: Provides extensions to the leaflet package to 
-    customize leaflet legends with images, text styling, orientation, sizing,
+Description: Provides extensions to the 'leaflet' package to 
+    customize legends with images, text styling, orientation, sizing,
     and symbology.
 License: MIT + file LICENSE
 Encoding: UTF-8

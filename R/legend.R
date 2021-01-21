@@ -1,14 +1,14 @@
 #' Add a Legend with Images
 #'
-#' Creates a legend with images that are embedded into a leaflet map so that
-#' images do not need to be packaged when saving a leaflet map as HTML. Full
-#' control over the label and title style. The leaflet map is passed through
-#' and the output is a control so that legend is fully integrated into leaflet's
+#' Creates a legend with images that are embedded into a 'leaflet' map so that
+#' images do not need to be packaged when saving a 'leaflet' map as HTML. Full
+#' control over the label and title style. The 'leaflet' map is passed through
+#' and the output is a control so that legend is fully integrated with other
 #' functionalities.
 #'
 #' @param map
 #'
-#' a map widget object created from leaflet
+#' a map widget object created from 'leaflet'
 #'
 #' @param images
 #'
@@ -40,11 +40,11 @@
 #'
 #' @param ...
 #'
-#' arguments to pass to addControl
+#' arguments to pass to \link[leaflet]{addControl}
 #'
 #' @return
 #'
-#' an object from leaflet::addControl
+#' an object from \link[leaflet]{addControl}
 #'
 #' @export
 #'
@@ -189,21 +189,21 @@ makeSymbol <- function(shape, label, color, labelStyle, width, height) {
   )
 }
 
-#' Add Customizable Color Legends to a Leaflet map widget
+#' Add Customizable Color Legends to a 'leaflet' map widget
 #'
-#' Functions for more control over the styling of leaflet legends. The leaflet
-#' map is passed through and the output is a leaflet control so that
-#' the legends are integrated with leaflet's other functionality. Style
+#' Functions for more control over the styling of 'leaflet' legends. The 'leaflet'
+#' map is passed through and the output is a 'leaflet' control so that
+#' the legends are integrated with other functionality of the API. Style
 #' the text of the labels, the symbols used, orientation of the legend items,
 #' and sizing of all elements.
 #'
 #' @param map
 #'
-#' a map widget object created from leaflet
+#' a map widget object created from 'leaflet'
 #'
 #' @param pal
 #'
-#' the color palette function, generated from colorNumeric(), colorBin(), colorQuantile(), or colorFactor
+#' the color palette function, generated from \link[leaflet]{colorNumeric}
 #'
 #' @param values
 #'
@@ -255,13 +255,13 @@ makeSymbol <- function(shape, label, color, labelStyle, width, height) {
 #'
 #' @param ...
 #'
-#' arguments to pass to addControl
+#' arguments to pass to \link[leaflet]{addControl}
 #'
 #' @export
 #'
 #' @return
 #'
-#' an object from leaflet::addControl
+#' an object from \link[leaflet]{addControl}
 #'
 #' @name addLeafLegends
 #'

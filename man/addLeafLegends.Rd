@@ -6,7 +6,7 @@
 \alias{addLegendQuantile}
 \alias{addLegendBin}
 \alias{addLegendFactor}
-\title{Add Customizable Color Legends to a Leaflet map widget}
+\title{Add Customizable Color Legends to a 'leaflet' map widget}
 \usage{
 addLegendNumeric(
   map,
@@ -68,9 +68,9 @@ addLegendFactor(
 )
 }
 \arguments{
-\item{map}{a map widget object created from leaflet}
+\item{map}{a map widget object created from 'leaflet'}
 
-\item{pal}{the color palette function, generated from colorNumeric(), colorBin(), colorQuantile(), or colorFactor}
+\item{pal}{the color palette function, generated from \link[leaflet]{colorNumeric}}
 
 \item{values}{the values used to generate colors from the palette function}
 
@@ -94,17 +94,17 @@ addLegendFactor(
 
 \item{decreasing}{order of numbers in the legend}
 
-\item{...}{arguments to pass to addControl}
+\item{...}{arguments to pass to \link[leaflet]{addControl}}
 
 \item{labelStyle}{character string of style argument for HTML text}
 }
 \value{
-an object from leaflet::addControl
+an object from \link[leaflet]{addControl}
 }
 \description{
-Functions for more control over the styling of leaflet legends. The leaflet
-map is passed through and the output is a leaflet control so that
-the legends are integrated with leaflet's other functionality. Style
+Functions for more control over the styling of 'leaflet' legends. The 'leaflet'
+map is passed through and the output is a 'leaflet' control so that
+the legends are integrated with other functionality of the API. Style
 the text of the labels, the symbols used, orientation of the legend items,
 and sizing of all elements.
 }

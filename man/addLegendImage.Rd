@@ -17,7 +17,7 @@ addLegendImage(
 )
 }
 \arguments{
-\item{map}{a map widget object created from leaflet}
+\item{map}{a map widget object created from 'leaflet'}
 
 \item{images}{path to the image file}
 
@@ -33,16 +33,16 @@ addLegendImage(
 
 \item{height}{in pixels}
 
-\item{...}{arguments to pass to addControl}
+\item{...}{arguments to pass to \link[leaflet]{addControl}}
 }
 \value{
-an object from leaflet::addControl
+an object from \link[leaflet]{addControl}
 }
 \description{
-Creates a legend with images that are embedded into a leaflet map so that
-images do not need to be packaged when saving a leaflet map as HTML. Full
-control over the label and title style. The leaflet map is passed through
-and the output is a control so that legend is fully integrated into leaflet's
+Creates a legend with images that are embedded into a 'leaflet' map so that
+images do not need to be packaged when saving a 'leaflet' map as HTML. Full
+control over the label and title style. The 'leaflet' map is passed through
+and the output is a control so that legend is fully integrated with other
 functionalities.
 }
 \examples{

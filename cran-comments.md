@@ -1,3 +1,9 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Package, software, and API names are now in single quotes in 
+titles and descriptions
+
 ## Test environments
 * local R installation windows 10, R 4.0.3
 * ubuntu 20.04 (on github), devel & release
