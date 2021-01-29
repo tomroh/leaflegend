@@ -4,20 +4,33 @@
 \alias{makeSymbol}
 \title{Create an SVG tag for the symbol}
 \usage{
-makeSymbol(shape, label, color, labelStyle, width, height)
+makeSymbol(
+  shape,
+  width,
+  height,
+  color,
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  ...
+)
 }
 \arguments{
 \item{shape}{the desired shape of the symbol}
 
-\item{label}{label to be placed to the left of the symbol}
-
-\item{color}{fill color of the symbol}
-
-\item{labelStyle}{character string of style argument for HTML text}
-
 \item{width}{in pixels}
 
 \item{height}{in pixels}
+
+\item{color}{color of the symbol}
+
+\item{fillColor}{fill color of symbol}
+
+\item{opacity}{opacity of color}
+
+\item{fillOpacity}{opacity of fillColor}
+
+\item{...}{arguments to be passed to svg shape tag}
 }
 \value{
 HTML svg element

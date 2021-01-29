@@ -15,7 +15,9 @@ Imports:
     leaflet, 
     htmltools, 
     stats, 
-    base64enc
-RoxygenNote: 7.1.0
+    base64enc,
+    knitr
+RoxygenNote: 7.1.1
 URL: https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues
+VignetteBuilder: knitr

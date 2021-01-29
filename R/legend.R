@@ -128,18 +128,6 @@ addLegendImage <- function(map,
 #'
 #' the desired shape of the symbol
 #'
-#' @param label
-#'
-#' label to be placed to the left of the symbol
-#'
-#' @param color
-#'
-#' fill color of the symbol
-#'
-#' @param labelStyle
-#'
-#' character string of style argument for HTML text
-#'
 #' @param width
 #'
 #' in pixels
@@ -148,43 +136,92 @@ addLegendImage <- function(map,
 #'
 #' in pixels
 #'
+#' @param color
+#'
+#' color of the symbol
+#'
+#' @param fillColor
+#'
+#' fill color of symbol
+#'
+#' @param opacity
+#'
+#' opacity of color
+#'
+#' @param fillOpacity
+#'
+#' opacity of fillColor
+#'
+#' @param ...
+#'
+#' arguments to be passed to svg shape tag
+#'
 #' @return
 #'
 #' HTML svg element
 #'
 #' @export
 #'
-makeSymbol <- function(shape, label, color, labelStyle, width, height) {
+makeSymbol <- function(shape, width, height, color, fillColor = color,
+                       opacity = 1, fillOpacity = opacity, ...) {
   shapeTag <- switch(
     shape,
     'rect' = htmltools::tags$rect(
       height = height,
       width = width,
-      style = sprintf('fill: %s;', color)
+      stroke = color,
+      fill = fillColor,
+      opacity = opacity,
+      'fill-opacity' = fillOpacity,
+      ...
     ),
     'circle' = htmltools::tags$circle(
       cx = height / 2,
       cy = height / 2,
       r = height / 2,
-      style = sprintf('fill: %s;', color)
+      stroke = color,
+      fill = fillColor,
+      opacity = opacity,
+      'fill-opacity' = fillOpacity,
+      ...
     ),
     'triangle' = htmltools::tags$polygon(
       points = sprintf('0,%d %d,%d %d,0', height, width, height, width / 2),
-      style = sprintf('fill: %s;', color)
+      stroke = color,
+      fill = fillColor,
+      opacity = opacity,
+      'fill-opacity' = fillOpacity,
+      ...
     ),
     'stadium' = htmltools::tags$rect(
       height = height,
       width = width,
       rx = "25%",
-      style = sprintf('fill: %s;', color)
+      stroke = color,
+      fill = fillColor,
+      opacity = opacity,
+      'fill-opacity' = fillOpacity,
+      ...
     ),
     stop('Invalid shape argument.')
   )
-  htmltools::tags$svg(
-    width = width,
-    height = height,
-    style = "vertical-align: middle; padding: 1px;",
-    shapeTag,
+  utils::URLencode(
+    sprintf('data:image/svg+xml,%s',
+                           as.character(
+                             htmltools::tags$svg(
+                               xmlns = 'http://www.w3.org/2000/svg',
+                               version = '1.1',
+                               width = width,
+                               height = height,
+                               shapeTag
+                             )
+                           )))
+}
+
+makeLegendSymbol <- function(label, labelStyle, ...) {
+  shapeTag <- makeSymbol(...)
+  htmltools::tagList(
+    htmltools::tags$img(src = shapeTag, style = "vertical-align: middle; padding: 1px;"),
     htmltools::tags$span(label, style = sprintf("vertical-align: middle; padding: 1px; %s", labelStyle))
   )
 }
@@ -549,7 +586,7 @@ addLegendQuantile <- function(map,
   }
   colors <- unique(pal(sort(values)))
   htmlElements <- Map(
-    f = makeSymbol,
+    f = makeLegendSymbol,
     shape = shape,
     label = labels,
     color = colors,
@@ -587,7 +624,7 @@ addLegendBin <- function(map,
   bins <- prettyNum(attr(pal, 'colorArgs')[['bins']], format = 'f', big.mark = ',', scientific = FALSE)
   labels <- sprintf(' %s - %s', bins[-length(bins)], bins[-1])
   colors <- unique(pal(sort(values)))
-  htmlElements <- Map(f = makeSymbol,
+  htmlElements <- Map(f = makeLegendSymbol,
       shape = shape,
       label = labels,
       color = colors,
@@ -623,7 +660,7 @@ addLegendFactor <- function(map,
   shape <- match.arg(shape)
   labels <- sprintf(' %s', sort(unique(values)))
   colors <- pal(sort(unique(values)))
-  htmlElements <- Map(f = makeSymbol,
+  htmlElements <- Map(f = makeLegendSymbol,
       shape = shape,
       label = labels,
       color = colors,
