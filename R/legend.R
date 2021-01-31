@@ -97,10 +97,17 @@ addLegendImage <- function(map,
     htmlTag = list(htmlTag),
     f =
       function(img, label, htmlTag) {
-        fileExt <- tolower(sub('.+(\\.)([a-zA-Z]+)', '\\2', img))
-        stopifnot(fileExt %in% c('png', 'jpg', 'jpeg'))
-        htmlTag(
-          htmltools::tags$img(
+        if ( inherits(img, 'svgURI') ) {
+          imgTag <- htmltools::tags$img(
+            src = img,
+            style = 'vertical-align: middle; padding: 5px;',
+            height = height,
+            width = width
+          )
+        } else {
+          fileExt <- tolower(sub('.+(\\.)([a-zA-Z]+)', '\\2', img))
+          stopifnot(fileExt %in% c('png', 'jpg', 'jpeg'))
+          imgTag <- htmltools::tags$img(
             src = sprintf(
               'data:image/%s;base64,%s',
               fileExt,
@@ -109,9 +116,9 @@ addLegendImage <- function(map,
             style = 'vertical-align: middle; padding: 5px;',
             height = height,
             width = width
-          ),
-          htmltools::tags$span(label, style = labelStyle)
-        )
+          )
+        }
+        htmlTag(imgTag, htmltools::tags$span(label, style = labelStyle))
       }
   )
   if (!is.null(title)) {
@@ -261,17 +268,18 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
     ),
     stop('Invalid shape argument.')
   )
-  utils::URLencode(
+  svgURI <- utils::URLencode(
     sprintf('data:image/svg+xml,%s',
-                           as.character(
-                             htmltools::tags$svg(
-                               xmlns = 'http://www.w3.org/2000/svg',
-                               version = '1.1',
-                               width = width + strokewidth * 2,
-                               height = height + strokewidth * 2,
-                               shapeTag
-                             )
-                           )))
+            as.character(
+              htmltools::tags$svg(
+                xmlns = 'http://www.w3.org/2000/svg',
+                version = '1.1',
+                width = width + strokewidth * 2,
+                height = height + strokewidth * 2,
+                shapeTag
+              )
+            )))
+  structure(svgURI, class = c(class(svgURI), 'svgURI'))
 }
 
 makeLegendSymbol <- function(label, labelStyle, ...) {
