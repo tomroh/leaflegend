@@ -178,7 +178,7 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       width = width,
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -189,7 +189,7 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       r = height / 2,
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -204,7 +204,7 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
                        strokewidth),
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -213,7 +213,7 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       points = draw_plus(width = width, height = height, offset = strokewidth),
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -222,7 +222,7 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       points = draw_cross(width = width, height = height, offset = strokewidth),
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -231,18 +231,18 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       points = draw_diamond(width = width, height = height, offset = strokewidth),
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
     'star' = htmltools::tags$path(
       id = 'star',
-      points = sprintf('M%s%z M%sz',
-                      draw_plus(width = width, height = height, offset = strokewidth),
-                      draw_cross(width = width, height = height, offset = strokewidth)),
+      d = sprintf('M %s z M %s z',
+                  draw_plus(width = width, height = height, offset = strokewidth),
+                  draw_cross(width = width, height = height, offset = strokewidth)),
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -255,7 +255,7 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       rx = "25%",
       stroke = color,
       fill = fillColor,
-      opacity = opacity,
+      'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
       ...
     ),
@@ -368,6 +368,10 @@ draw_cross <- function(width, height, offset = 0) {
 #' @param opacity
 #'
 #' opacity of the legend items
+#'
+#' @param fillOpacity
+#'
+#' fill opacity of the legend items
 #'
 #' @param ...
 #'
@@ -513,7 +517,7 @@ addLegendNumeric <- function(map,
                              tickLength = 4,
                              tickWidth = 1,
                              decreasing = FALSE,
-                             opacity = 1,
+                             fillOpacity = 1,
                              ...) {
   stopifnot( attr(pal, 'colorType') == 'numeric' )
   rng <- range(values, na.rm = TRUE)
@@ -592,7 +596,6 @@ addLegendNumeric <- function(map,
                            htmltools::tags$def(
                              htmltools::tags$linearGradient(
                                id = id,
-                               opacity = opacity,
                                x1 = x1, y1 = y1, x2 = x2, y2 = y2,
                                htmltools::tagList(Map(htmltools::tags$stop,
                                                       offset = offsets,
@@ -605,6 +608,7 @@ addLegendNumeric <- function(map,
                                        width = width,
                                        x = rectx,
                                        rectround,
+                                       'fill-opacity' = fillOpacity,
                                        fill = sprintf('url(#%s)', id)))
                            ),
                            Map(htmltools::tags$line,
@@ -648,6 +652,7 @@ addLegendQuantile <- function(map,
                               height = 24,
                               numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
                               opacity = 1,
+                              fillOpacity = opacity,
                               ...) {
   stopifnot( attr(pal, 'colorType') == 'quantile' )
   shape <- match.arg(shape)
@@ -675,7 +680,9 @@ addLegendQuantile <- function(map,
     labelStyle = labelStyle,
     height = height,
     width = width,
-    opacity = opacity
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    'stroke-width' = 1
   )
   orientation <- match.arg(orientation)
   if ( orientation == 'vertical' ) {
@@ -702,6 +709,7 @@ addLegendBin <- function(map,
                          width = 24,
                          height = 24,
                          opacity = 1,
+                         fillOpacity = opacity,
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
   shape <- match.arg(shape)
@@ -715,7 +723,9 @@ addLegendBin <- function(map,
       labelStyle = labelStyle,
       height = height,
       width = width,
-      opacity = opacity)
+      opacity = opacity,
+      fillOpacity = fillOpacity,
+      'stroke-width' = 1)
   orientation <- match.arg(orientation)
   if ( orientation == 'vertical' ) {
     htmlElements <- lapply(htmlElements, htmltools::tagList, htmltools::tags$br())
@@ -741,6 +751,7 @@ addLegendFactor <- function(map,
                             width = 24,
                             height = 24,
                             opacity = 1,
+                            fillOpacity = opacity,
                             ...) {
   stopifnot( attr(pal, 'colorType') == 'factor' )
   shape <- match.arg(shape)
@@ -753,7 +764,9 @@ addLegendFactor <- function(map,
       labelStyle = labelStyle,
       height = height,
       width = width,
-      opacity = opacity)
+      opacity = opacity,
+      fillOpacity = fillOpacity,
+      'stroke-width' = 1)
   orientation <- match.arg(orientation)
   if ( orientation == 'vertical' ) {
     htmlElements <- lapply(htmlElements, htmltools::tagList, htmltools::tags$br())
