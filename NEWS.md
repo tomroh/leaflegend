@@ -1,4 +1,10 @@
-# leaflegend 0.2.0
+# leaflegend 0.2.3
+
+* added more shapes to `makeSymbol`, `addLegendNumeric`, 
+`addLegendQuantile`, `addLegendFactor`, `addLegendBin`
+
+* Control the opacity of the legend shapes for `addLegendNumeric`, 
+`addLegendQuantile`, `addLegendFactor`, `addLegendBin`
 
 * `makeSymbol` now returns embeddable svg
 
