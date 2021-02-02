@@ -1,4 +1,7 @@
-# leaflegend 0.2.3
+# leaflegend 0.2.4
+
+* `addLegendImage` now supports using an svg URI from the output of `makeSymbol`.
+To supply a custom svg URI, add the 'svgURI' class to the character vector.
 
 * added more shapes to `makeSymbol`, `addLegendNumeric`, 
 `addLegendQuantile`, `addLegendFactor`, `addLegendBin`
