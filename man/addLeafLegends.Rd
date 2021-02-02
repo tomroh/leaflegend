@@ -23,6 +23,7 @@ addLegendNumeric(
   tickLength = 4,
   tickWidth = 1,
   decreasing = FALSE,
+  fillOpacity = 1,
   ...
 )
 
@@ -32,12 +33,15 @@ addLegendQuantile(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "stadium"),
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
+    "stadium"),
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
   numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
     digits = 1) },
+  opacity = 1,
+  fillOpacity = opacity,
   ...
 )
 
@@ -47,10 +51,13 @@ addLegendBin(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "stadium"),
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
+    "stadium"),
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
+  opacity = 1,
+  fillOpacity = opacity,
   ...
 )
 
@@ -60,10 +67,13 @@ addLegendFactor(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "stadium"),
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
+    "stadium"),
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
+  opacity = 1,
+  fillOpacity = opacity,
   ...
 )
 }
@@ -94,9 +104,13 @@ addLegendFactor(
 
 \item{decreasing}{order of numbers in the legend}
 
+\item{fillOpacity}{fill opacity of the legend items}
+
 \item{...}{arguments to pass to \link[leaflet]{addControl}}
 
 \item{labelStyle}{character string of style argument for HTML text}
+
+\item{opacity}{opacity of the legend items}
 }
 \value{
 an object from \link[leaflet]{addControl}
