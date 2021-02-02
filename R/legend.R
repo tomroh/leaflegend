@@ -268,17 +268,17 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
     ),
     stop('Invalid shape argument.')
   )
-  svgURI <- utils::URLencode(
+  svgURI <-
     sprintf('data:image/svg+xml,%s',
-            as.character(
+            utils::URLencode(as.character(
               htmltools::tags$svg(
-                xmlns = 'http://www.w3.org/2000/svg',
-                version = '1.1',
+                xmlns = "http://www.w3.org/2000/svg",
+                version = "1.1",
                 width = width + strokewidth * 2,
                 height = height + strokewidth * 2,
                 shapeTag
               )
-            )))
+            ), reserved = TRUE))
   structure(svgURI, class = c(class(svgURI), 'svgURI'))
 }
 
