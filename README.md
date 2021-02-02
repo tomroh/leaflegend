@@ -22,6 +22,12 @@ You can install the released version of leaflegend from [CRAN](https://CRAN.R-pr
 install.packages("leaflegend")
 ```
 
+Install the development version with:
+
+```r
+devtools::install_github("tomroh/leaflegend")
+```
+
 ## Example
 
 Use `addLegend*()` to create easily customizable legends for leaflet.
