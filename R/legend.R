@@ -97,12 +97,15 @@ addLegendImage <- function(map,
     htmlTag = list(htmlTag),
     width = width,
     height = height,
+    maxWidth = max(width) * (orientation == 'vertical'),
     f =
-      function(img, label, htmlTag, height, width) {
+      function(img, label, htmlTag, height, width, maxWidth) {
+        marginRight <- max(0, (maxWidth - width) / 2)
         if ( inherits(img, 'svgURI') ) {
           imgTag <- htmltools::tags$img(
             src = img,
-            style = 'vertical-align: middle; padding: 5px;',
+            style = sprintf('vertical-align: middle; padding: 5px; margin-right: %spx',
+                            marginRight),
             height = height,
             width = width
           )
@@ -115,7 +118,8 @@ addLegendImage <- function(map,
               fileExt,
               base64enc::base64encode(img)
             ),
-            style = 'vertical-align: middle; padding: 5px;',
+            style = sprintf('vertical-align: middle; padding: 5px; margin-right: %spx',
+                            marginRight),
             height = height,
             width = width
           )
@@ -788,6 +792,71 @@ addLegendFactor <- function(map,
   leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
 }
 
+#' Add a legend that for the sizing of symbols
+#'
+#' @param map
+#'
+#' a map widget object created from 'leaflet'
+#'
+#' @param pal
+#'
+#' the color palette function, generated from \link[leaflet]{colorNumeric}
+#'
+#' @param values
+#'
+#' the values used to generate colors from the palette function
+#'
+#' @param title
+#'
+#' the legend title, pass in HTML to style
+#'
+#' @param shape
+#'
+#' shape of the color symbols
+#'
+#' @param orientation
+#'
+#' stack the legend items vertically or horizontally
+#'
+#'
+#' @param labelStyle
+#'
+#' character string of style argument for HTML text
+#'
+#'
+#' @param opacity
+#'
+#' opacity of the legend items
+#'
+#' @param fillOpacity
+#'
+#' fill opacity of the legend items
+#'
+#' @param breaks
+#'
+#' an integer specifying the number of breaks or a numeric vector of the breaks
+#'
+#' @param baseSize
+#'
+#' re-scaling size in pixels of the mean of the values, the average value will
+#' be this exact size
+#'
+#' @param color
+#'
+#' the color of the legend symbols, if omitted pal is used
+#'
+#' @param ...
+#'
+#' arguments to pass to \link[leaflet]{addControl}
+#'
+#' @return
+#'
+#' an object from \link[leaflet]{addControl}
+#'
+#' @export
+#'
+#'
+#' @examples
 addLegendSize <- function(map,
                           pal,
                           values,
@@ -802,10 +871,11 @@ addLegendSize <- function(map,
                           color,
                           ...) {
   shape <- match.arg(shape)
-  sizes <- sizeNumeric(values, breaks, baseSize)
+  sizes <- sizeBreaks(values, breaks, baseSize)
   if ( missing(color) ) {
     colors <- pal(as.numeric(names(sizes)))
   } else {
+    stopifnot(length(color) == 1 || length(color) == length(breaks))
     colors <- color
   }
   symbols <- Map(makeSymbol,
@@ -822,10 +892,20 @@ addLegendSize <- function(map,
 
 }
 
-sizeNumeric <- function(values, breaks, baseSize) {
+#' @export
+#'
+#' @rdname addLegendSize
+sizeNumeric <- function(values, baseSize) {
+  values / mean(values, na.rm = TRUE) * baseSize
+}
+
+#' @export
+#'
+#' @rdname addLegendSize
+sizeBreaks <- function(values, breaks, baseSize, ...) {
   if ( length(breaks) == 1 ) {
-    breaks <- pretty(values, breaks)
+    breaks <- pretty(values, breaks, ...)
   }
-  sizes <- breaks / mean(breaks) * baseSize
-  setNames(sizes, breaks)[breaks > 0 & breaks <= max(values)]
+  sizes <- breaks / mean(values, na.rm = TRUE) * baseSize
+  stats::setNames(sizes, breaks)[breaks > 0 & breaks <= max(values)]
 }
