@@ -95,8 +95,10 @@ addLegendImage <- function(map,
     img = images,
     label = labels,
     htmlTag = list(htmlTag),
+    width = width,
+    height = height,
     f =
-      function(img, label, htmlTag) {
+      function(img, label, htmlTag, height, width) {
         if ( inherits(img, 'svgURI') ) {
           imgTag <- htmltools::tags$img(
             src = img,
@@ -784,4 +786,46 @@ addLegendFactor <- function(map,
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
   leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
+}
+
+addLegendSize <- function(map,
+                          pal,
+                          values,
+                          title = NULL,
+                          labelStyle = '',
+                          shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium'),
+                          orientation = c('vertical', 'horizontal'),
+                          opacity = 1,
+                          fillOpacity = opacity,
+                          breaks = 5,
+                          baseSize = 10,
+                          color,
+                          ...) {
+  shape <- match.arg(shape)
+  sizes <- sizeNumeric(values, breaks, baseSize)
+  if ( missing(color) ) {
+    colors <- pal(as.numeric(names(sizes)))
+  } else {
+    colors <- color
+  }
+  symbols <- Map(makeSymbol,
+                 shape = shape,
+                 width = sizes,
+                 height = sizes,
+                 color = colors,
+                 fillColor = colors,
+                 opacity = opacity,
+                 fillOpacity = fillOpacity)
+  addLegendImage(map, images = symbols, labels = names(sizes),
+                 title = title, labelStyle = labelStyle,
+                 orientation = orientation, width = sizes, height = sizes, ...)
+
+}
+
+sizeNumeric <- function(values, breaks, baseSize) {
+  if ( length(breaks) == 1 ) {
+    breaks <- pretty(values, breaks)
+  }
+  sizes <- breaks / mean(breaks) * baseSize
+  setNames(sizes, breaks)[breaks > 0 & breaks <= max(values)]
 }
