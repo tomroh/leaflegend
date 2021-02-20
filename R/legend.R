@@ -100,12 +100,12 @@ addLegendImage <- function(map,
     maxWidth = max(width) * (orientation == 'vertical'),
     f =
       function(img, label, htmlTag, height, width, maxWidth) {
-        marginRight <- max(0, (maxWidth - width) / 2)
+        marginWidth <- max(0, (maxWidth - width) / 2)
         if ( inherits(img, 'svgURI') ) {
           imgTag <- htmltools::tags$img(
             src = img,
-            style = sprintf('vertical-align: middle; padding: 5px; margin-right: %spx',
-                            marginRight),
+            style = sprintf('vertical-align: middle; margin: 5px; margin-right: %spx; margin-left: %spx',
+                            marginWidth, marginWidth),
             height = height,
             width = width
           )
@@ -118,8 +118,8 @@ addLegendImage <- function(map,
               fileExt,
               base64enc::base64encode(img)
             ),
-            style = sprintf('vertical-align: middle; padding: 5px; margin-right: %spx',
-                            marginRight),
+            style = sprintf('vertical-align: middle; margin: 5px; margin-right: %spx; margin-left: %spx',
+                            marginWidth, marginWidth),
             height = height,
             width = width
           )
@@ -857,6 +857,31 @@ addLegendFactor <- function(map,
 #'
 #'
 #' @examples
+#' library(leaflet)
+#' data("quakes")
+#' numPal <- colorNumeric('viridis', quakes$depth)
+#' sizes <- sizeNumeric(quakes$depth, baseSize = 10)
+#' symbols <- Map(
+#'   makeSymbol,
+#'   shape = 'triangle',
+#'   color = numPal(quakes$depth),
+#'   width = sizes,
+#'   height = sizes
+#' )
+#' leaflet() %>%
+#'   addTiles() %>%
+#'   addMarkers(data = quakes,
+#'              icon = icons(iconUrl = symbols),
+#'              lat = ~lat, lng = ~long) %>%
+#'   addLegendSize(
+#'     values = quakes$depth,
+#'     pal = numPal,
+#'     title = 'Depth',
+#'     labelStyle = 'margin: auto;',
+#'     shape = c('triangle'),
+#'     orientation = c('vertical', 'horizontal'),
+#'     opacity = .7,
+#'     breaks = 5)
 addLegendSize <- function(map,
                           pal,
                           values,
