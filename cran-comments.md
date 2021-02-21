@@ -1,8 +1,8 @@
-## Resubmission
-This is a resubmission. In this version I have:
+* This is a resubmission
 
-* Package, software, and API names are now in single quotes in 
-titles and descriptions
+* removed vignette builder from DESCRIPTION file
+
+# * updated url in NEWS
 
 ## Test environments
 * local R installation windows 10, R 4.0.3
@@ -12,5 +12,3 @@ titles and descriptions
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
-
-* This is a new release.
