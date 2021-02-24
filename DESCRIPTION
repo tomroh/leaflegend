@@ -15,8 +15,7 @@ Imports:
     leaflet, 
     htmltools, 
     stats, 
-    base64enc,
-    knitr
+    base64enc
 RoxygenNote: 7.1.1
 URL: https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues
