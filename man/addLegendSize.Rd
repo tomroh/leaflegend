@@ -4,6 +4,7 @@
 \alias{addLegendSize}
 \alias{sizeNumeric}
 \alias{sizeBreaks}
+\alias{makeSizeIcons}
 \title{Add a legend that for the sizing of symbols}
 \usage{
 addLegendSize(
@@ -15,17 +16,33 @@ addLegendSize(
   shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
     "stadium"),
   orientation = c("vertical", "horizontal"),
+  color,
+  fillColor,
+  strokeWidth = 1,
   opacity = 1,
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 10,
-  color,
   ...
 )
 
 sizeNumeric(values, baseSize)
 
 sizeBreaks(values, breaks, baseSize, ...)
+
+makeSizeIcons(
+  values,
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
+    "stadium"),
+  pal,
+  color,
+  fillColor = color,
+  opacity,
+  fillOpacity = opacity,
+  strokeWidth = 1,
+  baseSize,
+  ...
+)
 }
 \arguments{
 \item{map}{a map widget object created from 'leaflet'}
@@ -42,6 +59,12 @@ sizeBreaks(values, breaks, baseSize, ...)
 
 \item{orientation}{stack the legend items vertically or horizontally}
 
+\item{color}{the color of the legend symbols, if omitted pal is used}
+
+\item{fillColor}{fill color of symbol}
+
+\item{strokeWidth}{width of symbol outline}
+
 \item{opacity}{opacity of the legend items}
 
 \item{fillOpacity}{fill opacity of the legend items}
@@ -51,9 +74,13 @@ sizeBreaks(values, breaks, baseSize, ...)
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
 
-\item{color}{the color of the legend symbols, if omitted pal is used}
+\item{...}{arguments to pass to
 
-\item{...}{arguments to pass to \link[leaflet]{addControl}}
+\link[leaflet]{addControl} for addLegendSize
+
+\link[base]{pretty} for sizeBreaks
+
+\link[leaflegend]{makeSymbol} for makeSizeIcons}
 }
 \value{
 an object from \link[leaflet]{addControl}
@@ -64,6 +91,7 @@ Add a legend that for the sizing of symbols
 \examples{
 library(leaflet)
 data("quakes")
+quakes <- quakes[1:100,]
 numPal <- colorNumeric('viridis', quakes$depth)
 sizes <- sizeNumeric(quakes$depth, baseSize = 10)
 symbols <- Map(
@@ -86,5 +114,35 @@ leaflet() \%>\%
     shape = c('triangle'),
     orientation = c('vertical', 'horizontal'),
     opacity = .7,
+    breaks = 5)
+
+# a wrapper for making icons is provided
+sizeSymbols <-
+makeSizeIcons(
+  quakes$depth,
+  shape = 'cross',
+  pal = numPal,
+  color = 'black',
+  strokeWidth = 1,
+  opacity = .8,
+  fillOpacity = .5,
+  baseSize = 20
+)
+leaflet() \%>\%
+  addTiles() \%>\%
+  addMarkers(data = quakes,
+             icon = sizeSymbols,
+             lat = ~lat, lng = ~long) \%>\%
+  addLegendSize(
+    values = quakes$depth,
+    pal = numPal,
+    title = 'Depth',
+    shape = 'cross',
+    orientation = 'horizontal',
+    strokeWidth = 1,
+    opacity = .8,
+    fillOpacity = .5,
+    color = 'black',
+    baseSize = 20,
     breaks = 5)
 }
