@@ -177,7 +177,7 @@ addLegendImage <- function(map,
 #'
 makeSymbol <- function(shape, width, height, color, fillColor = color,
                        opacity = 1, fillOpacity = opacity, ...) {
-  strokewidth <- 0
+  strokewidth <- 1
   if ( 'stroke-width' %in% names(list(...)) ) {
     strokewidth <- list(...)[['stroke-width']]
   }
@@ -248,11 +248,9 @@ makeSymbol <- function(shape, width, height, color, fillColor = color,
       'fill-opacity' = fillOpacity,
       ...
     ),
-    'star' = htmltools::tags$path(
+    'star' = htmltools::tags$polygon(
       id = 'star',
-      d = sprintf('M %s z M %s z',
-                  draw_plus(width = width, height = height, offset = strokewidth),
-                  draw_cross(width = width, height = height, offset = strokewidth)),
+      points = draw_star(width = width, height = height, offset = strokewidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -312,6 +310,11 @@ draw_cross <- function(width, height, offset = 0) {
   a <- sqrt(2) / 10
   x <- width *  c(a, 0, .5 - a, 0, a, .5, 1 - a, 1, .5 + a, 1, 1 - a, .5, a) + offset
   y <- height * c(0, a, .5, 1 - a, 1, .5 + a, 1, 1 - a, .5, a, 0, .5 - a, 0) + offset
+  paste(x, y, sep = ',', collapse = ' ')
+}
+draw_star <- function(width, height, offset = 0) {
+  x <- width * c(0.4,0.4,0.1414214,0,0.2585786,0,0,0.2585786,0,0.1414214,0.4,0.4,0.6,0.6,0.8585786,1,0.7414214,1,1,0.7414214,1,0.8585786,0.6,0.6,0.4) + offset
+  y <- height * c(0,0.2585786,0,0.1414214,0.4,0.4,0.6,0.6,0.8585786,1,0.7414214,1,1,0.7414214,1,0.8585786,0.6,0.6,0.4,0.4,0.1414214,0,0.2585786,0,0) + offset
   paste(x, y, sep = ',', collapse = ' ')
 }
 
@@ -605,8 +608,10 @@ addLegendNumeric <- function(map,
     rectround <- list(ry = '10%')
   }
   id <- paste0(sample(c(0:9, letters, LETTERS), 10, replace = TRUE), collapse = '')
-  htmlElements <- list(htmltools::tags$svg(width = svgwidth,
-                                           height = svgheight,
+  htmlElements <- list(htmltools::tags$svg(
+    width = svgwidth,
+    height = svgheight,
+    viewBox = sprintf('0 0 %s %s', svgwidth, svgheight),
                            htmltools::tags$def(
                              htmltools::tags$linearGradient(
                                id = id,
