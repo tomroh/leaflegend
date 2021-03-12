@@ -165,6 +165,10 @@ addLegendImage <- function(map,
 #'
 #' opacity of fillColor
 #'
+#' @param strokeWidth
+#'
+#' width in pixels of symbol outline
+#'
 #' @param ...
 #'
 #' arguments to be passed to svg shape tag
@@ -175,7 +179,7 @@ addLegendImage <- function(map,
 #'
 #' @export
 #'
-makeSymbol <- function(shape, width, height, color, fillColor = color,
+makeSymbol <- function(shape, width, height = width, color, fillColor = color,
                        opacity = 1, fillOpacity = opacity, ...) {
   strokewidth <- 1
   if ( 'stroke-width' %in% names(list(...)) ) {
@@ -316,6 +320,45 @@ draw_star <- function(width, height, offset = 0) {
   x <- width * c(0.4,0.4,0.1414214,0,0.2585786,0,0,0.2585786,0,0.1414214,0.4,0.4,0.6,0.6,0.8585786,1,0.7414214,1,1,0.7414214,1,0.8585786,0.6,0.6,0.4) + offset
   y <- height * c(0,0.2585786,0,0.1414214,0.4,0.4,0.6,0.6,0.8585786,1,0.7414214,1,1,0.7414214,1,0.8585786,0.6,0.6,0.4,0.4,0.1414214,0,0.2585786,0,0) + offset
   paste(x, y, sep = ',', collapse = ' ')
+}
+
+#' @export
+#'
+#' @rdname makeSymbol
+makeSymbolIcons <- function(shape = c('rect',
+                                      'circle',
+                                      'triangle',
+                                      'plus',
+                                      'cross',
+                                      'diamond',
+                                      'star',
+                                      'stadium'),
+                            color,
+                            fillColor = color,
+                            opacity,
+                            fillOpacity = opacity,
+                            strokeWidth = 1,
+                            width,
+                            height = width,
+                            ...) {
+  shape <- match.arg(shape)
+  symbols <- Map(
+    makeSymbol,
+    shape = shape,
+    width = width,
+    height = height,
+    color = color,
+    fillColor = fillColor,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    `stroke-width` = strokeWidth,
+    ...
+  )
+  leaflet::icons(
+    iconUrl = symbols,
+    iconAnchorX = width / 2,
+    iconAnchorY = height / 2
+  )
 }
 
 #' Add Customizable Color Legends to a 'leaflet' map widget
@@ -1023,18 +1066,16 @@ makeSizeIcons <- function(values,
     fillColors <- fillColor
   }
   sizes <- sizeNumeric(values, baseSize)
-  symbols <- Map(makeSymbol,
-                 shape = shape,
-                 width = sizes,
-                 height = sizes,
-                 color = colors,
-                 fillColor = fillColors,
-                 opacity = opacity,
-                 fillOpacity = fillOpacity,
-                 `stroke-width` = strokeWidth,
-                 ...)
-  leaflet::icons(iconUrl = symbols,
-                 iconAnchorX = sizes / 2,
-                 iconAnchorY = sizes / 2)
+  makeSymbolIcons(
+    shape = shape,
+    width = sizes,
+    height = sizes,
+    color = colors,
+    fillColor = fillColors,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    strokeWidth = strokeWidth,
+    ...
+  )
 }
 

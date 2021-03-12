@@ -2,16 +2,30 @@
 % Please edit documentation in R/legend.R
 \name{makeSymbol}
 \alias{makeSymbol}
+\alias{makeSymbolIcons}
 \title{Create an SVG tag for the symbol}
 \usage{
 makeSymbol(
   shape,
   width,
-  height,
+  height = width,
   color,
   fillColor = color,
   opacity = 1,
   fillOpacity = opacity,
+  ...
+)
+
+makeSymbolIcons(
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
+    "stadium"),
+  color,
+  fillColor = color,
+  opacity,
+  fillOpacity = opacity,
+  strokeWidth = 1,
+  width,
+  height = width,
   ...
 )
 }
@@ -31,6 +45,8 @@ makeSymbol(
 \item{fillOpacity}{opacity of fillColor}
 
 \item{...}{arguments to be passed to svg shape tag}
+
+\item{strokeWidth}{width in pixels of symbol outline}
 }
 \value{
 HTML svg element
