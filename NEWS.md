@@ -1,3 +1,9 @@
+# leaflegend 0.2.2
+
+* star symbol outline has been fixed
+
+* new function `makeSizeIcons` as a convenience wrapper size scaled symbols
+
 # leaflegend 0.2.0
 
 * new functions `addLegendSize`, `sizeNumeric`, and `sizeBreaks` were added to allow encoding size on symbols.
