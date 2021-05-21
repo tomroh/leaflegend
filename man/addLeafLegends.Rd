@@ -18,8 +18,8 @@ addLegendNumeric(
   width = 20,
   height = 100,
   bins = 7,
-  numberFormat = function(x) {     prettyNum(x, format = "f", big.mark = ",",
-    scientific = FALSE) },
+  numberFormat = function(x) {     prettyNum(x, format = "f", big.mark = ",", digits =
+    3, scientific = FALSE) },
   tickLength = 4,
   tickWidth = 1,
   decreasing = FALSE,

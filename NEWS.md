@@ -1,4 +1,8 @@
-# leaflegend 0.2.2
+# leaflegend 0.3.0
+
+* stroke outlines of shapes are now padded so that the stroke is not cut off
+
+* numeric legends now have appropriate sizing for text
 
 * star symbol outline has been fixed
 

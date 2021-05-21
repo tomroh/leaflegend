@@ -567,13 +567,13 @@ addLegendNumeric <- function(map,
                              pal,
                              values,
                              title = NULL,
-                             #labelStyle = 'font-size: 24px; vertical-align: middle;',
+                             #labelStyle = 'font-size: 24px;',
                              shape = c('rect', 'stadium'),
                              orientation = c('vertical', 'horizontal'),
                              width = 20,
                              height = 100,
                              bins = 7,
-                             numberFormat = function(x) {prettyNum(x, format = 'f', big.mark = ',', scientific = FALSE)},
+                             numberFormat = function(x) {prettyNum(x, format = 'f', big.mark = ',', digits = 3, scientific = FALSE)},
                              tickLength = 4,
                              tickWidth = 1,
                              decreasing = FALSE,
@@ -581,7 +581,6 @@ addLegendNumeric <- function(map,
                              ...) {
   stopifnot( attr(pal, 'colorType') == 'numeric' )
   rng <- range(values, na.rm = TRUE)
-  bins <- bins
   breaks <- pretty(values, bins)
   if ( breaks[1] < rng[1] ) {
     breaks[1] <- rng[1]
@@ -614,10 +613,14 @@ addLegendNumeric <- function(map,
     x2 <- 1
   }
   labels <- numberFormat(labels)
-  textSpace <- max(graphics::strwidth(labels, units = 'inches', cex = 1.5)) * 72
+  #fontSize <- as.numeric(sub('.*(font-size: )([0-9]+)(px).*', '\\2', labelStyle))
+  labelStyle <- ''
+  cexAdj <- 1#fontSize / 14
+  textWidth <- max(graphics::strwidth(labels, units = 'inches', cex = cexAdj)) * 72
+  textHeight <- max(graphics::strheight(labels, units = 'inches', cex = cexAdj)) * 72
   padLabel <- 5
   if ( vertical ) {
-    svgwidth <- width + tickLength + padLabel + textSpace
+    svgwidth <- width + tickLength
     svgheight <- height
     rectx <- 0
     linex1 <- width
@@ -626,35 +629,26 @@ addLegendNumeric <- function(map,
     liney2 <- scaledbreaks[-outer] * height
     textx <- 0
     texty <- scaledbreaks[-outer] * height
-    textdx <- width + tickLength + padLabel
-    textdy <- '.5ex'
-    textanchor <- 'start'
   } else {
-    svgwidth <- width + textSpace
-    svgheight <- height + tickLength + padLabel * 3
-    rectx <- textSpace / 2
-    linex1 <- scaledbreaks[outer] * width + rectx + .5 * c(1, -1)
-    linex2 <- scaledbreaks[outer] * width + rectx + .5 * c(1, -1)
+    svgwidth <- width
+    svgheight <- height + tickLength
+    rectx <- 0
+    linex1 <- scaledbreaks[outer] * width
+    linex2 <- scaledbreaks[outer] * width
     liney1 <- height
     liney2 <- height + tickLength
-    textx <- scaledbreaks[outer] * width + rectx
-    texty <- 0
-    textdx <- '.5ex'
-    textdy <- height + tickLength + padLabel * 3
-    textanchor <- 'middle'
   }
   if ( shape == 'rect' ) {
     rectround <- list(rx = '0%')
   } else if ( shape == 'stadium' & vertical ) {
-    rectround <- list(rx = '5%')
+    rectround <- list(rx = '10%')
   } else {
     rectround <- list(ry = '10%')
   }
   id <- paste0(sample(c(0:9, letters, LETTERS), 10, replace = TRUE), collapse = '')
-  htmlElements <- list(htmltools::tags$svg(
+  svgElement <- htmltools::tags$svg(
     width = svgwidth,
     height = svgheight,
-    viewBox = sprintf('0 0 %s %s', svgwidth, svgheight),
                            htmltools::tags$def(
                              htmltools::tags$linearGradient(
                                id = id,
@@ -680,18 +674,36 @@ addLegendNumeric <- function(map,
                                y2 = liney2,
                                'stroke-width' = tickWidth,
                                stroke = 'black'
-                           ),
-                           Map(htmltools::tags$text,
-                               #style = labelStyle,
-                               labels,
-                               dx = textdx,
-                               dy = textdy,
-                               x = textx,
-                               y = texty,
-                               'text-anchor' = textanchor
                            )
   )
-  )
+  if ( vertical ) {
+    htmlElements <- list(htmltools::tags$div(style = 'display: flex;',
+      htmltools::tags$div(svgElement, style="margin-right: 5px"),
+      htmltools::tags$div(style=sprintf("width: %spx; height: %spx; position: relative; %s", textWidth, height, labelStyle),
+                          class="container",
+                          Map(function(y, label, leftPos) {
+                            htmltools::tags$div(style=sprintf("position:absolute; left:%spx; top: %spx;",
+                                                              leftPos,
+                                                              y),
+                                                label)
+                          },
+                          texty - textHeight , labels, textWidth - graphics::strwidth(labels, units = 'inches', cex = cexAdj) * 72)
+      )
+      ,htmltools::tags$div(style="width: 8px; position: relative;")
+    ))
+  } else {
+    htmlElements <- list(
+      htmltools::tags$div(style = sprintf('margin-right: %spx; margin-left: %spx', textWidth / 2, textWidth / 2 ), svgElement),
+      htmltools::tags$div(style=sprintf("width: 100%%; height: 1rem; position: relative; %s", labelStyle),
+                          htmltools::tags$div(style=sprintf("position:absolute; left:%spx; top: 0px;", 0),
+                                              labels[1]),
+                          htmltools::tags$div(style=sprintf("position:absolute; left:%spx; top: 0px;",
+                                                            width - diff(graphics::strwidth(labels, units = 'inches', cex = cexAdj)) * 72),
+                                              labels[2])
+
+      )
+      )
+  }
   if ( !is.null(title) ) {
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
