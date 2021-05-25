@@ -6,6 +6,8 @@
 
 * fixes warning on addLegendNumeric where the shape default was a vector not a single value
 
+* adding number formatting to addSizeLegend
+
 # leaflegend 0.3.0
 
 * stroke outlines of shapes are now padded so that the stroke is not cut off

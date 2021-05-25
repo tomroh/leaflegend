@@ -920,6 +920,10 @@ addLegendFactor <- function(map,
 #'
 #' the values used to generate color from the palette function
 #'
+#' @param numberFormat
+#'
+#' formatting functions for numbers that are displayed e.g. format, prettyNum
+#'
 #' @param ...
 #'
 #' arguments to pass to
@@ -1008,6 +1012,7 @@ addLegendSize <- function(map,
                           fillOpacity = opacity,
                           breaks = 5,
                           baseSize = 10,
+                          numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
                           ...) {
   shape <- match.arg(shape)
   sizes <- sizeBreaks(values, breaks, baseSize)
@@ -1032,7 +1037,7 @@ addLegendSize <- function(map,
                  opacity = opacity,
                  fillOpacity = fillOpacity,
                  `stroke-width` = strokeWidth)
-  addLegendImage(map, images = symbols, labels = names(sizes),
+  addLegendImage(map, images = symbols, labels = numberForma(as.numeric(names(sizes))),
                  title = title, labelStyle = labelStyle,
                  orientation = orientation, width = sizes, height = sizes, ...)
 
@@ -1066,13 +1071,14 @@ makeSizeIcons <- function(values,
                           color,
                           colorValues,
                           fillColor = color,
-                          opacity,
+                          opacity = 1,
                           fillOpacity = opacity,
                           strokeWidth = 1,
                           baseSize,
                           ...
                           ) {
   shape <- match.arg(shape)
+  browser()
   if ( missing(color) ) {
     if ( missing(colorValues) ) {
       colors <- pal(values)
