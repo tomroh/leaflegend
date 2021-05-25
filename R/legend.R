@@ -580,6 +580,7 @@ addLegendNumeric <- function(map,
                              fillOpacity = 1,
                              ...) {
   stopifnot( attr(pal, 'colorType') == 'numeric' )
+  shape <- match.arg(shape)
   rng <- range(values, na.rm = TRUE)
   breaks <- pretty(values, bins)
   if ( breaks[1] < rng[1] ) {
