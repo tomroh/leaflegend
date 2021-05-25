@@ -1,3 +1,11 @@
+# leaflegend 0.3.1
+
+* fixes error on makeSizeLegend where fillColor is not evaluated if no argument is provided
+
+* adding colorValues as an argument to makeSizeLegend so that symbols can be sized and colored on different vectors of data
+
+
+
 # leaflegend 0.3.0
 
 * stroke outlines of shapes are now padded so that the stroke is not cut off

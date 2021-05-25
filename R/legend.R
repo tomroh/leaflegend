@@ -864,7 +864,9 @@ addLegendFactor <- function(map,
 #'
 #' @param values
 #'
-#' the values used to generate colors from the palette function
+#' the values used to generate sizes and if colorValues is not specified and
+#' pal is given, then the values are used to generate  colors from the palette
+#' function
 #'
 #' @param title
 #'
@@ -912,6 +914,10 @@ addLegendFactor <- function(map,
 #' @param strokeWidth
 #'
 #' width of symbol outline
+#'
+#' @param colorValues
+#'
+#' the values used to generate color from the palette function
 #'
 #' @param ...
 #'
@@ -1057,6 +1063,7 @@ makeSizeIcons <- function(values,
                                     'cross', 'diamond', 'star', 'stadium'),
                           pal,
                           color,
+                          colorValues,
                           fillColor = color,
                           opacity,
                           fillOpacity = opacity,
@@ -1066,10 +1073,15 @@ makeSizeIcons <- function(values,
                           ) {
   shape <- match.arg(shape)
   if ( missing(color) ) {
-    colors <- pal(values)
+    if ( missing(colorValues) ) {
+      colors <- pal(values)
+    } else {
+      color <- pal(colorValues)
+    }
   } else {
     stopifnot(length(color) == 1 || length(color) == length(values))
     colors <- color
+    force(fillColor)
   }
   if ( missing(fillColor) ) {
     fillColors <- pal(values)
