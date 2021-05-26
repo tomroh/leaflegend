@@ -1023,7 +1023,11 @@ addLegendSize <- function(map,
     colors <- color
   }
   if ( missing(fillColor) ) {
-    fillColors <- pal(as.numeric(names(sizes)))
+    if ( !missing(pal) ) {
+      fillColors <- pal(as.numeric(names(sizes)))
+    } else {
+      fillColors <- colors
+    }
   } else {
     stopifnot(length(fillColor) == 1 || length(fillColor) == length(breaks))
     fillColors <- fillColor
@@ -1037,7 +1041,7 @@ addLegendSize <- function(map,
                  opacity = opacity,
                  fillOpacity = fillOpacity,
                  `stroke-width` = strokeWidth)
-  addLegendImage(map, images = symbols, labels = numberForma(as.numeric(names(sizes))),
+  addLegendImage(map, images = symbols, labels = numberFormat(as.numeric(names(sizes))),
                  title = title, labelStyle = labelStyle,
                  orientation = orientation, width = sizes, height = sizes, ...)
 
@@ -1070,32 +1074,39 @@ makeSizeIcons <- function(values,
                           pal,
                           color,
                           colorValues,
-                          fillColor = color,
-                          opacity = 1,
+                          fillColor,
+                          opacity,
                           fillOpacity = opacity,
                           strokeWidth = 1,
                           baseSize,
                           ...
                           ) {
   shape <- match.arg(shape)
-  browser()
   if ( missing(color) ) {
     if ( missing(colorValues) ) {
       colors <- pal(values)
     } else {
-      color <- pal(colorValues)
+      colors <- pal(colorValues)
     }
   } else {
     stopifnot(length(color) == 1 || length(color) == length(values))
     colors <- color
-    force(fillColor)
   }
   if ( missing(fillColor) ) {
-    fillColors <- pal(values)
+    if ( !missing(pal) ) {
+      if ( missing(colorValues) ) {
+        fillColors <- pal(values)
+      } else {
+        fillColors <- pal(colorValues)
+      }
+    } else {
+      fillColors <- colors
+    }
   } else {
     stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
     fillColors <- fillColor
   }
+
   sizes <- sizeNumeric(values, baseSize)
   makeSymbolIcons(
     shape = shape,
