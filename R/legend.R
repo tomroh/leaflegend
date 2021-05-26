@@ -1017,7 +1017,11 @@ addLegendSize <- function(map,
     colors <- color
   }
   if ( missing(fillColor) ) {
-    fillColors <- pal(as.numeric(names(sizes)))
+    if ( !missing(pal) ) {
+      fillColors <- pal(as.numeric(names(sizes)))
+    } else {
+      fillColors <- colors
+    }
   } else {
     stopifnot(length(fillColor) == 1 || length(fillColor) == length(breaks))
     fillColors <- fillColor
@@ -1064,7 +1068,7 @@ makeSizeIcons <- function(values,
                           pal,
                           color,
                           colorValues,
-                          fillColor = color,
+                          fillColor,
                           opacity,
                           fillOpacity = opacity,
                           strokeWidth = 1,
@@ -1076,19 +1080,27 @@ makeSizeIcons <- function(values,
     if ( missing(colorValues) ) {
       colors <- pal(values)
     } else {
-      color <- pal(colorValues)
+      colors <- pal(colorValues)
     }
   } else {
     stopifnot(length(color) == 1 || length(color) == length(values))
     colors <- color
-    force(fillColor)
   }
   if ( missing(fillColor) ) {
-    fillColors <- pal(values)
+    if ( !missing(pal) ) {
+      if ( missing(colorValues) ) {
+        fillColors <- pal(values)
+      } else {
+        fillColors <- pal(colorValues)
+      }
+    } else {
+      fillColors <- colors
+    }
   } else {
     stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
     fillColors <- fillColor
   }
+
   sizes <- sizeNumeric(values, baseSize)
   makeSymbolIcons(
     shape = shape,

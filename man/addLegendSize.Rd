@@ -36,7 +36,8 @@ makeSizeIcons(
     "stadium"),
   pal,
   color,
-  fillColor = color,
+  colorValues,
+  fillColor,
   opacity,
   fillOpacity = opacity,
   strokeWidth = 1,
@@ -49,7 +50,9 @@ makeSizeIcons(
 
 \item{pal}{the color palette function, generated from \link[leaflet]{colorNumeric}}
 
-\item{values}{the values used to generate colors from the palette function}
+\item{values}{the values used to generate sizes and if colorValues is not specified and
+pal is given, then the values are used to generate  colors from the palette
+function}
 
 \item{title}{the legend title, pass in HTML to style}
 
@@ -81,6 +84,8 @@ be this exact size}
 \link[base]{pretty} for sizeBreaks
 
 \link[leaflegend]{makeSymbol} for makeSizeIcons}
+
+\item{colorValues}{the values used to generate color from the palette function}
 }
 \value{
 an object from \link[leaflet]{addControl}
