@@ -23,6 +23,8 @@ addLegendSize(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 10,
+  numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
+    digits = 1) },
   ...
 )
 
@@ -76,6 +78,8 @@ function}
 
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
+
+\item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
 
 \item{...}{arguments to pass to
 

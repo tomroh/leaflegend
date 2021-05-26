@@ -4,7 +4,9 @@
 
 * adding colorValues as an argument to makeSizeLegend so that symbols can be sized and colored on different vectors of data
 
+* fixes warning on addLegendNumeric where the shape default was a vector not a single value
 
+* adding number formatting to addSizeLegend
 
 # leaflegend 0.3.0
 
