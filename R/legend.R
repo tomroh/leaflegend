@@ -141,7 +141,6 @@ addLegendImage <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  # leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
@@ -735,7 +734,6 @@ addLegendNumeric <- function(map,
     leafLegendClassName = paste('leaflegend-group', gsub(' ', '', group), sep = '-')
     className <- paste(className, leafLegendClassName)
   }
-
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
@@ -796,7 +794,6 @@ addLegendQuantile <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  # leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
@@ -841,7 +838,6 @@ addLegendBin <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  # leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
@@ -885,7 +881,6 @@ addLegendFactor <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  # leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
