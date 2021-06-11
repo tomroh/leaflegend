@@ -163,37 +163,3 @@ leaflet(data = quakes1) %>% addTiles() %>%
     overlayGroups = c('addLegend', 'addLegendImage', 'addLegendNumeric'),
     position = 'topleft'
   )
-
-
-library(leaflet)
-data("quakes")
-quakes <- quakes[1:100,]
-numPal <- colorNumeric('viridis', quakes$depth)
-sizes <- sizeNumeric(quakes$depth, baseSize = 10)
-symbols <- Map(
- makeSymbol,
- shape = 'triangle',
- color = numPal(quakes$depth),
- width = sizes,
- height = sizes
-)
-leaflet() %>%
- addTiles() %>%
- addMarkers(data = quakes,
-            icon = icons(iconUrl = symbols),
-            lat = ~lat, lng = ~long) %>%
- addLegendSize(
-   values = quakes$depth,
-   pal = numPal,
-   title = 'Depth',
-   labelStyle = 'margin: auto;',
-   shape = c('triangle'),
-   orientation = c('vertical', 'horizontal'),
-   opacity = .7,
-   breaks = 5,
-   group = 'addLegendSize') %>%
-  addLayersControl(
-    overlayGroups = c('addLegendSize'),
-    position = 'topright'
-  )
-
