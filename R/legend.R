@@ -76,13 +76,15 @@
 #' )
 #'
 #' leaflet(data = quakes1) %>% addTiles() %>%
-#'   addMarkers(~long, ~lat, icon = leafIcons) %>%
+#'   addMarkers(~long, ~lat, icon = leafIcons, group = 'Quake Leaves') %>%
 #'   addLegendImage(images = c("http://leafletjs.com/examples/custom-icons/leaf-green.png",
 #'                             "http://leafletjs.com/examples/custom-icons/leaf-red.png"),
 #'                  labels = c('Green', 'Red'),width = 38, height = 95,
 #'                  title = htmltools::tags$div('Leaf',
 #'                  style = 'font-size: 24px; text-align: center;'),
-#'                  position = 'topright')
+#'                  position = 'topright',
+#'                  group = 'Quake Leaves') %>%
+#'   addLayersControl(overlayGroups = c('Quake Leaves'), position = 'bottomright')
 addLegendImage <- function(map,
                            images,
                            labels,
@@ -581,6 +583,37 @@ makeSymbolIcons <- function(shape = c('rect',
 #'   addLegend(pal = binPal,
 #'             values = quakes$mag,
 #'             title = 'addLegend')
+#'
+#' # Group Layer Control
+#' # Works with baseGroups and overlayGroups
+#'
+#' leaflet() %>%
+#'   addTiles() %>%
+#'   addLegendNumeric(
+#'     pal = numPal,
+#'     values = quakes$depth,
+#'     position = 'topright',
+#'     title = 'addLegendNumeric',
+#'     group = 'Numeric Data'
+#'   ) %>%
+#'   addLegendQuantile(
+#'     pal = quantPal,
+#'     values = quakes$mag,
+#'     position = 'topright',
+#'     title = 'addLegendQuantile',
+#'     group = 'Quantile'
+#'   ) %>%
+#'   addLegendBin(
+#'     pal = binPal,
+#'     values = quakes$mag,
+#'     position = 'bottomleft',
+#'     title = 'addLegendBin',
+#'     group = 'Bin'
+#'   ) %>%
+#'   addLayersControl(
+#'     baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
+#'     position = 'bottomright'
+#'   )
 addLegendNumeric <- function(map,
                              pal,
                              values,
@@ -1032,6 +1065,21 @@ addLegendFactor <- function(map,
 #'     color = 'black',
 #'     baseSize = 20,
 #'     breaks = 5)
+#'
+#' # Group layers control
+#' leaflet() %>%
+#'   addTiles() %>%
+#'     addLegendSize(
+#'       values = quakes$depth,
+#'       pal = numPal,
+#'       title = 'Depth',
+#'       labelStyle = 'margin: auto;',
+#'       shape = c('triangle'),
+#'       orientation = c('vertical', 'horizontal'),
+#'       opacity = .7,
+#'       breaks = 5,
+#'       group = 'Depth') %>%
+#'     addLayersControl(overlayGroups = c('Depth'))
 addLegendSize <- function(map,
                           pal,
                           values,
