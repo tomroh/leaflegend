@@ -2,7 +2,9 @@ Package: leaflegend
 Type: Package
 Title: Add Custom Legends to 'leaflet' Maps
 Version: 0.3.0
-Authors@R: person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre"))
+Authors@R: c(
+    person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre")),
+    person("Ricardo Rodrigo", "Basa", email = "radbasa@gmail.com", role = c("ctb")))
 Description: Provides extensions to the 'leaflet' package to 
     customize legends with images, text styling, orientation, sizing,
     and symbology.
@@ -11,10 +13,11 @@ Encoding: UTF-8
 Depends: 
     R (>= 3.3.0)
 Imports: 
-    leaflet, 
-    htmltools, 
-    stats, 
-    base64enc
+    leaflet,
+    htmltools,
+    stats,
+    base64enc,
+    htmlwidgets
 RoxygenNote: 7.1.1
 URL: https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues
