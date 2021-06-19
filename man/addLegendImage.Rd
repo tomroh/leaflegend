@@ -13,6 +13,8 @@ addLegendImage(
   orientation = c("vertical", "horizontal"),
   width = 20,
   height = 20,
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 }
@@ -32,6 +34,10 @@ addLegendImage(
 \item{width}{in pixels}
 
 \item{height}{in pixels}
+
+\item{group}{group name of a leaflet layer group}
+
+\item{className}{extra CSS class to append to the control, space separated}
 
 \item{...}{arguments to pass to \link[leaflet]{addControl}}
 }
@@ -65,11 +71,13 @@ leafIcons <- icons(
 )
 
 leaflet(data = quakes1) \%>\% addTiles() \%>\%
-  addMarkers(~long, ~lat, icon = leafIcons) \%>\%
+  addMarkers(~long, ~lat, icon = leafIcons, group = 'Quake Leaves') \%>\%
   addLegendImage(images = c("http://leafletjs.com/examples/custom-icons/leaf-green.png",
                             "http://leafletjs.com/examples/custom-icons/leaf-red.png"),
                  labels = c('Green', 'Red'),width = 38, height = 95,
                  title = htmltools::tags$div('Leaf',
                  style = 'font-size: 24px; text-align: center;'),
-                 position = 'topright')
+                 position = 'topright',
+                 group = 'Quake Leaves') \%>\%
+  addLayersControl(overlayGroups = c('Quake Leaves'), position = 'bottomright')
 }

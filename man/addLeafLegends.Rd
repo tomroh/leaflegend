@@ -24,6 +24,8 @@ addLegendNumeric(
   tickWidth = 1,
   decreasing = FALSE,
   fillOpacity = 1,
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 
@@ -42,6 +44,8 @@ addLegendQuantile(
     digits = 1) },
   opacity = 1,
   fillOpacity = opacity,
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 
@@ -58,6 +62,8 @@ addLegendBin(
   height = 24,
   opacity = 1,
   fillOpacity = opacity,
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 
@@ -74,6 +80,8 @@ addLegendFactor(
   height = 24,
   opacity = 1,
   fillOpacity = opacity,
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 }
@@ -105,6 +113,10 @@ addLegendFactor(
 \item{decreasing}{order of numbers in the legend}
 
 \item{fillOpacity}{fill opacity of the legend items}
+
+\item{group}{group name of a leaflet layer group}
+
+\item{className}{extra CSS class to append to the control, space separated}
 
 \item{...}{arguments to pass to \link[leaflet]{addControl}}
 
@@ -240,4 +252,35 @@ leaflet() \%>\%
   addLegend(pal = binPal,
             values = quakes$mag,
             title = 'addLegend')
+
+# Group Layer Control
+# Works with baseGroups and overlayGroups
+
+leaflet() \%>\%
+  addTiles() \%>\%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    position = 'topright',
+    title = 'addLegendNumeric',
+    group = 'Numeric Data'
+  ) \%>\%
+  addLegendQuantile(
+    pal = quantPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'addLegendQuantile',
+    group = 'Quantile'
+  ) \%>\%
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'bottomleft',
+    title = 'addLegendBin',
+    group = 'Bin'
+  ) \%>\%
+  addLayersControl(
+    baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
+    position = 'bottomright'
+  )
 }
