@@ -1,0 +1,6 @@
+authors:
+  Thomas Roh:
+    href: https://roh.engineering/about
+template:
+  params:
+    bootswatch: readable

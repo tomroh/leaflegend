@@ -7,3 +7,6 @@ inst/examples/examples.R
 ^CRAN-RELEASE$
 ^doc$
 ^Meta$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
