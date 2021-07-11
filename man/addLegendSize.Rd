@@ -25,6 +25,8 @@ addLegendSize(
   baseSize = 10,
   numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
     digits = 1) },
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 
@@ -80,6 +82,10 @@ function}
 be this exact size}
 
 \item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
+
+\item{group}{group name of a leaflet layer group}
+
+\item{className}{extra CSS class to append to the control, space separated}
 
 \item{...}{arguments to pass to
 
@@ -154,4 +160,19 @@ leaflet() \%>\%
     color = 'black',
     baseSize = 20,
     breaks = 5)
+
+# Group layers control
+leaflet() \%>\%
+  addTiles() \%>\%
+    addLegendSize(
+      values = quakes$depth,
+      pal = numPal,
+      title = 'Depth',
+      labelStyle = 'margin: auto;',
+      shape = c('triangle'),
+      orientation = c('vertical', 'horizontal'),
+      opacity = .7,
+      breaks = 5,
+      group = 'Depth') \%>\%
+    addLayersControl(overlayGroups = c('Depth'))
 }
