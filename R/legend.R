@@ -38,6 +38,14 @@
 #'
 #' in pixels
 #'
+#' @param group
+#'
+#' group name of a leaflet layer group
+#'
+#' @param className
+#'
+#' extra CSS class to append to the control, space separated
+#'
 #' @param ...
 #'
 #' arguments to pass to \link[leaflet]{addControl}
@@ -68,13 +76,15 @@
 #' )
 #'
 #' leaflet(data = quakes1) %>% addTiles() %>%
-#'   addMarkers(~long, ~lat, icon = leafIcons) %>%
+#'   addMarkers(~long, ~lat, icon = leafIcons, group = 'Quake Leaves') %>%
 #'   addLegendImage(images = c("http://leafletjs.com/examples/custom-icons/leaf-green.png",
 #'                             "http://leafletjs.com/examples/custom-icons/leaf-red.png"),
 #'                  labels = c('Green', 'Red'),width = 38, height = 95,
 #'                  title = htmltools::tags$div('Leaf',
 #'                  style = 'font-size: 24px; text-align: center;'),
-#'                  position = 'topright')
+#'                  position = 'topright',
+#'                  group = 'Quake Leaves') %>%
+#'   addLayersControl(overlayGroups = c('Quake Leaves'), position = 'bottomright')
 addLegendImage <- function(map,
                            images,
                            labels,
@@ -83,6 +93,8 @@ addLegendImage <- function(map,
                            orientation = c('vertical', 'horizontal'),
                            width = 20,
                            height = 20,
+                           group = NULL,
+                           className = 'info legend leaflet-control',
                            ...) {
   stopifnot(length(images) == length(labels))
   orientation <- match.arg(orientation)
@@ -131,7 +143,7 @@ addLegendImage <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
+  leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
 #' Create an SVG tag for the symbol
@@ -433,6 +445,14 @@ makeSymbolIcons <- function(shape = c('rect',
 #'
 #' fill opacity of the legend items
 #'
+#' @param group
+#'
+#' group name of a leaflet layer group
+#'
+#' @param className
+#'
+#' extra CSS class to append to the control, space separated
+#'
 #' @param ...
 #'
 #' arguments to pass to \link[leaflet]{addControl}
@@ -563,6 +583,37 @@ makeSymbolIcons <- function(shape = c('rect',
 #'   addLegend(pal = binPal,
 #'             values = quakes$mag,
 #'             title = 'addLegend')
+#'
+#' # Group Layer Control
+#' # Works with baseGroups and overlayGroups
+#'
+#' leaflet() %>%
+#'   addTiles() %>%
+#'   addLegendNumeric(
+#'     pal = numPal,
+#'     values = quakes$depth,
+#'     position = 'topright',
+#'     title = 'addLegendNumeric',
+#'     group = 'Numeric Data'
+#'   ) %>%
+#'   addLegendQuantile(
+#'     pal = quantPal,
+#'     values = quakes$mag,
+#'     position = 'topright',
+#'     title = 'addLegendQuantile',
+#'     group = 'Quantile'
+#'   ) %>%
+#'   addLegendBin(
+#'     pal = binPal,
+#'     values = quakes$mag,
+#'     position = 'bottomleft',
+#'     title = 'addLegendBin',
+#'     group = 'Bin'
+#'   ) %>%
+#'   addLayersControl(
+#'     baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
+#'     position = 'bottomright'
+#'   )
 addLegendNumeric <- function(map,
                              pal,
                              values,
@@ -578,6 +629,8 @@ addLegendNumeric <- function(map,
                              tickWidth = 1,
                              decreasing = FALSE,
                              fillOpacity = 1,
+                             group = NULL,
+                             className = 'info legend leaflet-control',
                              ...) {
   stopifnot( attr(pal, 'colorType') == 'numeric' )
   shape <- match.arg(shape)
@@ -709,7 +762,7 @@ addLegendNumeric <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
+  leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
 #' @export
@@ -728,6 +781,8 @@ addLegendQuantile <- function(map,
                               numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
                               opacity = 1,
                               fillOpacity = opacity,
+                              group = NULL,
+                              className = 'info legend leaflet-control',
                               ...) {
   stopifnot( attr(pal, 'colorType') == 'quantile' )
   shape <- match.arg(shape)
@@ -767,7 +822,7 @@ addLegendQuantile <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
+  leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
 #' @export
@@ -785,6 +840,8 @@ addLegendBin <- function(map,
                          height = 24,
                          opacity = 1,
                          fillOpacity = opacity,
+                         group = NULL,
+                         className = 'info legend leaflet-control',
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
   shape <- match.arg(shape)
@@ -809,7 +866,7 @@ addLegendBin <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
+  leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
 #' @export
@@ -827,6 +884,8 @@ addLegendFactor <- function(map,
                             height = 24,
                             opacity = 1,
                             fillOpacity = opacity,
+                            group = NULL,
+                            className = 'info legend leaflet-control',
                             ...) {
   stopifnot( attr(pal, 'colorType') == 'factor' )
   shape <- match.arg(shape)
@@ -850,7 +909,7 @@ addLegendFactor <- function(map,
     htmlElements <-
       append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
   }
-  leaflet::addControl(map, html = htmltools::tagList(htmlElements), ...)
+  leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
 #' Add a legend that for the sizing of symbols
@@ -923,6 +982,14 @@ addLegendFactor <- function(map,
 #' @param numberFormat
 #'
 #' formatting functions for numbers that are displayed e.g. format, prettyNum
+#'
+#' @param group
+#'
+#' group name of a leaflet layer group
+#'
+#' @param className
+#'
+#' extra CSS class to append to the control, space separated
 #'
 #' @param ...
 #'
@@ -998,6 +1065,21 @@ addLegendFactor <- function(map,
 #'     color = 'black',
 #'     baseSize = 20,
 #'     breaks = 5)
+#'
+#' # Group layers control
+#' leaflet() %>%
+#'   addTiles() %>%
+#'     addLegendSize(
+#'       values = quakes$depth,
+#'       pal = numPal,
+#'       title = 'Depth',
+#'       labelStyle = 'margin: auto;',
+#'       shape = c('triangle'),
+#'       orientation = c('vertical', 'horizontal'),
+#'       opacity = .7,
+#'       breaks = 5,
+#'       group = 'Depth') %>%
+#'     addLayersControl(overlayGroups = c('Depth'))
 addLegendSize <- function(map,
                           pal,
                           values,
@@ -1013,6 +1095,8 @@ addLegendSize <- function(map,
                           breaks = 5,
                           baseSize = 10,
                           numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
+                          group = NULL,
+                          className = 'info legend leaflet-control',
                           ...) {
   shape <- match.arg(shape)
   sizes <- sizeBreaks(values, breaks, baseSize)
@@ -1043,7 +1127,7 @@ addLegendSize <- function(map,
                  `stroke-width` = strokeWidth)
   addLegendImage(map, images = symbols, labels = numberFormat(as.numeric(names(sizes))),
                  title = title, labelStyle = labelStyle,
-                 orientation = orientation, width = sizes, height = sizes, ...)
+                 orientation = orientation, width = sizes, height = sizes, group = group, className = className, ...)
 
 }
 
@@ -1121,3 +1205,38 @@ makeSizeIcons <- function(values,
   )
 }
 
+leaflegendAddControl <- function(map,
+                                 html,
+                                 className,
+                                 group,
+                                 ...) {
+
+  if ( !is.null(group) ) {
+    leafLegendClassName = paste('leaflegend-group', gsub(' ', '', group), sep = '-')
+    className <- paste(className, leafLegendClassName)
+
+    lf <- leaflet::addControl(map, html = html, className = className, ...)
+    htmlwidgets::onRender(lf, "
+                function(el, x) {
+                  var updateLeafLegend = function() {
+                    var controlGroups = document.querySelectorAll('input.leaflet-control-layers-selector');
+                    controlGroups.forEach(g => {
+                      var groupName = g.nextSibling.innerText.substr(1);
+                      var className = 'leaflegend-group-' + groupName.replace(' ', '');
+                      var checked = g.checked;
+                      document.querySelectorAll('.legend.' + className).forEach(l => {
+                        l.hidden = !checked;
+                      })
+                    })
+                  }
+
+                  updateLeafLegend();
+                  this.on('baselayerchange', el => updateLeafLegend())
+                  this.on('overlayadd', el => updateLeafLegend());
+                  this.on('overlayremove', el => updateLeafLegend());
+                }
+                        ")
+  } else {
+    leaflet::addControl(map, html = html, className = className, ...)
+  }
+}
