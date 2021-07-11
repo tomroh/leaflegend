@@ -1,4 +1,4 @@
-# leaflegend 0.3.1
+# leaflegend 0.3.2
 
 * fixes error on makeSizeLegend where fillColor is not evaluated if no argument is provided
 
@@ -7,6 +7,9 @@
 * fixes warning on addLegendNumeric where the shape default was a vector not a single value
 
 * adding number formatting to addSizeLegend
+
+* adding group layer support for legends. Use addLayersControl to turn on/off
+legends
 
 # leaflegend 0.3.0
 
