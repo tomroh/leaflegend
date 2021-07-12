@@ -85,6 +85,27 @@
 #'                  position = 'topright',
 #'                  group = 'Quake Leaves') %>%
 #'   addLayersControl(overlayGroups = c('Quake Leaves'), position = 'bottomright')
+#'
+#' # Add a legend with different size custom images to match using size encoding
+#' # on icons
+#' height <- sizeNumeric(quakes$depth, baseSize = 40)
+#' width <- height * 38 / 95
+#' symbols <- icons(
+#'   iconUrl = 'http://leafletjs.com/examples/custom-icons/leaf-green.png',
+#'   iconWidth = width,
+#'   iconHeight = height)
+#' probs <- c(.2, .4, .6, .8)
+#' leaflet(quakes) %>%
+#'   addTiles() %>%
+#'   addMarkers(icon = symbols,
+#'              lat = ~lat, lng = ~long) %>%
+#'   addLegendImage(images = rep("http://leafletjs.com/examples/custom-icons/leaf-green.png", 4),
+#'                  labels = round(quantile(height, probs = probs), 0),
+#'                  width = quantile(height, probs = probs) * 38 / 95,
+#'                  height = quantile(height, probs = probs),
+#'                  title = htmltools::tags$div('Leaf',
+#'                                              style = 'font-size: 24px; text-align: center;'),
+#'                  position = 'topright', orientation = 'vertical')
 addLegendImage <- function(map,
                            images,
                            labels,
@@ -667,7 +688,6 @@ addLegendNumeric <- function(map,
     x2 <- 1
   }
   labels <- numberFormat(labels)
-  #fontSize <- as.numeric(sub('.*(font-size: )([0-9]+)(px).*', '\\2', labelStyle))
   labelStyle <- ''
   cexAdj <- 1#fontSize / 14
   textWidth <- max(graphics::strwidth(labels, units = 'inches', cex = cexAdj)) * 72
