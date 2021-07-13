@@ -76,7 +76,7 @@ functionalities." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">leaflegend</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -224,7 +224,28 @@ functionalities.</p>
                  position <span class='op'>=</span> <span class='st'>'topright'</span>,
                  group <span class='op'>=</span> <span class='st'>'Quake Leaves'</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/addLayersControl.html'>addLayersControl</a></span><span class='op'>(</span>overlayGroups <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Quake Leaves'</span><span class='op'>)</span>, position <span class='op'>=</span> <span class='st'>'bottomright'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in leaflet::addControl(map, html = htmltools::tagList(htmlElements),     ...): unused argument (group = "Quake Leaves")</span></div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in leaflet::addControl(map, html = htmltools::tagList(htmlElements),     ...): unused argument (group = "Quake Leaves")</span></div><div class='input'>
+<span class='co'># Add a legend with different size custom images to match using size encoding</span>
+<span class='co'># on icons</span>
+<span class='va'>height</span> <span class='op'>&lt;-</span> <span class='fu'><a href='addLegendSize.html'>sizeNumeric</a></span><span class='op'>(</span><span class='va'>quakes</span><span class='op'>$</span><span class='va'>depth</span>, baseSize <span class='op'>=</span> <span class='fl'>40</span><span class='op'>)</span>
+<span class='va'>width</span> <span class='op'>&lt;-</span> <span class='va'>height</span> <span class='op'>*</span> <span class='fl'>38</span> <span class='op'>/</span> <span class='fl'>95</span>
+<span class='va'>symbols</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/icons.html'>icons</a></span><span class='op'>(</span>
+  iconUrl <span class='op'>=</span> <span class='st'>'http://leafletjs.com/examples/custom-icons/leaf-green.png'</span>,
+  iconWidth <span class='op'>=</span> <span class='va'>width</span>,
+  iconHeight <span class='op'>=</span> <span class='va'>height</span><span class='op'>)</span>
+<span class='va'>probs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.2</span>, <span class='fl'>.4</span>, <span class='fl'>.6</span>, <span class='fl'>.8</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/leaflet.html'>leaflet</a></span><span class='op'>(</span><span class='va'>quakes</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addTiles</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addMarkers</a></span><span class='op'>(</span>icon <span class='op'>=</span> <span class='va'>symbols</span>,
+             lat <span class='op'>=</span> <span class='op'>~</span><span class='va'>lat</span>, lng <span class='op'>=</span> <span class='op'>~</span><span class='va'>long</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>addLegendImage</span><span class='op'>(</span>images <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"http://leafletjs.com/examples/custom-icons/leaf-green.png"</span>, <span class='fl'>4</span><span class='op'>)</span>,
+                 labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>height</span>, probs <span class='op'>=</span> <span class='va'>probs</span><span class='op'>)</span>, <span class='fl'>0</span><span class='op'>)</span>,
+                 width <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>height</span>, probs <span class='op'>=</span> <span class='va'>probs</span><span class='op'>)</span> <span class='op'>*</span> <span class='fl'>38</span> <span class='op'>/</span> <span class='fl'>95</span>,
+                 height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>height</span>, probs <span class='op'>=</span> <span class='va'>probs</span><span class='op'>)</span>,
+                 title <span class='op'>=</span> <span class='fu'>htmltools</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/htmltools/man/builder.html'>tags</a></span><span class='op'>$</span><span class='fu'>div</span><span class='op'>(</span><span class='st'>'Leaf'</span>,
+                                             style <span class='op'>=</span> <span class='st'>'font-size: 24px; text-align: center;'</span><span class='op'>)</span>,
+                 position <span class='op'>=</span> <span class='st'>'topright'</span>, orientation <span class='op'>=</span> <span class='st'>'vertical'</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
