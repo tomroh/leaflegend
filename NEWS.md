@@ -1,4 +1,4 @@
-# leaflegend 0.3.2
+# leaflegend 0.4.0
 
 * fixes error on makeSizeLegend where fillColor is not evaluated if no argument is provided
 
@@ -10,6 +10,8 @@
 
 * adding group layer support for legends. Use addLayersControl to turn on/off
 legends
+
+* added example for using raster images with size encodings based on data
 
 # leaflegend 0.3.0
 
