@@ -123,6 +123,9 @@ addLegendImage <- function(map,
   } else {
     htmlTag <- htmltools::tags$span
   }
+  if ( inherits(images, 'svgURI') ) {
+    images <- list(images)
+  }
   htmlElements <- Map(
     img = images,
     label = labels,
