@@ -61,3 +61,9 @@ leaflet() %>%
   )
 ```
 
+## Tutorials
+
+* [Introduction to leaflegend](https://roh.engineering/posts/2021/02/introduction-to-leaflegend/)
+
+* [Map Symbols and Size Legends](https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/)
+

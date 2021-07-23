@@ -687,7 +687,6 @@ addLegendNumeric <- function(map,
     x2 <- 1
   }
   labels <- numberFormat(labels)
-  #fontSize <- as.numeric(sub('.*(font-size: )([0-9]+)(px).*', '\\2', labelStyle))
   labelStyle <- ''
   cexAdj <- 1#fontSize / 14
   textWidth <- max(graphics::strwidth(labels, units = 'inches', cex = cexAdj)) * 72

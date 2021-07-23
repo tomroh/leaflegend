@@ -13,6 +13,7 @@ legends
 
 * added example for using raster images with size encodings based on data
 
+
 # leaflegend 0.3.0
 
 * stroke outlines of shapes are now padded so that the stroke is not cut off
