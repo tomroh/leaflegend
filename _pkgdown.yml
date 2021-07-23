@@ -1,7 +1,15 @@
+url: https://leaflegend.roh.engineering
 authors:
   Thomas Roh:
     href: https://roh.engineering/about
 template:
   params:
     bootswatch: readable
-url: https://leaflegend.roh.engineering
+    docsearch:
+      api_key: 89d2953b5dfa27a60dd7d7bec9e087fa
+      index_name: roh
+    opengraph:
+      twitter:
+        creator: "@rstatengineer"
+        card: summary_large_image
+

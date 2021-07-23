@@ -11,7 +11,8 @@
 * adding group layer support for legends. Use addLayersControl to turn on/off
 legends
 
-* added an example to show how to use a raster image with size encodings
+* added example for using raster images with size encodings based on data
+
 
 # leaflegend 0.3.0
 

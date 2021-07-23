@@ -1,11 +1,11 @@
+# leaflegend <a href='https://leaflegend.roh.engineering'><img src='man/figures/logo.png' align="right" height="106" /></a>
+
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/leaflegend)](https://CRAN.R-project.org/package=leaflegend)
 [![R-CMD-check](https://github.com/tomroh/leaflegend/workflows/R-CMD-check/badge.svg)](https://github.com/tomroh/leaflegend/actions)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/leaflegend?color=green)](https://cran.r-project.org/package=leaflegend)
 <!-- badges: end -->
-
-
-# leaflegend
 
 This package provides extensions to the leaflet package to 
 customize leaflet legends without adding an outside css file to the output 
@@ -27,6 +27,11 @@ Install the development version with:
 ```r
 devtools::install_github("tomroh/leaflegend")
 ```
+## Tutorials
+
+* [Introduction to leaflegend](https://roh.engineering/posts/2021/02/introduction-to-leaflegend/)
+
+* [Map Symbols and Size Legends](https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/)
 
 ## Example
 
@@ -61,9 +66,6 @@ leaflet() %>%
   )
 ```
 
-## Tutorials
 
-* [Introduction to leaflegend](https://roh.engineering/posts/2021/02/introduction-to-leaflegend/)
 
-* [Map Symbols and Size Legends](https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/)
 

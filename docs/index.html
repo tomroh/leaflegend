@@ -6,15 +6,24 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Add Custom Legends to leaflet Maps • leaflegend</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Add Custom Legends to leaflet Maps">
+<script src="pkgdown.js"></script><!-- docsearch --><script src="docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
+<link href="docsearch.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Add Custom Legends to leaflet Maps">
 <meta property="og:description" content="Provides extensions to the leaflet package to 
     customize legends with images, text styling, orientation, sizing,
     and symbology.">
+<meta property="og:image" content="https://leaflegend.roh.engineering/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -60,7 +69,13 @@
   </a>
 </li>
       </ul>
+<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
+      </form>
+      
+    </div>
 <!--/.nav-collapse -->
   </div>
 <!--/.container -->
@@ -71,11 +86,12 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-
-<div id="leaflegend" class="section level1">
+<div id="leaflegend-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#leaflegend" class="anchor"></a>leaflegend</h1></div>
+<a href="#leaflegend-" class="anchor"></a>leaflegend <a href="https://leaflegend.roh.engineering"><img src="reference/figures/logo.png" align="right" height="106"></a>
+</h1></div>
+<!-- badges: start -->
+
 <p>This package provides extensions to the leaflet package to customize leaflet legends without adding an outside css file to the output to style legends. The legend extensions allow the user to add images to legends, style the labels of the legend items, change orientation of the legend items, use different symbologies, and style axis ticks. Syntax and style is consistent with the leaflet package.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -86,6 +102,14 @@
 <p>Install the development version with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"tomroh/leaflegend"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="tutorials" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tutorials" class="anchor"></a>Tutorials</h2>
+<ul>
+<li><p><a href="https://roh.engineering/posts/2021/02/introduction-to-leaflegend/">Introduction to leaflegend</a></p></li>
+<li><p><a href="https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/">Map Symbols and Size Legends</a></p></li>
+</ul>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
@@ -119,16 +143,7 @@
     height <span class="op">=</span> <span class="fl">30</span>
   <span class="op">)</span></code></pre></div>
 </div>
-<div id="tutorials" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tutorials" class="anchor"></a>Tutorials</h2>
-<ul>
-<li><p><a href="https://roh.engineering/posts/2021/02/introduction-to-leaflegend/">Introduction to leaflegend</a></p></li>
-<li><p><a href="https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/">Map Symbols and Size Legends</a></p></li>
-</ul>
 </div>
-</div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -165,6 +180,7 @@
 <li><a href="https://CRAN.R-project.org/package=leaflegend"><img src="https://www.r-pkg.org/badges/version/leaflegend" alt="CRAN status"></a></li>
 <li><a href="https://github.com/tomroh/leaflegend/actions"><img src="https://github.com/tomroh/leaflegend/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://cran.r-project.org/package=leaflegend"><img src="https://cranlogs.r-pkg.org/badges/grand-total/leaflegend?color=green"></a></li>
 </ul>
 </div>
 </div>
@@ -183,7 +199,20 @@
 </div>
 
   
-
-
-  </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
+  docsearch({
+    
+    
+    apiKey: '89d2953b5dfa27a60dd7d7bec9e087fa',
+    indexName: 'roh',
+    inputSelector: 'input#search-input.form-control',
+    transformData: function(hits) {
+      return hits.map(function (hit) {
+        hit.url = updateHitURL(hit);
+        return hit;
+      });
+    }
+  });
+</script>
+</body>
 </html>
