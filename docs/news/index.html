@@ -8,6 +8,13 @@
 
 <title>Changelog • leaflegend</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -37,7 +44,6 @@
 <script src="../pkgdown.js"></script>
 
 
-
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
@@ -46,8 +52,8 @@
 
 
 
-
 <meta property="og:title" content="Changelog" />
+<meta property="og:image" content="https://leaflegend.roh.engineering/logo.png" />
 
 
 
@@ -112,6 +118,7 @@
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
         </div>
       </form>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -127,10 +134,9 @@
       <small>Source: <a href='https://github.com/tomroh/leaflegend/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-
-    <div id="leaflegend-032" class="section level1">
-<h1 class="page-header" data-toc-text="0.3.2">
-<a href="#leaflegend-032" class="anchor"></a>leaflegend 0.3.2<small> Unreleased </small>
+    <div id="leaflegend-040" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.0">
+<a href="#leaflegend-040" class="anchor"></a>leaflegend 0.4.0<small> Unreleased </small>
 </h1>
 <ul>
 <li><p>fixes error on makeSizeLegend where fillColor is not evaluated if no argument is provided</p></li>
@@ -138,8 +144,7 @@
 <li><p>fixes warning on addLegendNumeric where the shape default was a vector not a single value</p></li>
 <li><p>adding number formatting to addSizeLegend</p></li>
 <li><p>adding group layer support for legends. Use addLayersControl to turn on/off legends</p></li>
-
-
+<li><p>added example for using raster images with size encodings based on data</p></li>
 </ul>
 </div>
     <div id="leaflegend-030" class="section level1">
@@ -198,7 +203,6 @@
    </div>
 
   
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
 <script>
   docsearch({
@@ -215,7 +219,6 @@
     }
   });
 </script>
-
 
 
 
