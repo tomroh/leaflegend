@@ -11,9 +11,11 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+
 <script src="pkgdown.js"></script><!-- docsearch --><script src="docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Add Custom Legends to leaflet Maps">
+
 <meta property="og:description" content="Provides extensions to the leaflet package to 
     customize legends with images, text styling, orientation, sizing,
     and symbology.">
@@ -62,6 +64,7 @@
   </a>
 </li>
       </ul>
+
 <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
         <div class="form-group">
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
@@ -69,6 +72,7 @@
       </form>
       
     </div>
+
 <!--/.nav-collapse -->
   </div>
 <!--/.container -->
@@ -84,6 +88,10 @@
 <a href="#leaflegend" class="anchor"></a>leaflegend</h1></div>
 <!-- badges: start -->
 
+
+<div id="leaflegend" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#leaflegend" class="anchor"></a>leaflegend</h1></div>
 <p>This package provides extensions to the leaflet package to customize leaflet legends without adding an outside css file to the output to style legends. The legend extensions allow the user to add images to legends, style the labels of the legend items, change orientation of the legend items, use different symbologies, and style axis ticks. Syntax and style is consistent with the leaflet package.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -100,6 +108,7 @@
 <a href="#example" class="anchor"></a>Example</h2>
 <p>Use <code>addLegend*()</code> to create easily customizable legends for leaflet.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://leaflegend.roh.engineering">leaflegend</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">quakes</span><span class="op">)</span>
@@ -127,6 +136,7 @@
     height <span class="op">=</span> <span class="fl">30</span>
   <span class="op">)</span></code></pre></div>
 </div>
+
 </div>
   </div>
 
@@ -164,7 +174,9 @@
 <li><a href="https://CRAN.R-project.org/package=leaflegend"><img src="https://www.r-pkg.org/badges/version/leaflegend" alt="CRAN status"></a></li>
 <li><a href="https://github.com/tomroh/leaflegend/actions"><img src="https://github.com/tomroh/leaflegend/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+
 <li><a href="https://cran.r-project.org/package=leaflegend"><img src="https://cranlogs.r-pkg.org/badges/grand-total/leaflegend?color=green"></a></li>
+
 </ul>
 </div>
 </div>
@@ -199,4 +211,5 @@
   });
 </script>
 </body>
+
 </html>
