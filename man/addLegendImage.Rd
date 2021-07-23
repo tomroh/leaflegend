@@ -93,11 +93,13 @@ leaflet(data = quakes1) \%>\% addTiles() \%>\%
    addTiles() \%>\%
    addMarkers(icon = symbols,
               lat = ~lat, lng = ~long) \%>\%
-   addLegendImage(images = rep("http://leafletjs.com/examples/custom-icons/leaf-green.png", 4),
-                  labels = round(quantile(height, probs = probs), 0),
-                  width = quantile(height, probs = probs) * 38 / 95,
-                  height = quantile(height, probs = probs),
-                  title = htmltools::tags$div('Leaf',
-                                              style = 'font-size: 24px; text-align: center; margin-bottom: 5px;'),
-                  position = 'topright', orientation = 'vertical')
+   addLegendImage(
+     images = rep("http://leafletjs.com/examples/custom-icons/leaf-green.png", 4),
+     labels = round(quantile(height, probs = probs), 0),
+     width = quantile(height, probs = probs) * 38 / 95,
+     height = quantile(height, probs = probs),
+     title = htmltools::tags$div(
+       'Leaf',
+       style = 'font-size: 24px; text-align: center; margin-bottom: 5px;'),
+     position = 'topright', orientation = 'vertical')
 }
