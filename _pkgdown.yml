@@ -4,6 +4,7 @@ authors:
     href: https://roh.engineering/about
 template:
   params:
+    ganalytics: G-FEY7F5BR1Z
     bootswatch: readable
     docsearch:
       api_key: 89d2953b5dfa27a60dd7d7bec9e087fa
