@@ -311,6 +311,26 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
       'fill-opacity' = fillOpacity,
       ...
     ),
+    'line' = htmltools::tags$line(
+      id = 'line',
+      x1 = 0 + strokewidth,
+      x2 = width + strokewidth,
+      y1 = height / 2 + strokewidth,
+      y2 = height / 2 + strokewidth,
+      stroke = color,
+      'stroke-opacity' = opacity,
+      'fill-opacity' = fillOpacity,
+      ...
+    ),
+    'polygon' = htmltools::tags$polygon(
+      id = 'polygon',
+      points = draw_polygon(n = 5, width = width, height = height, offset = strokewidth),
+      stroke = color,
+      fill = fillColor,
+      'stroke-opacity' = opacity,
+      'fill-opacity' = fillOpacity,
+      ...
+    ),
     stop('Invalid shape argument.')
   )
   svgURI <-
@@ -358,6 +378,19 @@ draw_star <- function(width, height, offset = 0) {
   y <- height * c(0,0.2585786,0,0.1414214,0.4,0.4,0.6,0.6,0.8585786,1,0.7414214,1,1,0.7414214,1,0.8585786,0.6,0.6,0.4,0.4,0.1414214,0,0.2585786,0,0) + offset
   paste(x, y, sep = ',', collapse = ' ')
 }
+draw_polygon <- function(n, width = 1, height = 1, offset = 0) {
+  stopifnot(n > 0 || !is.integer(n))
+  radians <- seq(-pi, pi, by = 2*pi/n)
+  if ( n %% 2 == 0 ) {
+    x <- (cos(radians) + 1) * 1/2 * width + offset
+    y <- (sin(radians) + 1) * 1/2 * height + offset
+  } else {
+    radians <- seq(-pi, pi, by = 2*pi/n)
+    x <- (sin(radians) + 1) * 1/2 * width + offset
+    y <- (cos(radians) + 1) * 1/2 * height + offset
+  }
+  paste(x, y, sep = ',', collapse = ' ')
+}
 
 #' @export
 #'
@@ -369,7 +402,9 @@ makeSymbolIcons <- function(shape = c('rect',
                                       'cross',
                                       'diamond',
                                       'star',
-                                      'stadium'),
+                                      'stadium',
+                                      'line',
+                                      'polygon'),
                             color,
                             fillColor = color,
                             opacity,
@@ -799,7 +834,7 @@ addLegendQuantile <- function(map,
                               values,
                               title = NULL,
                               labelStyle = '',
-                              shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium'),
+                              shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium', 'line', 'polygon'),
                               orientation = c('vertical', 'horizontal'),
                               width = 24,
                               height = 24,
@@ -859,7 +894,7 @@ addLegendBin <- function(map,
                          values,
                          title = NULL,
                          labelStyle = '',
-                         shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium'),
+                         shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium', 'line', 'polygon'),
                          orientation = c('vertical', 'horizontal'),
                          width = 24,
                          height = 24,
@@ -903,7 +938,7 @@ addLegendFactor <- function(map,
                             values,
                             title = NULL,
                             labelStyle = '',
-                            shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium'),
+                            shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star', 'stadium', 'line', 'polygon'),
                             orientation = c('vertical', 'horizontal'),
                             width = 24,
                             height = 24,
@@ -1228,6 +1263,132 @@ makeSizeIcons <- function(values,
     strokeWidth = strokeWidth,
     ...
   )
+}
+
+#' Add a legend with Awesome Icons
+#'
+#' @param map
+#'
+#' a map widget object created from 'leaflet'
+#'
+#' @param iconSet
+#'
+#' a named list from \link[leaflet]{awesomeIconList}, the names will be the labels in the legend
+#'
+#' @param title
+#'
+#' the legend title, pass in HTML to style
+#'
+#' @param labelStyle
+#'
+#' character string of style argument for HTML text
+#'
+#' @param orientation
+#'
+#' stack the legend items vertically or horizontally
+#'
+#' @param group
+#'
+#' group name of a leaflet layer group
+#'
+#' @param className
+#'
+#' extra CSS class to append to the control, space separated
+#'
+#' @param ...
+#'
+#' arguments to pass to \link[leaflet]{addControl}
+#'
+#' @return
+#'
+#' an object from \link[leaflet]{addControl}
+#'
+#' @export
+#'
+#' @examples
+#' library(leaflet)
+#' data(quakes)
+#' iconSet <- awesomeIconList(
+#'   `Font Awesome` = makeAwesomeIcon(icon = "font-awesome", library = "fa",
+#'                                    iconColor = 'gold', markerColor = 'red',
+#'                                    spin = FALSE,
+#'                                    squareMarker = TRUE,
+#'                                    iconRotate = 30,
+#'   ),
+#'   Ionic = makeAwesomeIcon(icon = "ionic", library = "ion",
+#'                           iconColor = '#fffff', markerColor = 'blue',
+#'                           spin = TRUE,
+#'                           squareMarker = FALSE),
+#'   Glyphicon = makeAwesomeIcon(icon = "plus-sign", library = "glyphicon",
+#'                               iconColor = 'rgb(192, 255, 0)', markerColor = 'darkpurple',
+#'                               spin = TRUE,
+#'                               squareMarker = FALSE)
+#' )
+#' leaflet(quakes[1:3,]) |>
+#'   addTiles() |>
+#'   addAwesomeMarkers(lat = ~lat,
+#'                     lng = ~long,
+#'                     icon = iconSet) |>
+#'   addLegendAwesomeIcon(iconSet = iconSet,
+#'                        orientation = 'horizontal',
+#'                        title = htmltools::tags$div(
+#'                          style = 'font-size: 20px;',
+#'                          'Awesome Icons'),
+#'                        labelStyle = 'font-size: 16px;') |>
+#'   addLegendAwesomeIcon(iconSet = iconSet,
+#'                        orientation = 'vertical',
+#'                        title = htmltools::tags$div(
+#'                          style = 'font-size: 20px;',
+#'                          'Awesome Icons'),
+#'                        labelStyle = 'font-size: 16px;')
+addLegendAwesomeIcon <- function(map,
+                                 iconSet,
+                                 title = NULL,
+                                 labelStyle = '',
+                                 orientation = c('vertical', 'horizontal'),
+                                 group = NULL,
+                                 className = 'info legend leaflet-control',
+                                 ...) {
+  stopifnot(inherits(iconSet, 'leaflet_awesome_icon_set'))
+  orientation <- match.arg(orientation)
+  if ( orientation == 'vertical' ) {
+    wrapElements <- htmltools::tags$div
+  } else {
+    wrapElements <- htmltools::tags$span
+  }
+
+  htmlElements <-
+    Map(icon = iconSet,
+        label = names(iconSet),
+        f = function(icon, label) {
+      htmltools::tagList(
+        wrapElements(
+        htmltools::tags$div(style = 'vertical-align: middle; display: inline-block; position: relative;',
+                            class =
+                              sprintf('awesome-marker-icon-%s awesome-marker %s',
+                                      icon[['markerColor']],
+                                      ifelse(icon[['squareMarker']], 'awesome-marker-square', '')),
+                            htmltools::tags$i(class = sprintf('%1$s %1$s-%2$s %3$s',
+                                                              icon[['library']],
+                                                              icon[['icon']],
+                                                              ifelse(icon[['spin']], 'fa-spin', '')),
+                                              style = sprintf('color: %s; %s', icon[['iconColor']],
+                                                              ifelse(icon[['iconRotate']] == 0, '',
+                                                                     sprintf('-webkit-transform: rotate(%1$sdeg);-moz-transform: rotate(%1$sdeg);-o-transform: rotate(%1$sdeg);-ms-transform: rotate(%1$sdeg);transform: rotate(%1$sdeg);',
+                                                                             icon[['iconRotate']]))
+                                              )
+                            )#,
+                            #htmltools::tags$span(label, style = sprintf("vertical-align: middle; padding: 1px; %s", 'labelStyle'))
+        ),
+        htmltools::tags$span(label, style = sprintf('%s', labelStyle))
+      )
+      )
+    })
+  if (!is.null(title)) {
+    htmlElements <-
+      append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))), after = 0)
+  }
+  leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
 leaflegendAddControl <- function(map,
