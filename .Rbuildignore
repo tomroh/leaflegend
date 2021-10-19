@@ -10,3 +10,4 @@ inst/examples/examples.R
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^FUNDING.yml$

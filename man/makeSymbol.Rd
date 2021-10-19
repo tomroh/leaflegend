@@ -18,7 +18,7 @@ makeSymbol(
 
 makeSymbolIcons(
   shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
-    "stadium"),
+    "stadium", "line", "polygon"),
   color,
   fillColor = color,
   opacity,

@@ -1,3 +1,10 @@
+# leaflegend 0.5.0
+
+* adding addLegendAwesomeIcon function to produce legends with markers from 
+awesome icon libraries
+
+* adding in line and polygon symbol and adding symbols to the README
+
 # leaflegend 0.4.0
 
 * fixes error on makeSizeLegend where fillColor is not evaluated if no argument is provided
