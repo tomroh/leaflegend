@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="74" style="background-color: white;">
+  <polygon id="polygon" points="27,2 3.22358709262116,19.2745751406263 12.3053686926882,47.2254248593737 41.6946313073118,47.2254248593737 50.7764129073788,19.2745751406263 27,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+  <text x="25" y="70" font-family="sans-serif" text-anchor="middle" font-size="12px">polygon</text>
+</svg>

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="74" style="background-color: white;">
+  <polygon id="cross" points="9.07106781186548,2 2,9.07106781186548 19.9289321881345,27 2,44.9289321881345 9.07106781186548,52 27,34.0710678118655 44.9289321881345,52 52,44.9289321881345 34.0710678118655,27 52,9.07106781186548 44.9289321881345,2 27,19.9289321881345 9.07106781186548,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+  <text x="25" y="70" font-family="sans-serif" text-anchor="middle" font-size="12px">cross</text>
+</svg>

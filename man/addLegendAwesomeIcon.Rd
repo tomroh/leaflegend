@@ -10,6 +10,7 @@ addLegendAwesomeIcon(
   title = NULL,
   labelStyle = "",
   orientation = c("vertical", "horizontal"),
+  marker = TRUE,
   group = NULL,
   className = "info legend leaflet-control",
   ...
@@ -25,6 +26,8 @@ addLegendAwesomeIcon(
 \item{labelStyle}{character string of style argument for HTML text}
 
 \item{orientation}{stack the legend items vertically or horizontally}
+
+\item{marker}{whether to show the marker or only the icon}
 
 \item{group}{group name of a leaflet layer group}
 
@@ -70,6 +73,7 @@ leaflet(quakes[1:3,]) |>
                        labelStyle = 'font-size: 16px;') |>
   addLegendAwesomeIcon(iconSet = iconSet,
                        orientation = 'vertical',
+                       marker = FALSE,
                        title = htmltools::tags$div(
                          style = 'font-size: 20px;',
                          'Awesome Icons'),
