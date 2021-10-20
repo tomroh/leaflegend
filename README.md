@@ -68,4 +68,13 @@ leaflet() %>%
 
 ## Map Symbols
 
-<img src="man/figures/rect.svg" alt="rect" width = 50 height = 50></img><img src="man/figures/circle.svg" alt="circle" width = 50 height = 50></img><img src="man/figures/triangle.svg" alt="triangle" width = 50 height = 50></img><img src="man/figures/plus.svg" alt="plus" width = 50 height = 50></img><img src="man/figures/cross.svg" alt="cross" width = 50 height = 50></img><img src="man/figures/diamond.svg" alt="diamond" width = 50 height = 50></img><img src="man/figures/star.svg" alt="star" width = 50 height = 50></img><img src="man/figures/stadium.svg" alt="stadium" width = 50 height = 50></img><img src="man/figures/line.svg" alt="line" width = 50 height = 50></img><img src="man/figures/polygon.svg" alt="polygon" width = 50 height = 50></img>
+<img src="man/figures/rect.svg" alt="rect" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/circle.svg" alt="circle" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/triangle.svg" alt="triangle" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/plus.svg" alt="plus" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/cross.svg" alt="cross" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/diamond.svg" alt="diamond" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/star.svg" alt="star" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/stadium.svg" alt="stadium" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/line.svg" alt="line" width = 70 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/polygon.svg" alt="polygon" width = 70 height = 70 style="margin: 5px;"></img>
