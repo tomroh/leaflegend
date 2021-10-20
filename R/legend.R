@@ -1283,6 +1283,10 @@ makeSizeIcons <- function(values,
 #'
 #' character string of style argument for HTML text
 #'
+#' @param marker
+#'
+#' whether to show the marker or only the icon
+#'
 #' @param orientation
 #'
 #' stack the legend items vertically or horizontally
@@ -1337,6 +1341,7 @@ makeSizeIcons <- function(values,
 #'                        labelStyle = 'font-size: 16px;') |>
 #'   addLegendAwesomeIcon(iconSet = iconSet,
 #'                        orientation = 'vertical',
+#'                        marker = FALSE,
 #'                        title = htmltools::tags$div(
 #'                          style = 'font-size: 20px;',
 #'                          'Awesome Icons'),
@@ -1346,6 +1351,7 @@ addLegendAwesomeIcon <- function(map,
                                  title = NULL,
                                  labelStyle = '',
                                  orientation = c('vertical', 'horizontal'),
+                                 marker = TRUE,
                                  group = NULL,
                                  className = 'info legend leaflet-control',
                                  ...) {
@@ -1361,13 +1367,16 @@ addLegendAwesomeIcon <- function(map,
     Map(icon = iconSet,
         label = names(iconSet),
         f = function(icon, label) {
+          markerClass <- ''
+          if ( marker ) {
+            markerClass <- sprintf('awesome-marker-icon-%s awesome-marker %s',
+                                   icon[['markerColor']],
+                                   ifelse(icon[['squareMarker']], 'awesome-marker-square', ''))
+          }
       htmltools::tagList(
         wrapElements(
         htmltools::tags$div(style = 'vertical-align: middle; display: inline-block; position: relative;',
-                            class =
-                              sprintf('awesome-marker-icon-%s awesome-marker %s',
-                                      icon[['markerColor']],
-                                      ifelse(icon[['squareMarker']], 'awesome-marker-square', '')),
+                            class = markerClass,
                             htmltools::tags$i(class = sprintf('%1$s %1$s-%2$s %3$s',
                                                               icon[['library']],
                                                               icon[['icon']],
