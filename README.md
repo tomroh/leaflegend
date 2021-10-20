@@ -68,14 +68,33 @@ leaflet() %>%
 
 ## Map Symbols
 
-
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;rect id=&quot;rect&quot; x=&quot;2&quot; y=&quot;2&quot; height=&quot;50&quot; width=&quot;50&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/rect&gt;&#10;&lt;/svg&gt;" alt="rect" width="50" height="50" title="rect"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;circle id=&quot;circle&quot; cx=&quot;27&quot; cy=&quot;27&quot; r=&quot;25&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/circle&gt;&#10;&lt;/svg&gt;" alt="circle" width="50" height="50" title="circle"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;polygon id=&quot;triangle&quot; points=&quot;2,52 52,52 27,2&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/polygon&gt;&#10;&lt;/svg&gt;" alt="triangle" width="50" height="50" title="triangle"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;polygon id=&quot;plus&quot; points=&quot;22,2 22,22 2,22 2,32 22,32 22,52 32,52 32,32 52,32 52,22 32,22 32,2 22,2&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/polygon&gt;&#10;&lt;/svg&gt;" alt="plus" width="50" height="50" title="plus"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;polygon id=&quot;cross&quot; points=&quot;9.07106781186548,2 2,9.07106781186548 19.9289321881345,27 2,44.9289321881345 9.07106781186548,52 27,34.0710678118655 44.9289321881345,52 52,44.9289321881345 34.0710678118655,27 52,9.07106781186548 44.9289321881345,2 27,19.9289321881345 9.07106781186548,2&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/polygon&gt;&#10;&lt;/svg&gt;" alt="cross" width="50" height="50" title="cross"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;polygon id=&quot;diamond&quot; points=&quot;27,2 2,27 27,52 52,27 27,2&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/polygon&gt;&#10;&lt;/svg&gt;" alt="diamond" width="50" height="50" title="diamond"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;polygon id=&quot;star&quot; points=&quot;22,2 22,14.92893 9.07107,2 2,9.07107 14.92893,22 2,22 2,32 14.92893,32 2,44.92893 9.07107,52 22,39.07107 22,52 32,52 32,39.07107 44.92893,52 52,44.92893 39.07107,32 52,32 52,22 39.07107,22 52,9.07107 44.92893,2 32,14.92893 32,2 22,2&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/polygon&gt;&#10;&lt;/svg&gt;" alt="star" width="50" height="50" title="star"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;rect id=&quot;stadium&quot; x=&quot;2&quot; y=&quot;2&quot; height=&quot;50&quot; width=&quot;50&quot; rx=&quot;25%&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/rect&gt;&#10;&lt;/svg&gt;" alt="stadium" width="50" height="50" title="stadium"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;line id=&quot;line&quot; x1=&quot;2&quot; x2=&quot;52&quot; y1=&quot;27&quot; y2=&quot;27&quot; stroke=&quot;black&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/line&gt;&#10;&lt;/svg&gt;" alt="line" width="50" height="50" title="line"/>
-<img src="data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; width=&quot;54&quot; height=&quot;54&quot;&gt;&#10;  &lt;polygon id=&quot;polygon&quot; points=&quot;27,2 3.22358709262116,19.2745751406263 12.3053686926882,47.2254248593737 41.6946313073118,47.2254248593737 50.7764129073788,19.2745751406263 27,2&quot; stroke=&quot;black&quot; fill=&quot;transparent&quot; stroke-opacity=&quot;1&quot; fill-opacity=&quot;1&quot; stroke-width=&quot;2&quot;&gt;&lt;/polygon&gt;&#10;&lt;/svg&gt;" alt="polygon" width="50" height="50" title="polygon"/>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <rect id="rect" x="2" y="2" height="50" width="50" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></rect>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <circle id="circle" cx="27" cy="27" r="25" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></circle>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <polygon id="triangle" points="2,52 52,52 27,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <polygon id="plus" points="22,2 22,22 2,22 2,32 22,32 22,52 32,52 32,32 52,32 52,22 32,22 32,2 22,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <polygon id="cross" points="9.07106781186548,2 2,9.07106781186548 19.9289321881345,27 2,44.9289321881345 9.07106781186548,52 27,34.0710678118655 44.9289321881345,52 52,44.9289321881345 34.0710678118655,27 52,9.07106781186548 44.9289321881345,2 27,19.9289321881345 9.07106781186548,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <polygon id="diamond" points="27,2 2,27 27,52 52,27 27,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <polygon id="star" points="22,2 22,14.92893 9.07107,2 2,9.07107 14.92893,22 2,22 2,32 14.92893,32 2,44.92893 9.07107,52 22,39.07107 22,52 32,52 32,39.07107 44.92893,52 52,44.92893 39.07107,32 52,32 52,22 39.07107,22 52,9.07107 44.92893,2 32,14.92893 32,2 22,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <rect id="stadium" x="2" y="2" height="50" width="50" rx="25%" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></rect>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <line id="line" x1="2" x2="52" y1="27" y2="27" stroke="black" stroke-opacity="1" fill-opacity="1" stroke-width="2"></line>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="54">
+  <polygon id="polygon" points="27,2 3.22358709262116,19.2745751406263 12.3053686926882,47.2254248593737 41.6946313073118,47.2254248593737 50.7764129073788,19.2745751406263 27,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+</svg>
