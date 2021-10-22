@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create an SVG tag for the symbol — makeSymbol • leaflegend</title>
+<title>Add a legend with Awesome Icons — addLegendAwesomeIcon • leaflegend</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,8 @@
 
 
 
-<meta property="og:title" content="Create an SVG tag for the symbol — makeSymbol" />
-<meta property="og:description" content="Create an SVG tag for the symbol" />
+<meta property="og:title" content="Add a legend with Awesome Icons — addLegendAwesomeIcon" />
+<meta property="og:description" content="Add a legend with Awesome Icons" />
 <meta property="og:image" content="https://leaflegend.roh.engineering/logo.png" />
 
 
@@ -141,36 +141,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create an SVG tag for the symbol</h1>
+    <h1>Add a legend with Awesome Icons</h1>
     <small class="dont-index">Source: <a href='https://github.com/tomroh/leaflegend/blob/master/R/legend.R'><code>R/legend.R</code></a></small>
-    <div class="hidden name"><code>makeSymbol.Rd</code></div>
+    <div class="hidden name"><code>addLegendAwesomeIcon.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create an SVG tag for the symbol</p>
+    <p>Add a legend with Awesome Icons</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeSymbol</span><span class='op'>(</span>
-  <span class='va'>shape</span>,
-  <span class='va'>width</span>,
-  height <span class='op'>=</span> <span class='va'>width</span>,
-  <span class='va'>color</span>,
-  fillColor <span class='op'>=</span> <span class='va'>color</span>,
-  opacity <span class='op'>=</span> <span class='fl'>1</span>,
-  fillOpacity <span class='op'>=</span> <span class='va'>opacity</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>makeSymbolIcons</span><span class='op'>(</span>
-  shape <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rect"</span>, <span class='st'>"circle"</span>, <span class='st'>"triangle"</span>, <span class='st'>"plus"</span>, <span class='st'>"cross"</span>, <span class='st'>"diamond"</span>, <span class='st'>"star"</span>,
-    <span class='st'>"stadium"</span>, <span class='st'>"line"</span>, <span class='st'>"polygon"</span><span class='op'>)</span>,
-  <span class='va'>color</span>,
-  fillColor <span class='op'>=</span> <span class='va'>color</span>,
-  <span class='va'>opacity</span>,
-  fillOpacity <span class='op'>=</span> <span class='va'>opacity</span>,
-  strokeWidth <span class='op'>=</span> <span class='fl'>1</span>,
-  <span class='va'>width</span>,
-  height <span class='op'>=</span> <span class='va'>width</span>,
+    <pre class="usage"><span class='fu'>addLegendAwesomeIcon</span><span class='op'>(</span>
+  <span class='va'>map</span>,
+  <span class='va'>iconSet</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  labelStyle <span class='op'>=</span> <span class='st'>""</span>,
+  orientation <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"vertical"</span>, <span class='st'>"horizontal"</span><span class='op'>)</span>,
+  marker <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  group <span class='op'>=</span> <span class='cn'>NULL</span>,
+  className <span class='op'>=</span> <span class='st'>"info legend leaflet-control"</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -178,47 +166,85 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>shape</th>
-      <td><p>the desired shape of the symbol</p></td>
+      <th>map</th>
+      <td><p>a map widget object created from 'leaflet'</p></td>
     </tr>
     <tr>
-      <th>width</th>
-      <td><p>in pixels</p></td>
+      <th>iconSet</th>
+      <td><p>a named list from <a href='https://rdrr.io/pkg/leaflet/man/awesomeIconList.html'>awesomeIconList</a>, the names will be the labels in the legend</p></td>
     </tr>
     <tr>
-      <th>height</th>
-      <td><p>in pixels</p></td>
+      <th>title</th>
+      <td><p>the legend title, pass in HTML to style</p></td>
     </tr>
     <tr>
-      <th>color</th>
-      <td><p>color of the symbol</p></td>
+      <th>labelStyle</th>
+      <td><p>character string of style argument for HTML text</p></td>
     </tr>
     <tr>
-      <th>fillColor</th>
-      <td><p>fill color of symbol</p></td>
+      <th>orientation</th>
+      <td><p>stack the legend items vertically or horizontally</p></td>
     </tr>
     <tr>
-      <th>opacity</th>
-      <td><p>opacity of color</p></td>
+      <th>marker</th>
+      <td><p>whether to show the marker or only the icon</p></td>
     </tr>
     <tr>
-      <th>fillOpacity</th>
-      <td><p>opacity of fillColor</p></td>
+      <th>group</th>
+      <td><p>group name of a leaflet layer group</p></td>
+    </tr>
+    <tr>
+      <th>className</th>
+      <td><p>extra CSS class to append to the control, space separated</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>arguments to be passed to svg shape tag</p></td>
-    </tr>
-    <tr>
-      <th>strokeWidth</th>
-      <td><p>width in pixels of symbol outline</p></td>
+      <td><p>arguments to pass to <a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addControl</a></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>HTML svg element</p>
+    <p>an object from <a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addControl</a></p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rstudio.github.io/leaflet/'>leaflet</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>quakes</span><span class='op'>)</span>
+<span class='va'>iconSet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/awesomeIconList.html'>awesomeIconList</a></span><span class='op'>(</span>
+  `Font Awesome` <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html'>makeAwesomeIcon</a></span><span class='op'>(</span>icon <span class='op'>=</span> <span class='st'>"font-awesome"</span>, library <span class='op'>=</span> <span class='st'>"fa"</span>,
+                                   iconColor <span class='op'>=</span> <span class='st'>'gold'</span>, markerColor <span class='op'>=</span> <span class='st'>'red'</span>,
+                                   spin <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                                   squareMarker <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                                   iconRotate <span class='op'>=</span> <span class='fl'>30</span>,
+  <span class='op'>)</span>,
+  Ionic <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html'>makeAwesomeIcon</a></span><span class='op'>(</span>icon <span class='op'>=</span> <span class='st'>"ionic"</span>, library <span class='op'>=</span> <span class='st'>"ion"</span>,
+                          iconColor <span class='op'>=</span> <span class='st'>'#fffff'</span>, markerColor <span class='op'>=</span> <span class='st'>'blue'</span>,
+                          spin <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                          squareMarker <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>,
+  Glyphicon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html'>makeAwesomeIcon</a></span><span class='op'>(</span>icon <span class='op'>=</span> <span class='st'>"plus-sign"</span>, library <span class='op'>=</span> <span class='st'>"glyphicon"</span>,
+                              iconColor <span class='op'>=</span> <span class='st'>'rgb(192, 255, 0)'</span>, markerColor <span class='op'>=</span> <span class='st'>'darkpurple'</span>,
+                              spin <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                              squareMarker <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/leaflet.html'>leaflet</a></span><span class='op'>(</span><span class='va'>quakes</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='op'>]</span><span class='op'>)</span> |&gt;
+  <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addTiles</a></span><span class='op'>(</span><span class='op'>)</span> |&gt;
+  <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/addAwesomeMarkers.html'>addAwesomeMarkers</a></span><span class='op'>(</span>lat <span class='op'>=</span> <span class='op'>~</span><span class='va'>lat</span>,
+                    lng <span class='op'>=</span> <span class='op'>~</span><span class='va'>long</span>,
+                    icon <span class='op'>=</span> <span class='va'>iconSet</span><span class='op'>)</span> |&gt;
+  <span class='fu'>addLegendAwesomeIcon</span><span class='op'>(</span>iconSet <span class='op'>=</span> <span class='va'>iconSet</span>,
+                       orientation <span class='op'>=</span> <span class='st'>'horizontal'</span>,
+                       title <span class='op'>=</span> <span class='fu'>htmltools</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/htmltools/man/builder.html'>tags</a></span><span class='op'>$</span><span class='fu'>div</span><span class='op'>(</span>
+                         style <span class='op'>=</span> <span class='st'>'font-size: 20px;'</span>,
+                         <span class='st'>'Awesome Icons'</span><span class='op'>)</span>,
+                       labelStyle <span class='op'>=</span> <span class='st'>'font-size: 16px;'</span><span class='op'>)</span> |&gt;
+  <span class='fu'>addLegendAwesomeIcon</span><span class='op'>(</span>iconSet <span class='op'>=</span> <span class='va'>iconSet</span>,
+                       orientation <span class='op'>=</span> <span class='st'>'vertical'</span>,
+                       marker <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                       title <span class='op'>=</span> <span class='fu'>htmltools</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/htmltools/man/builder.html'>tags</a></span><span class='op'>$</span><span class='fu'>div</span><span class='op'>(</span>
+                         style <span class='op'>=</span> <span class='st'>'font-size: 20px;'</span>,
+                         <span class='st'>'Awesome Icons'</span><span class='op'>)</span>,
+                       labelStyle <span class='op'>=</span> <span class='st'>'font-size: 16px;'</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
