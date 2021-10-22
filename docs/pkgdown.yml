@@ -1,9 +1,8 @@
-
-pandoc: 2.11.4
+pandoc: 2.14.0.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-08-06T01:37Z
+last_built: 2021-10-22T03:41Z
 urls:
   reference: https://leaflegend.roh.engineering/reference
   article: https://leaflegend.roh.engineering/articles

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="74" style="background-color: white;">
+  <polygon id="star" points="22,2 22,14.92893 9.07107,2 2,9.07107 14.92893,22 2,22 2,32 14.92893,32 2,44.92893 9.07107,52 22,39.07107 22,52 32,52 32,39.07107 44.92893,52 52,44.92893 39.07107,32 52,32 52,22 39.07107,22 52,9.07107 44.92893,2 32,14.92893 32,2 22,2" stroke="black" fill="transparent" stroke-opacity="1" fill-opacity="1" stroke-width="2"></polygon>
+  <text x="25" y="70" font-family="sans-serif" text-anchor="middle" font-size="12px">star</text>
+</svg>
