@@ -40,33 +40,79 @@ devtools::install_github("tomroh/leaflegend")
 Use `addLegend*()` to create easily customizable legends for leaflet.
 
 ``` r
-library(leaflegend)
+
 library(leaflet)
-data(quakes)
-quakes[['group']] <- sample(c('A', 'B', 'C'), nrow(quakes), replace = TRUE)
-factorPal <- colorFactor('Dark2', quakes$group)
-leaflet() %>%
-  addTiles() %>%
-  addCircleMarkers(
-    data = quakes,
-    lat = ~ lat,
-    lng = ~ long,
-    color = ~ factorPal(group),
-    opacity = 1,
-    fillOpacity = 1
-  ) %>%
-  addLegendFactor(
-    pal = factorPal,
-    title = htmltools::tags$div('addLegendFactor', style = 'font-size: 24px; color: red;'),
-    labelStyle = 'font-size: 18px; font-weight: bold;',
-    orientation = 'horizontal',
-    values = quakes$group,
-    position = 'topright',
-    shape = 'triangle',
-    width = 30,
-    height = 30
-  )
+library(leaflegend)
+set.seed(22)
+data("gadmCHE")
+gadmCHE@data$x <- sample(c('A', 'B', 'C'), nrow(gadmCHE@data), replace = TRUE)
+factorPal <- colorFactor('Set1', gadmCHE@data$x)
+n <- 10
+awesomeMarkers <- data.frame(
+  marker = sample(c('Font Awesome', 'Ionic', 'Glyphicon'), n, replace = TRUE),
+  lng = runif(n, gadmCHE@bbox[1,1], gadmCHE@bbox[1,2]),
+  lat = runif(n, gadmCHE@bbox[2,1], gadmCHE@bbox[2,2])
+)
+n2 <- 30
+symbolMarkers <- data.frame(
+  x = runif(n2, 0, 100),
+  lng = runif(n2, gadmCHE@bbox[1,1], gadmCHE@bbox[1,2]),
+  lat = runif(n2, gadmCHE@bbox[2,1], gadmCHE@bbox[2,2])
+)
+numericPal <- colorNumeric('inferno', symbolMarkers$marker)
+iconSet <- awesomeIconList(
+  `Font Awesome` = makeAwesomeIcon(icon = "font-awesome", library = "fa",
+                                   iconColor = 'gold', markerColor = 'red',
+                                   squareMarker = TRUE,
+                                   iconRotate = 30,
+  ),
+  Ionic = makeAwesomeIcon(icon = "ionic", library = "ion",
+                          iconColor = '#fffff', markerColor = 'blue',
+                          squareMarker = FALSE),
+  Glyphicon = makeAwesomeIcon(icon = "plus-sign", library = "glyphicon",
+                              iconColor = 'rgb(192, 255, 0)', markerColor = 'darkpurple',
+                              squareMarker = FALSE)
+)
+baseSize <- 20
+symbols <- makeSizeIcons(value = symbolMarkers$x,
+                         'plus',
+                         fillColor = numericPal(symbolMarkers$x),
+                         baseSize = baseSize,
+                         opacity = 1,
+                         color = 'black')
+leaflet() |>
+  addTiles() |>
+  addPolygons(data = gadmCHE, color = ~factorPal(x),
+              fillOpacity = .5) |>
+  addAwesomeMarkers(data = awesomeMarkers, lat = ~lat, lng = ~lng,
+                    icon = ~iconSet[marker]) |>
+  addMarkers(data = symbolMarkers, lat = ~lat, lng = ~lng, icon = symbols) |>
+  addLegendFactor(pal = factorPal,
+                  shape = 'polygon',
+                  values = gadmCHE@data$x,
+                  title = 'addLegendFactor',
+                  position = 'topright') |>
+  addLegendAwesomeIcon(iconSet = iconSet,
+                       title = 'addLegendAwesomeIcon',
+                       position = 'bottomleft') |>
+  addLegendSize(pal = numericPal,
+                shape = 'plus',
+                color = 'black',
+                baseSize = 20,
+                values = symbolMarkers$x,
+                orientation = 'horizontal',
+                title = 'addSizeLegend',
+                position = 'bottomright') |>
+  addLegendNumeric(pal = numericPal,
+                   values = symbolMarkers$x,
+                   title = 'addLegendNumeric',
+                   orientation = 'horizontal',
+                   width = 150,
+                   height = 20,
+                   position = 'bottomright')
 ```
+
+<img src="man/figures/readme-example.png"></img>
 
 ## Map Symbols
 

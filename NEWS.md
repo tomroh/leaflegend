@@ -1,5 +1,7 @@
 # leaflegend 0.5.0
 
+* updated example in README
+
 * adding addLegendAwesomeIcon function to produce legends with markers from 
 awesome icon libraries
 
