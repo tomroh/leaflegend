@@ -33,6 +33,8 @@ devtools::install_github("tomroh/leaflegend")
 
 * [Map Symbols and Size Legends](https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/)
 
+* [Awesome Marker Legends](https://roh.engineering/posts/2021/10/awesome-marker-legends-in-leaflet/)
+
 ## Example
 
 Use `addLegend*()` to create easily customizable legends for leaflet.
