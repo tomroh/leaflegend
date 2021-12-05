@@ -3,12 +3,23 @@ authors:
   Thomas Roh:
     href: https://roh.engineering/about
 template:
-  params:
-    ganalytics: G-FEY7F5BR1Z
-    bootswatch: readable
-    docsearch:
+  bootstrap: 5
+  bootswatch: zephyr
+  bslib:
+    bg: "#f5f5f5"
+    fg: "#100C08"
+    primary: "#00bfff"
+    secondary: "#ffffff"
+    base_font: {google: "Ubuntu"}
+    heading_font: {google: "Raleway"}
+    code_font: {google: "Fira Code"}
+  navbar:
+    type: light
+  docsearch:
       api_key: 89d2953b5dfa27a60dd7d7bec9e087fa
       index_name: roh
+  params:
+    ganalytics: G-FEY7F5BR1Z
     opengraph:
       twitter:
         creator: "@rstatengineer"

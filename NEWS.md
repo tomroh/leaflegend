@@ -1,3 +1,8 @@
+# leaflegend 0.6.0
+
+* updated layers control to handle special characters in group name. All non-alphanumeric characters are removed from the class names and 
+javascript selectors.
+
 # leaflegend 0.5.0
 
 * updated example in README

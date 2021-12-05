@@ -1407,7 +1407,7 @@ leaflegendAddControl <- function(map,
                                  ...) {
 
   if ( !is.null(group) ) {
-    leafLegendClassName = paste('leaflegend-group', gsub(' ', '', group), sep = '-')
+    leafLegendClassName = paste('leaflegend-group', gsub('\\W', '', group), sep = '-')
     className <- paste(className, leafLegendClassName)
 
     lf <- leaflet::addControl(map, html = html, className = className, ...)
@@ -1417,7 +1417,7 @@ leaflegendAddControl <- function(map,
                     var controlGroups = document.querySelectorAll('input.leaflet-control-layers-selector');
                     controlGroups.forEach(g => {
                       var groupName = g.nextSibling.innerText.substr(1);
-                      var className = 'leaflegend-group-' + groupName.replace(' ', '');
+                      var className = 'leaflegend-group-' + groupName.replace(/[^a-zA-Z0-9]/g, '');
                       var checked = g.checked;
                       document.querySelectorAll('.legend.' + className).forEach(l => {
                         l.hidden = !checked;

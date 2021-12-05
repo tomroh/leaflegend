@@ -4,7 +4,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Provides extensions to the leaflet package to 
+    customize legends with images, text styling, orientation, sizing,
+    and symbology.">
 <title>Add Custom Legends to leaflet Maps • leaflegend</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -12,14 +15,14 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="deps/_Ubuntu-0.4.0/font.css" rel="stylesheet">
+<link href="deps/_Fira%20Code-0.4.0/font.css" rel="stylesheet">
+<link href="deps/_Raleway-0.4.0/font.css" rel="stylesheet">
+<!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><!-- docsearch --><script src="docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
-<link href="docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Add Custom Legends to leaflet Maps">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Add Custom Legends to leaflet Maps">
 <meta property="og:description" content="Provides extensions to the leaflet package to 
     customize legends with images, text styling, orientation, sizing,
     and symbology.">
@@ -35,124 +38,111 @@
   gtag('config', 'G-FEY7F5BR1Z');
 </script>
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">leaflegend</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">leaflegend</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-2">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/tomroh/leaflegend/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/tomroh/leaflegend/">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
-        <div class="form-group">
-          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
-      </form>
-      
-    </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="leaflegend-">leaflegend 
+<a class="anchor" aria-label="anchor" href="#leaflegend-"></a>
+</h1>
 </div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div id="leaflegend-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#leaflegend-" class="anchor"></a>leaflegend <a href="https://leaflegend.roh.engineering"><img src="reference/figures/logo.png" align="right" height="106"></a>
-</h1></div>
 <!-- badges: start -->
 
 <p>This package provides extensions to the leaflet package to customize leaflet legends without adding an outside css file to the output to style legends. The legend extensions allow the user to add images to legends, style the labels of the legend items, change orientation of the legend items, use different symbologies, and style axis ticks. Syntax and style is consistent with the leaflet package.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of leaflegend from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of leaflegend from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"leaflegend"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"leaflegend"</span><span class="op">)</span></code></pre></div>
 <p>Install the development version with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"tomroh/leaflegend"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"tomroh/leaflegend"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="tutorials" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tutorials" class="anchor"></a>Tutorials</h2>
+<div class="section level2">
+<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
+</h2>
 <ul>
-<li><p><a href="https://roh.engineering/posts/2021/02/introduction-to-leaflegend/">Introduction to leaflegend</a></p></li>
-<li><p><a href="https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/">Map Symbols and Size Legends</a></p></li>
-<li><p><a href="https://roh.engineering/posts/2021/10/awesome-marker-legends-in-leaflet/">Awesome Marker Legends</a></p></li>
+<li><p><a href="https://roh.engineering/posts/2021/02/introduction-to-leaflegend/" class="external-link">Introduction to leaflegend</a></p></li>
+<li><p><a href="https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/" class="external-link">Map Symbols and Size Legends</a></p></li>
+<li><p><a href="https://roh.engineering/posts/2021/10/awesome-marker-legends-in-leaflet/" class="external-link">Awesome Marker Legends</a></p></li>
 </ul>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <p>Use <code>addLegend*()</code> to create easily customizable legends for leaflet.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://leaflegend.roh.engineering">leaflegend</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">22</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"gadmCHE"</span><span class="op">)</span>
-<span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">factorPal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorFactor</a></span><span class="op">(</span><span class="st">'Set1'</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/" class="external-link">leaflet</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://leaflegend.roh.engineering">leaflegend</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">22</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"gadmCHE"</span><span class="op">)</span>
+<span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">factorPal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html" class="external-link">colorFactor</a></span><span class="op">(</span><span class="st">'Set1'</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="va">awesomeMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Font Awesome'</span>, <span class="st">'Ionic'</span>, <span class="st">'Glyphicon'</span><span class="op">)</span>, <span class="va">n</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  lng <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
-  lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>
+<span class="va">awesomeMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
+  marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Font Awesome'</span>, <span class="st">'Ionic'</span>, <span class="st">'Glyphicon'</span><span class="op">)</span>, <span class="va">n</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  lng <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
+  lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">30</span>
-<span class="va">symbolMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n2</span>, <span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span>,
-  lng <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n2</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
-  lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n2</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>
+<span class="va">symbolMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n2</span>, <span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span>,
+  lng <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n2</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
+  lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n2</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">gadmCHE</span><span class="op">@</span><span class="va">bbox</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="va">numericPal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorNumeric</a></span><span class="op">(</span><span class="st">'inferno'</span>, <span class="va">symbolMarkers</span><span class="op">$</span><span class="va">marker</span><span class="op">)</span>
-<span class="va">iconSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/awesomeIconList.html">awesomeIconList</a></span><span class="op">(</span>
-  `Font Awesome` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html">makeAwesomeIcon</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"font-awesome"</span>, library <span class="op">=</span> <span class="st">"fa"</span>,
+<span class="va">numericPal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html" class="external-link">colorNumeric</a></span><span class="op">(</span><span class="st">'inferno'</span>, <span class="va">symbolMarkers</span><span class="op">$</span><span class="va">marker</span><span class="op">)</span>
+<span class="va">iconSet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/awesomeIconList.html" class="external-link">awesomeIconList</a></span><span class="op">(</span>
+  `Font Awesome` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html" class="external-link">makeAwesomeIcon</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"font-awesome"</span>, library <span class="op">=</span> <span class="st">"fa"</span>,
                                    iconColor <span class="op">=</span> <span class="st">'gold'</span>, markerColor <span class="op">=</span> <span class="st">'red'</span>,
                                    squareMarker <span class="op">=</span> <span class="cn">TRUE</span>,
                                    iconRotate <span class="op">=</span> <span class="fl">30</span>,
   <span class="op">)</span>,
-  Ionic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html">makeAwesomeIcon</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"ionic"</span>, library <span class="op">=</span> <span class="st">"ion"</span>,
+  Ionic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html" class="external-link">makeAwesomeIcon</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"ionic"</span>, library <span class="op">=</span> <span class="st">"ion"</span>,
                           iconColor <span class="op">=</span> <span class="st">'#fffff'</span>, markerColor <span class="op">=</span> <span class="st">'blue'</span>,
                           squareMarker <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
-  Glyphicon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html">makeAwesomeIcon</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"plus-sign"</span>, library <span class="op">=</span> <span class="st">"glyphicon"</span>,
+  Glyphicon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/makeAwesomeIcon.html" class="external-link">makeAwesomeIcon</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"plus-sign"</span>, library <span class="op">=</span> <span class="st">"glyphicon"</span>,
                               iconColor <span class="op">=</span> <span class="st">'rgb(192, 255, 0)'</span>, markerColor <span class="op">=</span> <span class="st">'darkpurple'</span>,
                               squareMarker <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="op">)</span>
@@ -163,13 +153,13 @@
                          baseSize <span class="op">=</span> <span class="va">baseSize</span>,
                          opacity <span class="op">=</span> <span class="fl">1</span>,
                          color <span class="op">=</span> <span class="st">'black'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/leaflet.html">leaflet</a></span><span class="op">(</span><span class="op">)</span> |&gt;
-  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html">addTiles</a></span><span class="op">(</span><span class="op">)</span> |&gt;
-  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html">addPolygons</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gadmCHE</span>, color <span class="op">=</span> <span class="op">~</span><span class="fu">factorPal</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,
+<span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/leaflet.html" class="external-link">leaflet</a></span><span class="op">(</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html" class="external-link">addTiles</a></span><span class="op">(</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html" class="external-link">addPolygons</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gadmCHE</span>, color <span class="op">=</span> <span class="op">~</span><span class="fu">factorPal</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,
               fillOpacity <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> |&gt;
-  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addAwesomeMarkers.html">addAwesomeMarkers</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">awesomeMarkers</span>, lat <span class="op">=</span> <span class="op">~</span><span class="va">lat</span>, lng <span class="op">=</span> <span class="op">~</span><span class="va">lng</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addAwesomeMarkers.html" class="external-link">addAwesomeMarkers</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">awesomeMarkers</span>, lat <span class="op">=</span> <span class="op">~</span><span class="va">lat</span>, lng <span class="op">=</span> <span class="op">~</span><span class="va">lng</span>,
                     icon <span class="op">=</span> <span class="op">~</span><span class="va">iconSet</span><span class="op">[</span><span class="va">marker</span><span class="op">]</span><span class="op">)</span> |&gt;
-  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html">addMarkers</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">symbolMarkers</span>, lat <span class="op">=</span> <span class="op">~</span><span class="va">lat</span>, lng <span class="op">=</span> <span class="op">~</span><span class="va">lng</span>, icon <span class="op">=</span> <span class="va">symbols</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html" class="external-link">addMarkers</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">symbolMarkers</span>, lat <span class="op">=</span> <span class="op">~</span><span class="va">lat</span>, lng <span class="op">=</span> <span class="op">~</span><span class="va">lng</span>, icon <span class="op">=</span> <span class="va">symbols</span><span class="op">)</span> |&gt;
   <span class="fu"><a href="reference/addLeafLegends.html">addLegendFactor</a></span><span class="op">(</span>pal <span class="op">=</span> <span class="va">factorPal</span>,
                   shape <span class="op">=</span> <span class="st">'polygon'</span>,
                   values <span class="op">=</span> <span class="va">gadmCHE</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">x</span>,
@@ -195,81 +185,76 @@
                    position <span class="op">=</span> <span class="st">'bottomright'</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/readme-example.png"></p>
 </div>
-<div id="map-symbols" class="section level2">
-<h2 class="hasAnchor">
-<a href="#map-symbols" class="anchor"></a>Map Symbols</h2>
+<div class="section level2">
+<h2 id="map-symbols">Map Symbols<a class="anchor" aria-label="anchor" href="#map-symbols"></a>
+</h2>
 <p><img src="reference/figures/rect.svg" alt="rect" width="50" height="70" style="margin: 5px;"><img src="reference/figures/circle.svg" alt="circle" width="50" height="70" style="margin: 5px;"><img src="reference/figures/triangle.svg" alt="triangle" width="50" height="70" style="margin: 5px;"><img src="reference/figures/plus.svg" alt="plus" width="50" height="70" style="margin: 5px;"><img src="reference/figures/cross.svg" alt="cross" width="50" height="70" style="margin: 5px;"><img src="reference/figures/diamond.svg" alt="diamond" width="50" height="70" style="margin: 5px;"><img src="reference/figures/star.svg" alt="star" width="50" height="70" style="margin: 5px;"><img src="reference/figures/stadium.svg" alt="stadium" width="50" height="70" style="margin: 5px;"><img src="reference/figures/line.svg" alt="line" width="50" height="70" style="margin: 5px;"><img src="reference/figures/polygon.svg" alt="polygon" width="50" height="70" style="margin: 5px;"></p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
-<h2>Links</h2>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=leaflegend">https://​cloud.r-project.org/​package=leaflegend</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/tomroh/leaflegend/">https://​github.com/​tomroh/​leaflegend/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/tomroh/leaflegend/issues">https://​github.com/​tomroh/​leaflegend/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=leaflegend" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/tomroh/leaflegend/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/tomroh/leaflegend/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing leaflegend</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://roh.engineering/about">Thomas Roh</a> <br><small class="roles"> Author, maintainer </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<a href="https://roh.engineering/about" class="external-link">Thomas Roh</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://CRAN.R-project.org/package=leaflegend"><img src="https://www.r-pkg.org/badges/version/leaflegend" alt="CRAN status"></a></li>
-<li><a href="https://github.com/tomroh/leaflegend/actions"><img src="https://github.com/tomroh/leaflegend/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
-<li><a href="https://cran.r-project.org/package=leaflegend"><img src="https://cranlogs.r-pkg.org/badges/grand-total/leaflegend?color=green"></a></li>
+<li><a href="https://CRAN.R-project.org/package=leaflegend" class="external-link"><img src="https://www.r-pkg.org/badges/version/leaflegend" alt="CRAN status"></a></li>
+<li><a href="https://github.com/tomroh/leaflegend/actions" class="external-link"><img src="https://github.com/tomroh/leaflegend/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://cran.r-project.org/package=leaflegend" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/leaflegend?color=green"></a></li>
 </ul>
 </div>
-</div>
-</div>
 
-
-      <footer><div class="copyright">
-  <p>Developed by <a href="https://roh.engineering/about">Thomas Roh</a>.</p>
+  </aside>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+
+    <footer><div class="pkgdown-footer-left">
+  <p></p>
+<p>Developed by <a href="https://roh.engineering/about" class="external-link">Thomas Roh</a>.</p>
 </div>
 
-      </footer>
+<div class="pkgdown-footer-right">
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+</div>
+
+    </footer>
 </div>
 
   
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
-  docsearch({
-    
-    
-    apiKey: '89d2953b5dfa27a60dd7d7bec9e087fa',
-    indexName: 'roh',
-    inputSelector: 'input#search-input.form-control',
-    transformData: function(hits) {
-      return hits.map(function (hit) {
-        hit.url = updateHitURL(hit);
-        return hit;
-      });
-    }
-  });
-</script>
-</body>
+
+  
+
+  </body>
 </html>
