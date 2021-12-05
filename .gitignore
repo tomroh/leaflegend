@@ -5,3 +5,4 @@ inst/examples
 inst/doc
 doc
 Meta
+*.tar.gz
