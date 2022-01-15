@@ -5,7 +5,8 @@
 \alias{sizeNumeric}
 \alias{sizeBreaks}
 \alias{makeSizeIcons}
-\title{Add a legend that for the sizing of symbols}
+\alias{addLegendLine}
+\title{Add a legend that for the sizing of symbols or the width of lines}
 \usage{
 addLegendSize(
   map,
@@ -46,6 +47,26 @@ makeSizeIcons(
   fillOpacity = opacity,
   strokeWidth = 1,
   baseSize,
+  ...
+)
+
+addLegendLine(
+  map,
+  pal,
+  values,
+  title = NULL,
+  labelStyle = "",
+  orientation = c("vertical", "horizontal"),
+  width = 20,
+  color,
+  opacity = 1,
+  fillOpacity = opacity,
+  breaks = 5,
+  baseSize = 10,
+  numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
+    digits = 1) },
+  group = NULL,
+  className = "info legend leaflet-control",
   ...
 )
 }
@@ -96,12 +117,14 @@ be this exact size}
 \link[leaflegend]{makeSymbol} for makeSizeIcons}
 
 \item{colorValues}{the values used to generate color from the palette function}
+
+\item{width}{width in pixels of the lines}
 }
 \value{
 an object from \link[leaflet]{addControl}
 }
 \description{
-Add a legend that for the sizing of symbols
+Add a legend that for the sizing of symbols or the width of lines
 }
 \examples{
 library(leaflet)
@@ -175,4 +198,23 @@ leaflet() \%>\%
       breaks = 5,
       group = 'Depth') \%>\%
     addLayersControl(overlayGroups = c('Depth'))
+
+# Polyline Legend for Size
+baseSize <- 10
+lineColor <- '#00000080'
+pal <- colorNumeric('Reds', atlStorms2005$MinPress)
+leaflet() |>
+  addTiles() |>
+  addPolylines(data = atlStorms2005,
+               weight = ~sizeNumeric(values = MaxWind, baseSize = baseSize),
+               color = ~pal(MinPress),
+               popup = ~as.character(MaxWind)) |>
+  addLegendLine(values = atlStorms2005$MaxWind,
+                title = 'MaxWind',
+                baseSize = baseSize,
+                width = 50,
+                color = lineColor) |>
+  addLegendNumeric(pal = pal,
+                   title = 'MinPress',
+                   values = atlStorms2005$MinPress)
 }

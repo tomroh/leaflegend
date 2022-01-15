@@ -313,8 +313,8 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     'line' = htmltools::tags$line(
       id = 'line',
-      x1 = 0 + strokewidth,
-      x2 = width + strokewidth,
+      x1 = 0,
+      x2 = width + strokewidth * 2,
       y1 = height / 2 + strokewidth,
       y2 = height / 2 + strokewidth,
       stroke = color,
@@ -972,7 +972,7 @@ addLegendFactor <- function(map,
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements), className = className, group = group, ...)
 }
 
-#' Add a legend that for the sizing of symbols
+#' Add a legend that for the sizing of symbols or the width of lines
 #'
 #' @param map
 #'
@@ -1140,6 +1140,25 @@ addLegendFactor <- function(map,
 #'       breaks = 5,
 #'       group = 'Depth') %>%
 #'     addLayersControl(overlayGroups = c('Depth'))
+#'
+#' # Polyline Legend for Size
+#' baseSize <- 10
+#' lineColor <- '#00000080'
+#' pal <- colorNumeric('Reds', atlStorms2005$MinPress)
+#' leaflet() |>
+#'   addTiles() |>
+#'   addPolylines(data = atlStorms2005,
+#'                weight = ~sizeNumeric(values = MaxWind, baseSize = baseSize),
+#'                color = ~pal(MinPress),
+#'                popup = ~as.character(MaxWind)) |>
+#'   addLegendLine(values = atlStorms2005$MaxWind,
+#'                 title = 'MaxWind',
+#'                 baseSize = baseSize,
+#'                 width = 50,
+#'                 color = lineColor) |>
+#'   addLegendNumeric(pal = pal,
+#'                    title = 'MinPress',
+#'                    values = atlStorms2005$MinPress)
 addLegendSize <- function(map,
                           pal,
                           values,
@@ -1161,6 +1180,7 @@ addLegendSize <- function(map,
   shape <- match.arg(shape)
   sizes <- sizeBreaks(values, breaks, baseSize)
   if ( missing(color) ) {
+    stopifnot( missing(color) & !missing(pal))
     colors <- pal(as.numeric(names(sizes)))
   } else {
     stopifnot(length(color) == 1 || length(color) == length(breaks))
@@ -1187,7 +1207,8 @@ addLegendSize <- function(map,
                  `stroke-width` = strokeWidth)
   addLegendImage(map, images = symbols, labels = numberFormat(as.numeric(names(sizes))),
                  title = title, labelStyle = labelStyle,
-                 orientation = orientation, width = sizes, height = sizes, group = group, className = className, ...)
+                 orientation = orientation, width = sizes, height = sizes,
+                 group = group, className = className, ...)
 
 }
 
@@ -1228,6 +1249,7 @@ makeSizeIcons <- function(values,
   shape <- match.arg(shape)
   if ( missing(color) ) {
     if ( missing(colorValues) ) {
+      stopifnot( all(missing(color), missing(pal), missing(colorValues)) )
       colors <- pal(values)
     } else {
       colors <- pal(colorValues)
@@ -1263,6 +1285,53 @@ makeSizeIcons <- function(values,
     strokeWidth = strokeWidth,
     ...
   )
+}
+#' @param width
+#'
+#' width in pixels of the lines
+#'
+#' @export
+#'
+#' @rdname addLegendSize
+addLegendLine <- function(map,
+                          pal,
+                          values,
+                          title = NULL,
+                          labelStyle = '',
+                          orientation = c('vertical', 'horizontal'),
+                          width = 20,
+                          color,
+                          opacity = 1,
+                          fillOpacity = opacity,
+                          breaks = 5,
+                          baseSize = 10,
+                          numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
+                          group = NULL,
+                          className = 'info legend leaflet-control',
+                          ...) {
+  shape <- 'rect'
+  sizes <- sizeBreaks(values, breaks, baseSize)
+  if ( missing(color) ) {
+    stopifnot( missing(color) & !missing(pal))
+    colors <- pal(as.numeric(names(sizes)))
+  } else {
+    stopifnot(length(color) == 1 || length(color) == length(breaks))
+    colors <- color
+  }
+  symbols <- Map(makeSymbol,
+                 shape = 'rect',
+                 width = width,
+                 height = sizes,
+                 color = 'transparent',
+                 fillColor = colors,
+                 opacity = opacity,
+                 fillOpacity = fillOpacity,
+                 `stroke-width` = 0)
+  addLegendImage(map, images = symbols, labels = numberFormat(as.numeric(names(sizes))),
+                 title = title, labelStyle = labelStyle,
+                 orientation = orientation, width = width, height = sizes,
+                 group = group, className = className, ...)
+
 }
 
 #' Add a legend with Awesome Icons

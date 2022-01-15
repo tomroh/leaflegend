@@ -3,6 +3,10 @@
 * updated layers control to handle special characters in group name. All non-alphanumeric characters are removed from the class names and 
 javascript selectors.
 
+* added better error message for missing color and pal
+
+* adding `addLegendLine` to add height only encoding of size based on values
+
 # leaflegend 0.5.0
 
 * updated example in README
