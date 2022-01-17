@@ -203,17 +203,17 @@ leaflet() \%>\%
 baseSize <- 10
 lineColor <- '#00000080'
 pal <- colorNumeric('Reds', atlStorms2005$MinPress)
-leaflet() |>
-  addTiles() |>
+leaflet() \%>\%
+  addTiles() \%>\%
   addPolylines(data = atlStorms2005,
                weight = ~sizeNumeric(values = MaxWind, baseSize = baseSize),
                color = ~pal(MinPress),
-               popup = ~as.character(MaxWind)) |>
+               popup = ~as.character(MaxWind)) \%>\%
   addLegendLine(values = atlStorms2005$MaxWind,
                 title = 'MaxWind',
                 baseSize = baseSize,
                 width = 50,
-                color = lineColor) |>
+                color = lineColor) \%>\%
   addLegendNumeric(pal = pal,
                    title = 'MinPress',
                    values = atlStorms2005$MinPress)
