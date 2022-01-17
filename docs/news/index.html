@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">leaflegend</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="leaflegend-060">leaflegend 0.6.0<a class="anchor" aria-label="anchor" href="#leaflegend-060"></a></h2>
-<ul><li>updated layers control to handle special characters in group name. All non-alphanumeric characters are removed from the class names and javascript selectors.</li>
+<ul><li><p>updated layers control to handle special characters in group name. All non-alphanumeric characters are removed from the class names and javascript selectors.</p></li>
+<li><p>added better error message for missing color and pal</p></li>
+<li><p>adding <code>addLegendLine</code> to add height only encoding of size based on values</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="leaflegend-050">leaflegend 0.5.0<a class="anchor" aria-label="anchor" href="#leaflegend-050"></a></h2><p class="text-muted">CRAN release: 2021-10-28</p>
@@ -79,7 +81,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="leaflegend-020">leaflegend 0.2.0<a class="anchor" aria-label="anchor" href="#leaflegend-020"></a></h2><p class="text-muted">CRAN release: 2021-02-23</p>
 <ul><li><p>new functions <code>addLegendSize</code>, <code>sizeNumeric</code>, and <code>sizeBreaks</code> were added to allow encoding size on symbols.</p></li>
-<li><p><code>addLegendImage</code> supports multiple height and width paramaters for images where you want different sizes</p></li>
+<li><p><code>addLegendImage</code> supports multiple height and width parameters for images where you want different sizes</p></li>
 <li><p><code>addLegendImage</code> now supports using an svg URI from the output of <code>makeSymbol</code>. To supply a custom svg URI, add the ‘svgURI’ class to the character vector.</p></li>
 <li><p>added more shapes to <code>makeSymbol</code>, <code>addLegendNumeric</code>, <code>addLegendQuantile</code>, <code>addLegendFactor</code>, <code>addLegendBin</code></p></li>
 <li><p>Control the opacity of the legend shapes for <code>addLegendNumeric</code>, <code>addLegendQuantile</code>, <code>addLegendFactor</code>, <code>addLegendBin</code></p></li>

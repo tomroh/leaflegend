@@ -60,17 +60,17 @@ iconSet <- awesomeIconList(
                               spin = TRUE,
                               squareMarker = FALSE)
 )
-leaflet(quakes[1:3,]) |>
-  addTiles() |>
+leaflet(quakes[1:3,]) \%>\%
+  addTiles() \%>\%
   addAwesomeMarkers(lat = ~lat,
                     lng = ~long,
-                    icon = iconSet) |>
+                    icon = iconSet) \%>\%
   addLegendAwesomeIcon(iconSet = iconSet,
                        orientation = 'horizontal',
                        title = htmltools::tags$div(
                          style = 'font-size: 20px;',
                          'Awesome Icons'),
-                       labelStyle = 'font-size: 16px;') |>
+                       labelStyle = 'font-size: 16px;') \%>\%
   addLegendAwesomeIcon(iconSet = iconSet,
                        orientation = 'vertical',
                        marker = FALSE,
