@@ -1145,17 +1145,17 @@ addLegendFactor <- function(map,
 #' baseSize <- 10
 #' lineColor <- '#00000080'
 #' pal <- colorNumeric('Reds', atlStorms2005$MinPress)
-#' leaflet() |>
-#'   addTiles() |>
+#' leaflet() %>%
+#'   addTiles() %>%
 #'   addPolylines(data = atlStorms2005,
 #'                weight = ~sizeNumeric(values = MaxWind, baseSize = baseSize),
 #'                color = ~pal(MinPress),
-#'                popup = ~as.character(MaxWind)) |>
+#'                popup = ~as.character(MaxWind)) %>%
 #'   addLegendLine(values = atlStorms2005$MaxWind,
 #'                 title = 'MaxWind',
 #'                 baseSize = baseSize,
 #'                 width = 50,
-#'                 color = lineColor) |>
+#'                 color = lineColor) %>%
 #'   addLegendNumeric(pal = pal,
 #'                    title = 'MinPress',
 #'                    values = atlStorms2005$MinPress)
@@ -1397,17 +1397,17 @@ addLegendLine <- function(map,
 #'                               spin = TRUE,
 #'                               squareMarker = FALSE)
 #' )
-#' leaflet(quakes[1:3,]) |>
-#'   addTiles() |>
+#' leaflet(quakes[1:3,]) %>%
+#'   addTiles() %>%
 #'   addAwesomeMarkers(lat = ~lat,
 #'                     lng = ~long,
-#'                     icon = iconSet) |>
+#'                     icon = iconSet) %>%
 #'   addLegendAwesomeIcon(iconSet = iconSet,
 #'                        orientation = 'horizontal',
 #'                        title = htmltools::tags$div(
 #'                          style = 'font-size: 20px;',
 #'                          'Awesome Icons'),
-#'                        labelStyle = 'font-size: 16px;') |>
+#'                        labelStyle = 'font-size: 16px;') %>%
 #'   addLegendAwesomeIcon(iconSet = iconSet,
 #'                        orientation = 'vertical',
 #'                        marker = FALSE,
