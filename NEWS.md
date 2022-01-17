@@ -46,7 +46,7 @@ legends
 
 * new functions `addLegendSize`, `sizeNumeric`, and `sizeBreaks` were added to allow encoding size on symbols.
 
-* `addLegendImage` supports multiple height and width paramaters for images where you want different sizes
+* `addLegendImage` supports multiple height and width parameters for images where you want different sizes
 
 * `addLegendImage` now supports using an svg URI from the output of `makeSymbol`.
 To supply a custom svg URI, add the 'svgURI' class to the character vector.
