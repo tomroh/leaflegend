@@ -58,34 +58,31 @@ data(quakes)
 
 quakes1 <- quakes[1:10,]
 
+colors <- c('blue', 'red', 'yellow', 'green', 'orange', 'purple')
+i <- as.integer(cut(quakes$mag, breaks = quantile(quakes$mag, seq(0,1,1/6)),
+                    include.lowest = TRUE))
+leafImg <- system.file(sprintf('img/leaf-\%s.png', colors),
+                       package = 'leaflegend')
 leafIcons <- icons(
-  iconUrl = ifelse(quakes1$mag < 4.6,
-                   "http://leafletjs.com/examples/custom-icons/leaf-green.png",
-                   "http://leafletjs.com/examples/custom-icons/leaf-red.png"
-  ),
-  iconWidth = 38, iconHeight = 95,
-  iconAnchorX = 22, iconAnchorY = 94,
-  shadowUrl = "http://leafletjs.com/examples/custom-icons/leaf-shadow.png",
-  shadowWidth = 50, shadowHeight = 64,
-  shadowAnchorX = 4, shadowAnchorY = 62
+  iconUrl = leafImg[i],
+  iconWidth = 133/236 * 50, iconHeight = 50
 )
-
-leaflet(data = quakes1) \%>\% addTiles() \%>\%
-  addMarkers(~long, ~lat, icon = leafIcons, group = 'Quake Leaves') \%>\%
-  addLegendImage(images = c("http://leafletjs.com/examples/custom-icons/leaf-green.png",
-                            "http://leafletjs.com/examples/custom-icons/leaf-red.png"),
-                 labels = c('Green', 'Red'),width = 38, height = 95,
+leaflet(data = quakes) \%>\% addTiles() \%>\%
+  addMarkers(~long, ~lat, icon = leafIcons) \%>\%
+  addLegendImage(images = leafImg,
+                 labels = colors,
+                 width = 133/236 * 50,
+                 height = 50,
+                 orientation = 'vertical',
                  title = htmltools::tags$div('Leaf',
-                 style = 'font-size: 24px; text-align: center;'),
-                 position = 'topright',
-                 group = 'Quake Leaves') \%>\%
-  addLayersControl(overlayGroups = c('Quake Leaves'), position = 'bottomright')
+                                             style = 'font-size: 24px; text-align: center;'),
+                 position = 'topright')
 
  # use raster images with size encodings
  height <- sizeNumeric(quakes$depth, baseSize = 40)
  width <- height * 38 / 95
  symbols <- icons(
-   iconUrl = 'http://leafletjs.com/examples/custom-icons/leaf-green.png',
+   iconUrl = leafImg[4],
    iconWidth = width,
    iconHeight = height)
  probs <- c(.2, .4, .6, .8)
@@ -94,7 +91,7 @@ leaflet(data = quakes1) \%>\% addTiles() \%>\%
    addMarkers(icon = symbols,
               lat = ~lat, lng = ~long) \%>\%
    addLegendImage(
-     images = rep("http://leafletjs.com/examples/custom-icons/leaf-green.png", 4),
+     images = rep(leafImg[4], 4),
      labels = round(quantile(height, probs = probs), 0),
      width = quantile(height, probs = probs) * 38 / 95,
      height = quantile(height, probs = probs),
