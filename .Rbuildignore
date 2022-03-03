@@ -11,3 +11,5 @@ inst/examples/examples.R
 ^docs$
 ^pkgdown$
 ^FUNDING.yml$
+inst/img/leaf-*.svg
+inst/img/leaves.svg
