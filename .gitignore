@@ -6,3 +6,5 @@ inst/doc
 doc
 Meta
 *.tar.gz
+inst/img/leaf-*.svg
+inst/img/leaves.svg

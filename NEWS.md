@@ -1,3 +1,9 @@
+# leaflegend 0.6.1
+
+* patching examples that use png files from leaflet js site since they have moved.
+
+* adding leaf images png files for examples
+
 # leaflegend 0.6.0
 
 * updated layers control to handle special characters in group name. All non-alphanumeric characters are removed from the class names and 
