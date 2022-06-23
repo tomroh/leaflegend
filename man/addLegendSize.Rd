@@ -24,8 +24,10 @@ addLegendSize(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 10,
-  numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
-    digits = 1) },
+  numberFormat = function(x) {
+     prettyNum(x, big.mark = ",", scientific = FALSE,
+    digits = 1)
+ },
   group = NULL,
   className = "info legend leaflet-control",
   ...
@@ -63,8 +65,10 @@ addLegendLine(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 10,
-  numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
-    digits = 1) },
+  numberFormat = function(x) {
+     prettyNum(x, big.mark = ",", scientific = FALSE,
+    digits = 1)
+ },
   group = NULL,
   className = "info legend leaflet-control",
   ...

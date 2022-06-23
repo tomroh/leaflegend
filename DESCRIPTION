@@ -18,6 +18,6 @@ Imports:
     stats, 
     base64enc,
     htmlwidgets
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
 URL: https://leaflegend.roh.engineering, https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues

@@ -18,8 +18,10 @@ addLegendNumeric(
   width = 20,
   height = 100,
   bins = 7,
-  numberFormat = function(x) {     prettyNum(x, format = "f", big.mark = ",", digits =
-    3, scientific = FALSE) },
+  numberFormat = function(x) {
+     prettyNum(x, format = "f", big.mark = ",", digits =
+    3, scientific = FALSE)
+ },
   tickLength = 4,
   tickWidth = 1,
   decreasing = FALSE,
@@ -40,8 +42,10 @@ addLegendQuantile(
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
-  numberFormat = function(x) {     prettyNum(x, big.mark = ",", scientific = FALSE,
-    digits = 1) },
+  numberFormat = function(x) {
+     prettyNum(x, big.mark = ",", scientific = FALSE,
+    digits = 1)
+ },
   opacity = 1,
   fillOpacity = opacity,
   group = NULL,
