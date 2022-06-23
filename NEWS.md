@@ -1,3 +1,9 @@
+# leaflegend 0.6.2
+
+* Awesome icons are now centered in a marker in `addLegendAwesomeIcon`
+
+* adding support for `text` parameter passed to `addLegendAwesomeIcon`. This allows an svg to be passed to as an icon.
+
 # leaflegend 0.6.1
 
 * patching examples that use png files from leaflet js site since they have moved.

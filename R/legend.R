@@ -1447,11 +1447,12 @@ addLegendAwesomeIcon <- function(map,
                                                               icon[['library']],
                                                               icon[['icon']],
                                                               ifelse(icon[['spin']], 'fa-spin', '')),
-                                              style = sprintf('color: %s; %s', icon[['iconColor']],
+                                              style = sprintf('color: %s; %s; margin-right: 0px', icon[['iconColor']],
                                                               ifelse(icon[['iconRotate']] == 0, '',
                                                                      sprintf('-webkit-transform: rotate(%1$sdeg);-moz-transform: rotate(%1$sdeg);-o-transform: rotate(%1$sdeg);-ms-transform: rotate(%1$sdeg);transform: rotate(%1$sdeg);',
                                                                              icon[['iconRotate']]))
-                                              )
+                                              ),
+                                              if ( !is.null(icon[['text']]) ) { icon[['text']] }
                             )#,
                             #htmltools::tags$span(label, style = sprintf("vertical-align: middle; padding: 1px; %s", 'labelStyle'))
         ),
