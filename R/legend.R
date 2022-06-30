@@ -219,6 +219,9 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
   if ( 'stroke-width' %in% names(list(...)) ) {
     strokewidth <- list(...)[['stroke-width']]
   }
+  stopifnot(is.numeric(width) & is.numeric(height))
+  stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
+  stopifnot(!is.na(shape))
   shapeTag <- switch(
     shape,
     'rect' = htmltools::tags$rect(
@@ -410,7 +413,6 @@ makeSymbolIcons <- function(shape = c('rect',
                             width,
                             height = width,
                             ...) {
-  shape <- match.arg(shape)
   symbols <- Map(
     makeSymbol,
     shape = shape,
@@ -424,7 +426,7 @@ makeSymbolIcons <- function(shape = c('rect',
     ...
   )
   leaflet::icons(
-    iconUrl = symbols,
+    iconUrl = unname(symbols),
     iconAnchorX = width / 2,
     iconAnchorY = height / 2
   )
@@ -509,6 +511,14 @@ makeSymbolIcons <- function(shape = c('rect',
 #' @param className
 #'
 #' extra CSS class to append to the control, space separated
+#'
+#' @param data a data object. Currently supported objects are matrices, data
+#'   frames, spatial objects from the \pkg{sp} package
+#'   (\code{SpatialPoints}, \code{SpatialPointsDataFrame}, \code{Polygon},
+#'   \code{Polygons}, \code{SpatialPolygons}, \code{SpatialPolygonsDataFrame},
+#'   \code{Line}, \code{Lines}, \code{SpatialLines}, and
+#'   \code{SpatialLinesDataFrame}), and
+#'   spatial data frames from the \pkg{sf} package.
 #'
 #' @param ...
 #'
@@ -688,9 +698,11 @@ addLegendNumeric <- function(map,
                              fillOpacity = 1,
                              group = NULL,
                              className = 'info legend leaflet-control',
+                             data = leaflet::getMapData(map),
                              ...) {
   stopifnot( attr(pal, 'colorType') == 'numeric' )
   shape <- match.arg(shape)
+  values <- parseValues(values = values, data = data)
   rng <- range(values, na.rm = TRUE)
   breaks <- pretty(values, bins)
   if ( breaks[1] < rng[1] ) {
@@ -840,10 +852,12 @@ addLegendQuantile <- function(map,
                               fillOpacity = opacity,
                               group = NULL,
                               className = 'info legend leaflet-control',
+                              data = leaflet::getMapData(map),
                               ...) {
   stopifnot( attr(pal, 'colorType') == 'quantile' )
   shape <- match.arg(shape)
   probs <- attr(pal, 'colorArgs')[['probs']]
+  values <- parseValues(values = values, data = data)
   if ( is.null(numberFormat) ) {
     labels <- sprintf(' %3.0f%% - %3.0f%%',
                       probs[-length(probs)] * 100,
@@ -899,11 +913,13 @@ addLegendBin <- function(map,
                          fillOpacity = opacity,
                          group = NULL,
                          className = 'info legend leaflet-control',
+                         data = leaflet::getMapData(map),
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
   shape <- match.arg(shape)
   bins <- prettyNum(attr(pal, 'colorArgs')[['bins']], format = 'f', big.mark = ',', scientific = FALSE)
   labels <- sprintf(' %s - %s', bins[-length(bins)], bins[-1])
+  values <- parseValues(values = values, data = data)
   colors <- unique(pal(sort(values)))
   htmlElements <- Map(f = makeLegendSymbol,
       shape = shape,
@@ -943,9 +959,12 @@ addLegendFactor <- function(map,
                             fillOpacity = opacity,
                             group = NULL,
                             className = 'info legend leaflet-control',
+                            data = leaflet::getMapData(map),
                             ...) {
   stopifnot( attr(pal, 'colorType') == 'factor' )
   shape <- match.arg(shape)
+  # sort unique is run twice
+  values <- parseValues(values = values, data = data)
   labels <- sprintf(' %s', sort(unique(values)))
   colors <- pal(sort(unique(values)))
   htmlElements <- Map(f = makeLegendSymbol,
@@ -1047,6 +1066,14 @@ addLegendFactor <- function(map,
 #' @param className
 #'
 #' extra CSS class to append to the control, space separated
+#'
+#' @param data a data object. Currently supported objects are matrices, data
+#'   frames, spatial objects from the \pkg{sp} package
+#'   (\code{SpatialPoints}, \code{SpatialPointsDataFrame}, \code{Polygon},
+#'   \code{Polygons}, \code{SpatialPolygons}, \code{SpatialPolygonsDataFrame},
+#'   \code{Line}, \code{Lines}, \code{SpatialLines}, and
+#'   \code{SpatialLinesDataFrame}), and
+#'   spatial data frames from the \pkg{sf} package.
 #'
 #' @param ...
 #'
@@ -1173,8 +1200,10 @@ addLegendSize <- function(map,
                           numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
                           group = NULL,
                           className = 'info legend leaflet-control',
+                          data = leaflet::getMapData(map),
                           ...) {
   shape <- match.arg(shape)
+  values <- parseValues(values = values, data = data)
   sizes <- sizeBreaks(values, breaks, baseSize)
   if ( missing(color) ) {
     stopifnot( missing(color) & !missing(pal))
@@ -1305,8 +1334,10 @@ addLegendLine <- function(map,
                           numberFormat = function(x) {prettyNum(x, big.mark = ',', scientific = FALSE, digits = 1)},
                           group = NULL,
                           className = 'info legend leaflet-control',
+                          data = leaflet::getMapData(map),
                           ...) {
   shape <- 'rect'
+  values <- parseValues(values = values, data = data)
   sizes <- sizeBreaks(values, breaks, baseSize)
   if ( missing(color) ) {
     stopifnot( missing(color) & !missing(pal))
@@ -1500,5 +1531,14 @@ leaflegendAddControl <- function(map,
                         ")
   } else {
     leaflet::addControl(map, html = html, className = className, ...)
+  }
+}
+
+parseValues <- function(values, data) {
+  if ( inherits(values, 'formula') ) {
+    stopifnot(!is.null(data))
+    leaflet::evalFormula(values, data)
+  } else {
+    values
   }
 }

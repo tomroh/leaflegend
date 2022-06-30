@@ -30,6 +30,7 @@ addLegendSize(
  },
   group = NULL,
   className = "info legend leaflet-control",
+  data = leaflet::getMapData(map),
   ...
 )
 
@@ -71,6 +72,7 @@ addLegendLine(
  },
   group = NULL,
   className = "info legend leaflet-control",
+  data = leaflet::getMapData(map),
   ...
 )
 }
@@ -111,6 +113,14 @@ be this exact size}
 \item{group}{group name of a leaflet layer group}
 
 \item{className}{extra CSS class to append to the control, space separated}
+
+\item{data}{a data object. Currently supported objects are matrices, data
+frames, spatial objects from the \pkg{sp} package
+(\code{SpatialPoints}, \code{SpatialPointsDataFrame}, \code{Polygon},
+\code{Polygons}, \code{SpatialPolygons}, \code{SpatialPolygonsDataFrame},
+\code{Line}, \code{Lines}, \code{SpatialLines}, and
+\code{SpatialLinesDataFrame}), and
+spatial data frames from the \pkg{sf} package.}
 
 \item{...}{arguments to pass to
 

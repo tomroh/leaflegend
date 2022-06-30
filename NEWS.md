@@ -1,4 +1,8 @@
-# leaflegend 0.6.2
+# leaflegend 0.6.4
+
+* Ability to specify `values` parameter as a formula to retrieve from the `data` argument which is the same as the "leaflet" package
+
+* `makeSymbolIcons` now supports vectorization for multiple shape arguments
 
 * Awesome icons are now centered in a marker in `addLegendAwesomeIcon`
 
