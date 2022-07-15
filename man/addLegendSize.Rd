@@ -46,7 +46,7 @@ makeSizeIcons(
   color,
   colorValues,
   fillColor,
-  opacity,
+  opacity = 1,
   fillOpacity = opacity,
   strokeWidth = 1,
   baseSize,

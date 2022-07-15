@@ -13,3 +13,4 @@ inst/examples/examples.R
 ^FUNDING.yml$
 inst/img/leaf-*.svg
 inst/img/leaves.svg
+^codecov\.yml$

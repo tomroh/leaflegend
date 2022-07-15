@@ -75,7 +75,8 @@ leaflet(data = quakes) \%>\% addTiles() \%>\%
                  height = 50,
                  orientation = 'vertical',
                  title = htmltools::tags$div('Leaf',
-                                             style = 'font-size: 24px; text-align: center;'),
+                                             style = 'font-size: 24px;
+                                             text-align: center;'),
                  position = 'topright')
 
  # use raster images with size encodings
