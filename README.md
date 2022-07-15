@@ -5,6 +5,7 @@
 [![R-CMD-check](https://github.com/tomroh/leaflegend/workflows/R-CMD-check/badge.svg)](https://github.com/tomroh/leaflegend/actions)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/leaflegend?color=green)](https://cran.r-project.org/package=leaflegend)
+[![Codecov test coverage](https://codecov.io/gh/tomroh/leaflegend/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tomroh/leaflegend?branch=main)
 <!-- badges: end -->
 
 This package provides extensions to the leaflet package to 
@@ -12,7 +13,8 @@ customize leaflet legends without adding an outside css file to the output
 to style legends. The legend extensions allow the user to add images to 
 legends, style the labels of the  legend items, change orientation of the 
 legend items, use different symbologies, and style axis ticks. Syntax and
-style is consistent with the leaflet package.
+style is consistent with the leaflet package. Helper functions are provided to 
+create map symbols for plotting as well.
 
 ## Installation
 
@@ -34,6 +36,19 @@ devtools::install_github("tomroh/leaflegend")
 * [Map Symbols and Size Legends](https://roh.engineering/posts/2021/05/map-symbols-and-size-legends-for-leaflet/)
 
 * [Awesome Marker Legends](https://roh.engineering/posts/2021/10/awesome-marker-legends-in-leaflet/)
+
+## Map Symbols
+
+<img src="man/figures/rect.svg" alt="rect" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/circle.svg" alt="circle" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/triangle.svg" alt="triangle" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/plus.svg" alt="plus" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/cross.svg" alt="cross" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/diamond.svg" alt="diamond" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/star.svg" alt="star" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/stadium.svg" alt="stadium" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/line.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/polygon.svg" alt="polygon" width = 50 height = 70 style="margin: 5px;"></img>
 
 ## Example
 
@@ -70,7 +85,8 @@ iconSet <- awesomeIconList(
                           iconColor = '#fffff', markerColor = 'blue',
                           squareMarker = FALSE),
   Glyphicon = makeAwesomeIcon(icon = "plus-sign", library = "glyphicon",
-                              iconColor = 'rgb(192, 255, 0)', markerColor = 'darkpurple',
+                              iconColor = 'rgb(192, 255, 0)', 
+                              markerColor = 'darkpurple',
                               squareMarker = FALSE)
 )
 baseSize <- 20
@@ -101,7 +117,7 @@ leaflet() |>
                 baseSize = 20,
                 values = symbolMarkers$x,
                 orientation = 'horizontal',
-                title = 'addSizeLegend',
+                title = 'addLegendSize',
                 position = 'bottomright') |>
   addLegendNumeric(pal = numericPal,
                    values = symbolMarkers$x,
@@ -113,17 +129,3 @@ leaflet() |>
 ```
 
 <img src="man/figures/readme-example.png"></img>
-
-## Map Symbols
-
-
-<img src="man/figures/rect.svg" alt="rect" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/circle.svg" alt="circle" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/triangle.svg" alt="triangle" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/plus.svg" alt="plus" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/cross.svg" alt="cross" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/diamond.svg" alt="diamond" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/star.svg" alt="star" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/stadium.svg" alt="stadium" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/line.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
-<img src="man/figures/polygon.svg" alt="polygon" width = 50 height = 70 style="margin: 5px;"></img>

@@ -1,3 +1,25 @@
+# leaflegend 0.6.10
+
+* Code re-factoring for `addLegendBin`, `addLegendQuantile`, and `addLegendFactor` as grouping of values for each is different but the assembly of the HTML is the same.
+
+* Unit tests have been added to cover all the current functions.
+
+* Gradient IDs for numeric legends are now based on the function call or data "name" in `values`.
+
+* `makeSizeIcons` default opacity is now 1.
+
+* Adding internal functions to add dependencies for `addLegendAwesomeIcon`. Awesome Icons would not show in legends because the needed HTML dependencies were not loaded unless `addAwesomeIcons` was included. `addLegendAwesomeIcon` will now check if the dependencies are in the "leaflet" map and include them if missing.
+
+* Added error messages for invalid `width`, `height`, `tickWidth`, `tickLength`, and `strokeWidth` arguments. Prior to this negative values would not throw errors and the visual output of legends was not desirable.
+
+* Ability to specify `values` parameter as a formula to retrieve from the `data` argument which is the same as the "leaflet" package.
+
+* `makeSymbolIcons` now supports vectorization for multiple shape arguments
+
+* Awesome icons are now centered in a marker in `addLegendAwesomeIcon`
+
+* adding support for `text` parameter passed to `addLegendAwesomeIcon`. This allows an svg to be passed to as an icon.
+
 # leaflegend 0.6.1
 
 * patching examples that use png files from leaflet js site since they have moved.
