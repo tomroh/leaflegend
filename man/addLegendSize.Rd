@@ -2,11 +2,8 @@
 % Please edit documentation in R/legend.R
 \name{addLegendSize}
 \alias{addLegendSize}
-\alias{sizeNumeric}
-\alias{sizeBreaks}
-\alias{makeSizeIcons}
 \alias{addLegendLine}
-\title{Add a legend that for the sizing of symbols or the width of lines}
+\title{Add a legend for the sizing of symbols or the width of lines}
 \usage{
 addLegendSize(
   map,
@@ -15,10 +12,10 @@ addLegendSize(
   title = NULL,
   labelStyle = "",
   shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
-    "stadium"),
+    "stadium", "polygon"),
   orientation = c("vertical", "horizontal"),
   color,
-  fillColor,
+  fillColor = color,
   strokeWidth = 1,
   opacity = 1,
   fillOpacity = opacity,
@@ -31,25 +28,6 @@ addLegendSize(
   group = NULL,
   className = "info legend leaflet-control",
   data = leaflet::getMapData(map),
-  ...
-)
-
-sizeNumeric(values, baseSize)
-
-sizeBreaks(values, breaks, baseSize, ...)
-
-makeSizeIcons(
-  values,
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
-    "stadium"),
-  pal,
-  color,
-  colorValues,
-  fillColor,
-  opacity = 1,
-  fillOpacity = opacity,
-  strokeWidth = 1,
-  baseSize,
   ...
 )
 
@@ -128,9 +106,7 @@ spatial data frames from the \pkg{sf} package.}
 
 \link[base]{pretty} for sizeBreaks
 
-\link[leaflegend]{makeSymbol} for makeSizeIcons}
-
-\item{colorValues}{the values used to generate color from the palette function}
+\link[leaflegend]{makeSymbol} for makeSymbolsSize}
 
 \item{width}{width in pixels of the lines}
 }
@@ -138,7 +114,7 @@ spatial data frames from the \pkg{sf} package.}
 an object from \link[leaflet]{addControl}
 }
 \description{
-Add a legend that for the sizing of symbols or the width of lines
+Add a legend for the sizing of symbols or the width of lines
 }
 \examples{
 library(leaflet)
@@ -170,10 +146,10 @@ leaflet() \%>\%
 
 # a wrapper for making icons is provided
 sizeSymbols <-
-makeSizeIcons(
+makeSymbolsSize(
   quakes$depth,
   shape = 'cross',
-  pal = numPal,
+  fillColor = numPal(quakes$depth),
   color = 'black',
   strokeWidth = 1,
   opacity = .8,

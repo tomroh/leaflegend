@@ -14,3 +14,4 @@ inst/examples/examples.R
 inst/img/leaf-*.svg
 inst/img/leaves.svg
 ^codecov\.yml$
+^\.lintr$

@@ -1,7 +1,7 @@
 Package: leaflegend
 Type: Package
 Title: Add Custom Legends to 'leaflet' Maps
-Version: 0.6.10
+Version: 0.6.14
 Authors@R: c(
     person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre")),
     person("Ricardo Rodrigo", "Basa", email = "radbasa@gmail.com", role = c("ctb")))

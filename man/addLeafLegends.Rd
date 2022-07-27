@@ -110,7 +110,8 @@ addLegendFactor(
 
 \item{height}{in pixels}
 
-\item{bins}{an approximate number of tick-marks on the color gradient for the colorNumeric palette}
+\item{bins}{an approximate number of tick-marks on the color gradient for the
+colorNumeric palette}
 
 \item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
 
@@ -144,7 +145,8 @@ spatial data frames from the \pkg{sf} package.}
 an object from \link[leaflet]{addControl}
 }
 \description{
-Functions for more control over the styling of 'leaflet' legends. The 'leaflet'
+Functions for more control over the styling of 'leaflet' legends.
+The 'leaflet'
 map is passed through and the output is a 'leaflet' control so that
 the legends are integrated with other functionality of the API. Style
 the text of the labels, the symbols used, orientation of the legend items,
@@ -232,7 +234,8 @@ leaflet() \%>\%
   ) \%>\%
   addLegendFactor(
     pal = factorPal,
-    title = htmltools::tags$div('addLegendFactor', style = 'font-size: 24px; color: red;'),
+    title = htmltools::tags$div('addLegendFactor', style = 'font-size: 24px;
+    color: red;'),
     values = quakes$group,
     position = 'topright',
     shape = 'triangle',

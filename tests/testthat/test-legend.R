@@ -99,8 +99,6 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(
       'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"3\" height=\"4\">\n  <polygon id=\"polygon\" points=\"1.5,1 1.02447174185242,1.69098300562505 1.20610737385376,2.80901699437495 1.79389262614624,2.80901699437495 1.97552825814758,1.69098300562505 1.5,1\" stroke=\"black\" fill=\"blue\" stroke-opacity=\"0.9\" fill-opacity=\"0.7\"></polygon>\n</svg>'
       )
-  draw_polygon(2) %>%
-    testthat::expect_equal("0,0.5 1,0.5 0,0.5")
   makeLegendSymbol(label = '', labelStyle = '', shape = 'rect', width = 1,
                    color = 'black') %>%
     as.character() %>%
@@ -135,54 +133,55 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(stats::setNames(c(2, 4, 6, 8), c(1, 2, 3, 4)))
   # test size icons args
   pal <- leaflet::colorNumeric('Reds', 1:4)
-  makeSizeIcons(values = 1:4, shape = 'notashape',
+  makeSymbolsSize(values = 1:4, shape = 'notashape',
                 color = 'black', baseSize = 5) %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = 'rect',
+  makeSymbolsSize(values = 1:4, shape = 'rect',
                 color = 'black', baseSize = -5) %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = 'rect',
+  makeSymbolsSize(values = 1:4, shape = 'rect',
                 color = 'black', baseSize = 5, opacity = '1') %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = c('rect', 'circle'),
+  makeSymbolsSize(values = 1:4, shape = c('rect', 'circle'),
                 color = 'black', baseSize = 5, opacity = 1) %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = 'rect',
+  makeSymbolsSize(values = 1:4, shape = 'rect',
                 color = 'black', baseSize = 5, opacity = 1,
                 strokeWidth = -1) %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = 'rect',
+  makeSymbolsSize(values = 1:4, shape = 'rect',
                 colorValues = 4:1, baseSize = 5, opacity = 1) %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = 'rect', baseSize = 5, opacity = 1) %>%
+  makeSymbolsSize(values = 1:4, shape = 'rect', baseSize = 5, opacity = 1) %>%
     testthat::expect_error()
-  makeSizeIcons(values = 1:4, shape = 'rect', baseSize = 5, opacity = 1,
+  makeSymbolsSize(values = 1:4, shape = 'rect', baseSize = 5, opacity = 1,
                 color = 'black',
                 fillColor = c('black', 'blue')) %>%
     testthat::expect_error()
   # test size icons
-  makeSizeIcons(values = 1:4, shape = 'rect', pal = pal,
-                color = 'black', baseSize = 5)$iconUrl[[1]] %>%
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5)$iconUrl[[1]] %>%
     URLdecode() %>%
     testthat::expect_equal(
       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="4" height="4">
-  <rect id="rect" x="1" y="1" height="2" width="2" stroke="black" fill="#FFF5F0" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
+  <rect id="rect" x="1" y="1" height="2" width="2" stroke="black" fill="black" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>')
-  makeSizeIcons(values = 1:4, shape = 'rect', fillColor = 'blue',
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'blue',
                 color = 'black', baseSize = 5)$iconUrl[[2]] %>%
     URLdecode() %>%
     testthat::expect_equal(
       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="6" height="6">
   <rect id="rect" x="1" y="1" height="4" width="4" stroke="black" fill="blue" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>')
-  makeSizeIcons(values = 1:4, shape = 'rect', colorValues = 4:1, pal = pal,
-                baseSize = 5)$iconUrl[[3]] %>%
+  makeSymbolsSize(values = 1:4, shape = 'rect', color = pal(4:1),
+                  fillColor = pal(4:1),
+                  baseSize = 5)$iconUrl[[3]] %>%
     URLdecode() %>%
     testthat::expect_equal(
       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="8" height="8">
   <rect id="rect" x="1" y="1" height="6" width="6" stroke="#FDA081" fill="#FDA081" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>')
-  makeSizeIcons(values = 1:4, shape = 'rect', fillColor = pal(4:1),
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = pal(4:1),
                 color = pal(1:4),
                 baseSize = 5)$iconUrl[[4]] %>%
     URLdecode() %>%
@@ -190,6 +189,18 @@ testthat::test_that('Symbols', {
       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">
   <rect id="rect" x="1" y="1" height="8" width="8" stroke="#67000D" fill="#FFF5F0" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>')
+  mapData <- data.frame(x = 1:2, lat = c(41,42), lng = c(-122, -122))
+  leaflet::leaflet(mapData) %>%
+    leaflet::addTiles() %>%
+    addSymbols(lng = ~lng, lat = ~lat, width = 20, color = 'black')
+  leaflet::leaflet(mapData) %>%
+    addSymbols(lng = ~lng, lat = ~lat, values = ~x, width = 20, color = 'black')
+  leaflet::leaflet(mapData) %>%
+    addSymbols(lng = ~lng, lat = ~lat, values = ~x, width = 20, color = ~pal(x))
+  leaflet::leaflet(mapData) %>%
+    addSymbols(lng = ~lng, lat = ~lat, values = ~x, width = 20,
+               color = 'black', fillColor = ~pal(x))
+
 })
 
 testthat::test_that('Size Legends', {
