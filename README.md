@@ -37,6 +37,8 @@ devtools::install_github("tomroh/leaflegend")
 
 * [Awesome Marker Legends](https://roh.engineering/posts/2021/10/awesome-marker-legends-in-leaflet/)
 
+* [leaflegend Recipes](https://roh.engineering/posts/2022/07/leaflegend-recipes/)
+
 ## Map Symbols
 
 <img src="man/figures/rect.svg" alt="rect" width = 50 height = 70 style="margin: 5px;"></img>
