@@ -58,7 +58,6 @@ addLegendQuantile(
 addLegendBin(
   map,
   pal,
-  values,
   title = NULL,
   labelStyle = "",
   shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
@@ -66,6 +65,10 @@ addLegendBin(
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
+  numberFormat = function(x) {
+     format(round(x, 3), big.mark = ",", trim = TRUE,
+    scientific = FALSE)
+ },
   opacity = 1,
   fillOpacity = opacity,
   group = NULL,
@@ -262,7 +265,6 @@ leaflet() \%>\%
   ) \%>\%
   addLegendBin(
     pal = binPal,
-    values = quakes$mag,
     position = 'topright',
     title = 'addLegendBin',
     labelStyle = 'font-size: 18px; font-weight: bold;',
@@ -293,7 +295,6 @@ leaflet() \%>\%
   ) \%>\%
   addLegendBin(
     pal = binPal,
-    values = quakes$mag,
     position = 'bottomleft',
     title = 'addLegendBin',
     group = 'Bin'

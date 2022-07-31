@@ -805,7 +805,6 @@ addSymbolsSize <- function(
 #'   ) %>%
 #'   addLegendBin(
 #'     pal = binPal,
-#'     values = quakes$mag,
 #'     position = 'topright',
 #'     title = 'addLegendBin',
 #'     labelStyle = 'font-size: 18px; font-weight: bold;',
@@ -836,7 +835,6 @@ addSymbolsSize <- function(
 #'   ) %>%
 #'   addLegendBin(
 #'     pal = binPal,
-#'     values = quakes$mag,
 #'     position = 'bottomleft',
 #'     title = 'addLegendBin',
 #'     group = 'Bin'
@@ -873,11 +871,9 @@ addLegendNumeric <- function(map,
   stopifnot( is.numeric(tickLength) && is.numeric(tickWidth) &&
                tickLength >= 0 && tickWidth >= 0 )
   shape <- match.arg(shape)
-  # use call to create a unique gradient id
-  # currently it is possible to have duplicate gradients if addLegendNumeric
-  # is called more than once with the same spec for "values"
-  id <- sprintf('gradient-%s', gsub('[[:punct:]]|\\s', '',
-                                    deparse(match.call()[['values']])))
+  id <- sprintf('gradient-%s-%d',
+                gsub('[[:punct:]]|\\s', '', deparse(match.call()[['values']])),
+                length(map[["x"]][["calls"]]) + 1)
   values <- parseValues(values = values, data = data)
   rng <- range(values, na.rm = TRUE)
   breaks <- pretty(values, bins)
@@ -1086,7 +1082,6 @@ addLegendQuantile <- function(map,
 #'
 addLegendBin <- function(map,
                          pal,
-                         values,
                          title = NULL,
                          labelStyle = '',
                          shape = c('rect', 'circle', 'triangle', 'plus',
@@ -1095,6 +1090,10 @@ addLegendBin <- function(map,
                          orientation = c('vertical', 'horizontal'),
                          width = 24,
                          height = 24,
+                         numberFormat = function(x) {
+                           format(round(x, 3), big.mark = ',', trim = TRUE,
+                                  scientific = FALSE)
+                         },
                          opacity = 1,
                          fillOpacity = opacity,
                          group = NULL,
@@ -1105,11 +1104,10 @@ addLegendBin <- function(map,
   stopifnot( width >= 0 && height >= 0 )
   shape <- match.arg(shape)
   orientation <- match.arg(orientation)
-  bins <- prettyNum(attr(pal, 'colorArgs')[['bins']], format = 'f',
-                    big.mark = ',', scientific = FALSE)
-  labels <- sprintf(' %s - %s', bins[-length(bins)], bins[-1])
-  values <- parseValues(values = values, data = data)
-  colors <- unique(pal(sort(values)))
+  bins <- attr(pal, 'colorArgs')[['bins']]
+  labels <- sprintf(' %s - %s', numberFormat(bins[-length(bins)]),
+                    numberFormat(bins[-1]))
+  colors <- pal((bins[-1] + bins[-length(bins)]) / 2 )
   htmlElements <- makeLegendCategorical(shape = shape, labels = labels,
                                         colors = colors,
                                         labelStyle = labelStyle,
@@ -1288,6 +1286,7 @@ makeLegendCategorical <- function(shape, labels, colors, labelStyle, height,
 #'
 #' @export
 #'
+#' @name legendSymbols
 #'
 #' @examples
 #' library(leaflet)
@@ -1395,7 +1394,7 @@ addLegendSize <- function(map,
                           opacity = 1,
                           fillOpacity = opacity,
                           breaks = 5,
-                          baseSize = 10,
+                          baseSize = 20,
                           numberFormat = function(x) {
                             prettyNum(x, big.mark = ',', scientific = FALSE,
                                       digits = 1)
@@ -1512,7 +1511,7 @@ makeSymbolsSize <- function(values,
 #'
 #' @export
 #'
-#' @rdname addLegendSize
+#' @rdname legendSymbols
 addLegendLine <- function(map,
                           pal,
                           values,
@@ -1558,6 +1557,72 @@ addLegendLine <- function(map,
                  orientation = orientation, width = width, height = sizes,
                  group = group, className = className, ...)
 
+}
+
+#' @param height
+#'
+#' in pixels
+#'
+#' @export
+#'
+#' @rdname legendSymbols
+addLegendSymbol <- function(map,
+                            pal,
+                            values,
+                            title = NULL,
+                            labelStyle = '',
+                            shape = c('rect', 'circle', 'triangle', 'plus',
+                                      'cross', 'diamond', 'star', 'stadium',
+                                      'polygon'),
+                            orientation = c('vertical', 'horizontal'),
+                            color,
+                            fillColor = color,
+                            strokeWidth = 1,
+                            opacity = 1,
+                            fillOpacity = opacity,
+                            width = 20,
+                            height = width,
+                            group = NULL,
+                            className = 'info legend leaflet-control',
+                            data = leaflet::getMapData(map),
+                            ...
+) {
+  values <- sort(unique(as.factor(parseValues(values, data))))
+  if ( length(levels(values)) > length(shape) ) {
+    stop('values has more factor levels than shape. Maximum levels is 7')
+  }
+  shape <- shape[values]
+  if ( missing(color) ) {
+    stopifnot( missing(color) & !missing(pal))
+    colors <- pal(values)
+  } else {
+    stopifnot(length(color) == 1 || length(color) == length(values))
+    colors <- color
+  }
+  if ( missing(fillColor) ) {
+    if ( !missing(pal) ) {
+      fillColors <- pal(values)
+    } else {
+      fillColors <- colors
+    }
+  } else {
+    stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
+    fillColors <- fillColor
+  }
+  symbols <- Map(makeSymbol,
+                 shape = shape,
+                 width = width,
+                 height = height,
+                 color = colors,
+                 fillColor = fillColors,
+                 opacity = opacity,
+                 fillOpacity = fillOpacity,
+                 `stroke-width` = strokeWidth)
+  addLegendImage(map, images = symbols,
+                 labels = as.character(values),
+                 title = title, labelStyle = labelStyle,
+                 orientation = orientation, width = width, height = height,
+                 group = group, className = className, ...)
 }
 
 #' Add a legend with Awesome Icons
@@ -1795,7 +1860,6 @@ leafletAwesomeMarkersDependencies <- function() {
 verifyIconLibrary <- function(library) {
   bad <- library[!(library %in% c("glyphicon", "fa", "ion"))]
   if (length(bad) > 0) {
-    stop("Invalid icon library names: ", paste(unique(bad),
-                                               collapse = ", "))
+    stop("Invalid icon library names: ", paste(unique(bad), collapse = ", "))
   }
 }

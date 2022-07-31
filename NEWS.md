@@ -1,4 +1,12 @@
-# leaflegend 0.6.14
+# leaflegend 1.0.0
+
+* A new function `addLegendSymbol` has been added to automatically encode character/factors as various map symbols.
+
+* The default argument for `baseSize` in `addLegendSize` has been changed to 20.
+
+* `values` argument has been removed from `addLegendBin` since it is not 
+necessary and causes problems when number of values is less than the number 
+of bins.
 
 * Updated example in README
 
