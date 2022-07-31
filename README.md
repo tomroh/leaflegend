@@ -37,6 +37,8 @@ devtools::install_github("tomroh/leaflegend")
 
 * [Awesome Marker Legends](https://roh.engineering/posts/2021/10/awesome-marker-legends-in-leaflet/)
 
+* [leaflegend Recipes](https://roh.engineering/posts/2022/07/leaflegend-recipes/)
+
 ## Map Symbols
 
 <img src="man/figures/rect.svg" alt="rect" width = 50 height = 70 style="margin: 5px;"></img>
@@ -55,13 +57,12 @@ devtools::install_github("tomroh/leaflegend")
 Use `addLegend*()` to create easily customizable legends for leaflet.
 
 ``` r
-
 library(leaflet)
 library(leaflegend)
-set.seed(22)
+set.seed(21)
 data("gadmCHE")
 gadmCHE@data$x <- sample(c('A', 'B', 'C'), nrow(gadmCHE@data), replace = TRUE)
-factorPal <- colorFactor('Set1', gadmCHE@data$x)
+factorPal <- colorFactor(c('#1f77b4', '#ff7f0e' , '#2ca02c'), gadmCHE@data$x)
 n <- 10
 awesomeMarkers <- data.frame(
   marker = sample(c('Font Awesome', 'Ionic', 'Glyphicon'), n, replace = TRUE),
@@ -71,61 +72,54 @@ awesomeMarkers <- data.frame(
 n2 <- 30
 symbolMarkers <- data.frame(
   x = runif(n2, 0, 100),
+  y = runif(n2, 10, 30),
   lng = runif(n2, gadmCHE@bbox[1,1], gadmCHE@bbox[1,2]),
   lat = runif(n2, gadmCHE@bbox[2,1], gadmCHE@bbox[2,2])
 )
-numericPal <- colorNumeric('inferno', symbolMarkers$marker)
+numericPal <- colorNumeric(hcl.colors(10, palette = 'zissou'),
+                           symbolMarkers$y)
 iconSet <- awesomeIconList(
   `Font Awesome` = makeAwesomeIcon(icon = "font-awesome", library = "fa",
-                                   iconColor = 'gold', markerColor = 'red',
-                                   squareMarker = TRUE,
-                                   iconRotate = 30,
+                                   iconColor = 'rgb(192, 255, 0)',
+                                   markerColor = 'lightgray',
+                                   squareMarker = TRUE, iconRotate = 30
   ),
   Ionic = makeAwesomeIcon(icon = "ionic", library = "ion",
-                          iconColor = '#fffff', markerColor = 'blue',
+                          iconColor = 'gold', markerColor = 'gray',
                           squareMarker = FALSE),
   Glyphicon = makeAwesomeIcon(icon = "plus-sign", library = "glyphicon",
-                              iconColor = 'rgb(192, 255, 0)', 
-                              markerColor = 'darkpurple',
-                              squareMarker = FALSE)
+                              iconColor = '#ffffff',
+                              markerColor = 'black', squareMarker = FALSE)
 )
-baseSize <- 20
-symbols <- makeSizeIcons(value = symbolMarkers$x,
-                         'plus',
-                         fillColor = numericPal(symbolMarkers$x),
-                         baseSize = baseSize,
-                         opacity = 1,
-                         color = 'black')
 leaflet() |>
   addTiles() |>
-  addPolygons(data = gadmCHE, color = ~factorPal(x),
-              fillOpacity = .5) |>
+  addPolygons(data = gadmCHE, color = ~factorPal(x), fillOpacity = .5,
+              opacity = 0, group = 'Polygons') |>
+  addLegendFactor(pal = factorPal, shape = 'polygon', fillOpacity = .5,
+                  opacity = 0, values = ~x, title = 'addLegendFactor',
+                  position = 'topright', data = gadmCHE, group = 'Polygons') |>
   addAwesomeMarkers(data = awesomeMarkers, lat = ~lat, lng = ~lng,
-                    icon = ~iconSet[marker]) |>
-  addMarkers(data = symbolMarkers, lat = ~lat, lng = ~lng, icon = symbols) |>
-  addLegendFactor(pal = factorPal,
-                  shape = 'polygon',
-                  values = gadmCHE@data$x,
-                  title = 'addLegendFactor',
-                  position = 'topright') |>
-  addLegendAwesomeIcon(iconSet = iconSet,
-                       title = 'addLegendAwesomeIcon',
-                       position = 'bottomleft') |>
-  addLegendSize(pal = numericPal,
-                shape = 'plus',
-                color = 'black',
-                baseSize = 20,
-                values = symbolMarkers$x,
-                orientation = 'horizontal',
-                title = 'addLegendSize',
-                position = 'bottomright') |>
-  addLegendNumeric(pal = numericPal,
-                   values = symbolMarkers$x,
-                   title = 'addLegendNumeric',
-                   orientation = 'horizontal',
-                   width = 150,
-                   height = 20,
-                   position = 'bottomright')
+                    icon = ~iconSet[marker],
+                    group = 'Awesome Icons') |>
+  addLegendAwesomeIcon(iconSet = iconSet, title = 'addLegendAwesomeIcon',
+                       position = 'bottomleft',
+                       group = 'Awesome Icons') |>
+  addSymbolsSize(data = symbolMarkers, fillOpacity = .7, shape = 'plus',
+                 values = ~x, lat = ~lat, lng = ~lng, baseSize = 20,
+                 fillColor = ~numericPal(y), color = 'black',
+                 group = 'Symbols') |>
+  addLegendSize(pal = numericPal, shape = 'plus', color = 'black',
+                fillColor = 'transparent', baseSize = 20, fillOpacity = .7,
+                values = ~x, orientation = 'horizontal',
+                title = 'addSizeLegend', position = 'bottomright',
+                group = 'Symbols', data = symbolMarkers) |>
+  addLegendNumeric(pal = numericPal, values = ~y, title = 'addLegendNumeric',
+                   orientation = 'horizontal', fillOpacity = .7, width = 150,
+                   height = 20, position = 'bottomright', group = 'Symbols',
+                   data = symbolMarkers) |>
+  addLayersControl(overlayGroups = c('Polygons', 'Awesome Icons', 'Symbols'),
+                   position = 'topleft',
+                   options = layersControlOptions(collapsed = FALSE))
 ```
 
 <img src="man/figures/readme-example.png"></img>

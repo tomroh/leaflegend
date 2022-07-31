@@ -19,7 +19,8 @@ addLegendAwesomeIcon(
 \arguments{
 \item{map}{a map widget object created from 'leaflet'}
 
-\item{iconSet}{a named list from \link[leaflet]{awesomeIconList}, the names will be the labels in the legend}
+\item{iconSet}{a named list from \link[leaflet]{awesomeIconList}, the names will be the
+labels in the legend}
 
 \item{title}{the legend title, pass in HTML to style}
 
@@ -52,11 +53,12 @@ iconSet <- awesomeIconList(
                                    iconRotate = 30,
   ),
   Ionic = makeAwesomeIcon(icon = "ionic", library = "ion",
-                          iconColor = '#fffff', markerColor = 'blue',
+                          iconColor = '#ffffff', markerColor = 'blue',
                           spin = TRUE,
                           squareMarker = FALSE),
   Glyphicon = makeAwesomeIcon(icon = "plus-sign", library = "glyphicon",
-                              iconColor = 'rgb(192, 255, 0)', markerColor = 'darkpurple',
+                              iconColor = 'rgb(192, 255, 0)',
+                              markerColor = 'darkpurple',
                               spin = TRUE,
                               squareMarker = FALSE)
 )

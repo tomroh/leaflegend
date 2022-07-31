@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-inst/examples/examples.R
+inst/examples/
 ^\.github$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
@@ -14,3 +14,4 @@ inst/examples/examples.R
 inst/img/leaf-*.svg
 inst/img/leaves.svg
 ^codecov\.yml$
+^\.lintr$

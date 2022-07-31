@@ -1,5 +1,5 @@
 ## Test environments
-* local R installation windows 10, R 4.0.3
+* local R installation windows 10, R 4.2.0
 * ubuntu 20.04 (on github), devel & release
 * macOS-latest (on github), release
 * win-builder (devel)

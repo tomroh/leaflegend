@@ -1,4 +1,27 @@
-# leaflegend 0.6.10
+# leaflegend 1.0.0
+
+* A new function `addLegendSymbol` has been added to automatically encode character/factors as various map symbols.
+
+* The default argument for `baseSize` in `addLegendSize` has been changed to 20.
+
+* `values` argument has been removed from `addLegendBin` since it is not 
+necessary and causes problems when number of values is less than the number 
+of bins.
+
+* Updated example in README
+
+* Documentation has been updated for `makeSymbols` and the name has been 
+changed to `mapSymbols` with some additional functions added to it.
+
+* Internal functions have been renamed to match naming conventions.
+
+* Renamed `makeSizeIcons` to `makeSymbolsSize` to be consistent in naming 
+conventions. The `colorValues` argument has been removed. For the same functionality, specify a vector of `color` and `fillColor`.
+
+* Fixed issue with image styling missing for raster images in `addLegendImage`
+
+* Added functions to automate the task of creating map symbols. 
+`addSymbols` will create map symbols based on a character or factor vector. `addSymbolsSize` will create map symbols with a size encoding.
 
 * Code re-factoring for `addLegendBin`, `addLegendQuantile`, and `addLegendFactor` as grouping of values for each is different but the assembly of the HTML is the same.
 
