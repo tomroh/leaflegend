@@ -1,10 +1,14 @@
 .Rproj.user
 .Rhistory
 .RData
-inst/examples
+inst/examples/recipes_files
 inst/doc
 doc
 Meta
 *.tar.gz
 inst/img/leaf-*.svg
 inst/img/leaves.svg
+inst/examples/recipes.html
+inst/examples/recipes.gfm.md
+inst/examples/test.html
+inst/examples/img
