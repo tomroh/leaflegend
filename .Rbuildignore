@@ -15,3 +15,4 @@ inst/img/leaf-*.svg
 inst/img/leaves.svg
 ^codecov\.yml$
 ^\.lintr$
+^CRAN-SUBMISSION$
