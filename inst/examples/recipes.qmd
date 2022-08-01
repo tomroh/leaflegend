@@ -1,0 +1,214 @@
+---
+title: "leaflegend Recipes"
+author: "Thomas Roh"
+date: '2022-07-31'
+slug: leaflegend-recipes
+categories:
+  - R
+tags:
+  - leaflet
+  - leaflegend
+  - R
+format: 
+  hugo:
+    fig-height: 2
+    toc: true
+---
+
+*Requires leaflegend \>= 1.0.0*
+
+#### Base Data and Map
+
+```{r}
+library(leaflet)
+library(leaflegend)
+mapData <- data.frame(x = c(2, 1, 5, 4,3) , y = c('A', 'B', 'C', 'B', 'A'), 
+                      lng = -(118:122), lat = rep(42, 5))
+map <- leaflet::leaflet(data = mapData, 
+                        options = leafletOptions(zoomControl = FALSE))
+```
+
+## Color Scales
+
+### Create Legend for a Continuous Scale
+
+```{r}
+numPal <- colorNumeric('inferno', mapData$x)
+map |> addLegendNumeric(pal = numPal, values = ~x, decreasing = TRUE) |> 
+  addLegendNumeric(pal = numPal, values = ~x, orientation = 'horizontal',
+                   width = 120, height = 20, position = 'topright')
+```
+
+### Create Legend for Quantiles
+
+```{r}
+quantPal <- colorQuantile('Reds', mapData$x, n = 3)
+map |> addLegendQuantile(pal = quantPal, values = ~x) |> 
+  addLegendQuantile(pal = quantPal, values = ~x, numberFormat = NULL, 
+                    position = 'topright')
+```
+
+### Create Legend for Bins & Change Legend Symbol
+
+```{r}
+binPal <- colorBin(c('grey', 'blue'), mapData$x, bins = 3, pretty = FALSE)
+map |> addLegendBin(pal = binPal, shape = 'triangle')
+```
+
+### Create Legend for Factors & Re-order
+
+```{r}
+factorPal <- colorFactor('Dark2', domain = mapData$y)
+reOrder <- c('C', 'A', 'B')
+factorPalRev <- colorFactor('Dark2', domain = reOrder, ordered = TRUE)
+map |> addLegendFactor(pal = factorPal, values = ~y) |> 
+  addLegendFactor(pal = factorPalRev, values = ~factor(y, levels = reOrder), 
+                  position = 'topright')
+```
+
+## Symbols & Size Scales
+
+### Legend & Points with Size Encoding
+
+```{r}
+map |> addLegendSize(values = ~x, color = 'black', shape  = 'plus', breaks = 3) |> 
+  addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
+                 color = 'black')
+```
+
+### Legend & Points with Double Encoding
+
+```{r}
+map |> addLegendSize(values = ~x, shape  = 'plus', breaks = 3, pal = numPal,
+                     color = 'black') |> 
+  addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
+                 color = 'black', fillColor = ~numPal(x))
+```
+
+### Legend & Points with Size & Color Encoding
+
+```{r}
+map |> addLegendSize(values = ~x, shape  = 'plus', breaks = 3, pal = numPal,
+                     color = 'black', fillColor = 'transparent') |> 
+  addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
+                 color = 'black', fillColor = ~factorPal(y)) |> 
+  addLegendFactor(pal = factorPal, values = ~y, position = 'topright')
+```
+
+### Legend & Points with Symbol Encoding
+
+```{r}
+map |> addSymbols(lng = ~lng, lat = ~lat, values = ~y, color = 'black') |> 
+  addLegendSymbol(values = ~y, color = 'black')
+```
+
+### Legend & Points with Symbol Encoding (Non-Defaults)
+
+```{r}
+map |> addSymbols(lng = ~lng, lat = ~lat, values = ~y, fillColor = ~factorPal(y),
+                  color = 'black',
+                  shape = c('cross', 'diamond', 'star')) |> 
+  addLegendSymbol(values = ~y, pal = factorPal, 
+                  shape = c('cross', 'diamond', 'star'), color = 'black')
+```
+
+### Legend for Line Size Encodings
+
+```{r}
+map |> addLegendLine(values = ~x, color = 'black', orientation = 'horizontal',
+                     width = 50)
+```
+
+## Images
+
+### Add Custom Images to a Legend
+
+```{r}
+# use raster image
+leafImg <- system.file('img/leaf-blue.png', package = 'leaflegend')
+# use svg
+circle <- makeSymbol('rect', fillColor = 'red', color = 'black', width = 20)
+map |> 
+  addLegendImage(images = list(leafImg, circle), labels = c('png', 'svg'),
+                 height = 30, width = 20)
+```
+
+### Generate Map Symbols
+
+```{r}
+shapes <- c('rect', 'circle', 'triangle', 'plus', 'cross', 'star')
+colors <- c('blue', 'red', 'yellow', 'green', 'orange', 'purple')
+symbols <- Map(f = makeSymbol, shape = shapes, fillColor = colors, 
+               color = 'black', opacity = 1, fillOpacity = .5, width = 20, 
+               `stroke-width` = 2)
+map |> addLegendImage(images = symbols, labels = shapes, 
+                      orientation = 'horizontal')
+```
+
+### Add Awesome Marker Legend & Specify Icon as Text
+
+```{r}
+iconSet <- awesomeIconList(
+  `Font Awesome` = makeAwesomeIcon(icon = "font-awesome", library = "fa",
+                                   markerColor= 'red', iconColor = 'black'),
+  Ionic = makeAwesomeIcon(icon='R', library = 'fa', 
+                          text = fontawesome::fa("r-project"))
+)
+map |> addLegendAwesomeIcon(iconSet = iconSet)
+```
+
+## Customization
+
+### Turn off Legend Background
+
+```{r}
+map |> addLegendFactor(values = ~y, pal = factorPal, class = 'leaflet-control',
+                       labelStyle = 'color: black;')
+```
+
+### Add Titles with Styling
+
+```{r}
+map |> addLegendFactor(values = ~y, pal = factorPal, 
+                       title = htmltools::tags$div('Red Title', 
+                                                   style = 'color:red;'))
+```
+
+### Change Label Styling
+
+```{r}
+map |> addLegendFactor(values = ~y, pal = factorPal, 
+                       labelStyle = 'color: blue; font-size: 10px;')
+```
+
+### Symbol Styling
+
+```{r}
+map |> addLegendFactor(values = ~y, pal = factorPal, shape = 'polygon',
+                       fillOpacity = .5, width = 20, height = 20)
+```
+
+### Make Symbol Icons
+
+```{r}
+symbolSet <- makeSymbolIcons(shape = c('rect', 'circle', 'triangle'), 
+                             width = 10, color = 'grey', opacity = 1)
+map |> addMarkers(lng = ~lng, lat = ~lat, icon = ~symbolSet[as.factor(y)])
+```
+
+### Make Symbols with Size Encodings
+
+```{r}
+map |> addMarkers(lng = ~lng, lat = ~lat, 
+                  icon = ~makeSymbolsSize(x, color = 'black', 
+                                          fillColor = 'black', baseSize = 20, 
+                                          fillOpacity = .5))
+```
+
+### Legends with Overlay Controls
+
+```{r}
+map |> addLegendFactor(values = ~y, pal = factorPal, group = 'Legend') |> 
+  addLayersControl(overlayGroups = 'Legend', 
+                   options = layersControlOptions(collapsed = FALSE))
+```
