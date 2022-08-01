@@ -11,11 +11,11 @@ tags:
   - R
 format: 
   hugo:
-    fig-height: 2
+    fig-height: 3
     toc: true
 ---
 
-*Requires leaflegend \>= 1.0.0*
+*Requires leaflegend >= 1.0.0*
 
 #### Base Data and Map
 
@@ -28,42 +28,95 @@ map <- leaflet::leaflet(data = mapData,
                         options = leafletOptions(zoomControl = FALSE))
 ```
 
+```{r}
+#| echo: false
+save_widget_png <- function(widget = .Last.value, i, ...) {
+  tmp <- tempfile("webshot", fileext = ".html")
+  fileName <- sprintf('img/figure-%03d', i)
+  htmlwidgets::saveWidget(widget, file = tmp)
+  webshot2::webshot(url = tmp, file = , ...)
+  cat(sprintf('![](%s)', fileName))
+  unlink(tmp)
+  i + 1
+}
+i <- 1
+vwidth <- 800
+vheight <- 278
+
+```
+
+
 ## Color Scales
 
 ### Create Legend for a Continuous Scale
 
 ```{r}
+#| output: false
 numPal <- colorNumeric('inferno', mapData$x)
-map |> addLegendNumeric(pal = numPal, values = ~x, decreasing = TRUE) |> 
+lgd <- 
+  map |> addLegendNumeric(pal = numPal, values = ~x, decreasing = TRUE) |> 
   addLegendNumeric(pal = numPal, values = ~x, orientation = 'horizontal',
                    width = 120, height = 20, position = 'topright')
+lgd
 ```
+
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
+```
+
 
 ### Create Legend for Quantiles
 
 ```{r}
+#| output: false
 quantPal <- colorQuantile('Reds', mapData$x, n = 3)
-map |> addLegendQuantile(pal = quantPal, values = ~x) |> 
-  addLegendQuantile(pal = quantPal, values = ~x, numberFormat = NULL, 
-                    position = 'topright')
+lgd <- 
+  map |> addLegendQuantile(pal = quantPal, values = ~x) |> 
+    addLegendQuantile(pal = quantPal, values = ~x, numberFormat = NULL, 
+                      position = 'topright')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Create Legend for Bins & Change Legend Symbol
 
 ```{r}
+#| output: false
 binPal <- colorBin(c('grey', 'blue'), mapData$x, bins = 3, pretty = FALSE)
-map |> addLegendBin(pal = binPal, shape = 'triangle')
+lgd <- 
+  map |> addLegendBin(pal = binPal, shape = 'triangle')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Create Legend for Factors & Re-order
 
 ```{r}
+#| output: false
 factorPal <- colorFactor('Dark2', domain = mapData$y)
 reOrder <- c('C', 'A', 'B')
 factorPalRev <- colorFactor('Dark2', domain = reOrder, ordered = TRUE)
-map |> addLegendFactor(pal = factorPal, values = ~y) |> 
-  addLegendFactor(pal = factorPalRev, values = ~factor(y, levels = reOrder), 
-                  position = 'topright')
+lgd <- 
+  map |> addLegendFactor(pal = factorPal, values = ~y) |> 
+    addLegendFactor(pal = factorPalRev, 
+                    values = ~factor(y, levels = reOrder), 
+                    position = 'topright')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ## Symbols & Size Scales
@@ -71,52 +124,101 @@ map |> addLegendFactor(pal = factorPal, values = ~y) |>
 ### Legend & Points with Size Encoding
 
 ```{r}
-map |> addLegendSize(values = ~x, color = 'black', shape  = 'plus', breaks = 3) |> 
-  addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
-                 color = 'black')
+#| output: false
+lgd <- 
+  map |> addLegendSize(values = ~x, color = 'black', shape  = 'plus', 
+                       breaks = 3) |> 
+    addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
+                   color = 'black')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Legend & Points with Double Encoding
 
 ```{r}
-map |> addLegendSize(values = ~x, shape  = 'plus', breaks = 3, pal = numPal,
-                     color = 'black') |> 
-  addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
-                 color = 'black', fillColor = ~numPal(x))
+#| output: false
+lgd <- 
+  map |> addLegendSize(values = ~x, shape  = 'plus', breaks = 3, pal = numPal,
+                       color = 'black') |> 
+    addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
+                   color = 'black', fillColor = ~numPal(x))
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Legend & Points with Size & Color Encoding
 
 ```{r}
-map |> addLegendSize(values = ~x, shape  = 'plus', breaks = 3, pal = numPal,
-                     color = 'black', fillColor = 'transparent') |> 
-  addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
-                 color = 'black', fillColor = ~factorPal(y)) |> 
-  addLegendFactor(pal = factorPal, values = ~y, position = 'topright')
+#| output: false
+lgd <- 
+  map |> addLegendSize(values = ~x, shape  = 'plus', breaks = 3, pal = numPal,
+                       color = 'black', fillColor = 'transparent') |> 
+    addSymbolsSize(lng = ~lng, lat = ~lat, values = ~x, shape = 'plus', 
+                   color = 'black', fillColor = ~factorPal(y)) |> 
+    addLegendFactor(pal = factorPal, values = ~y, position = 'topright')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Legend & Points with Symbol Encoding
 
 ```{r}
-map |> addSymbols(lng = ~lng, lat = ~lat, values = ~y, color = 'black') |> 
-  addLegendSymbol(values = ~y, color = 'black')
+#| output: false
+lgd <- 
+  map |> addSymbols(lng = ~lng, lat = ~lat, values = ~y, color = 'black') |> 
+    addLegendSymbol(values = ~y, color = 'black')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Legend & Points with Symbol Encoding (Non-Defaults)
 
 ```{r}
-map |> addSymbols(lng = ~lng, lat = ~lat, values = ~y, fillColor = ~factorPal(y),
-                  color = 'black',
-                  shape = c('cross', 'diamond', 'star')) |> 
-  addLegendSymbol(values = ~y, pal = factorPal, 
-                  shape = c('cross', 'diamond', 'star'), color = 'black')
+#| output: false
+lgd <- 
+  map |> addSymbols(lng = ~lng, lat = ~lat, values = ~y, 
+                    fillColor = ~factorPal(y), color = 'black',
+                    shape = c('cross', 'diamond', 'star')) |> 
+    addLegendSymbol(values = ~y, pal = factorPal, 
+                    shape = c('cross', 'diamond', 'star'), color = 'black')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Legend for Line Size Encodings
 
 ```{r}
-map |> addLegendLine(values = ~x, color = 'black', orientation = 'horizontal',
-                     width = 50)
+#| output: false
+lgd <- 
+  map |> addLegendLine(values = ~x, color = 'black', 
+                       orientation = 'horizontal', width = 50)
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ## Images
@@ -124,37 +226,61 @@ map |> addLegendLine(values = ~x, color = 'black', orientation = 'horizontal',
 ### Add Custom Images to a Legend
 
 ```{r}
+#| output: false
 # use raster image
 leafImg <- system.file('img/leaf-blue.png', package = 'leaflegend')
 # use svg
 circle <- makeSymbol('rect', fillColor = 'red', color = 'black', width = 20)
-map |> 
-  addLegendImage(images = list(leafImg, circle), labels = c('png', 'svg'),
-                 height = 30, width = 20)
+lgd <- 
+  map |> 
+    addLegendImage(images = list(leafImg, circle), labels = c('png', 'svg'),
+                   height = 30, width = 20)
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Generate Map Symbols
 
 ```{r}
+#| output: false
 shapes <- c('rect', 'circle', 'triangle', 'plus', 'cross', 'star')
 colors <- c('blue', 'red', 'yellow', 'green', 'orange', 'purple')
 symbols <- Map(f = makeSymbol, shape = shapes, fillColor = colors, 
                color = 'black', opacity = 1, fillOpacity = .5, width = 20, 
                `stroke-width` = 2)
-map |> addLegendImage(images = symbols, labels = shapes, 
-                      orientation = 'horizontal')
+lgd <- 
+  map |> addLegendImage(images = symbols, labels = shapes, 
+                        orientation = 'horizontal')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Add Awesome Marker Legend & Specify Icon as Text
 
 ```{r}
+#| output: false
 iconSet <- awesomeIconList(
   `Font Awesome` = makeAwesomeIcon(icon = "font-awesome", library = "fa",
                                    markerColor= 'red', iconColor = 'black'),
   Ionic = makeAwesomeIcon(icon='R', library = 'fa', 
                           text = fontawesome::fa("r-project"))
 )
-map |> addLegendAwesomeIcon(iconSet = iconSet)
+lgd <- 
+  map |> addLegendAwesomeIcon(iconSet = iconSet)
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ## Customization
@@ -162,53 +288,112 @@ map |> addLegendAwesomeIcon(iconSet = iconSet)
 ### Turn off Legend Background
 
 ```{r}
-map |> addLegendFactor(values = ~y, pal = factorPal, class = 'leaflet-control',
-                       labelStyle = 'color: black;')
+#| output: false
+lgd <- 
+  map |> addLegendFactor(values = ~y, pal = factorPal, 
+                         class = 'leaflet-control', 
+                         labelStyle = 'color: black;')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Add Titles with Styling
 
 ```{r}
-map |> addLegendFactor(values = ~y, pal = factorPal, 
-                       title = htmltools::tags$div('Red Title', 
-                                                   style = 'color:red;'))
+#| output: false
+lgd <- 
+  map |> addLegendFactor(values = ~y, pal = factorPal, 
+                         title = htmltools::tags$div('Red Title', 
+                                                     style = 'color:red;'))
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Change Label Styling
 
 ```{r}
-map |> addLegendFactor(values = ~y, pal = factorPal, 
-                       labelStyle = 'color: blue; font-size: 10px;')
+#| output: false
+lgd <- 
+  map |> addLegendFactor(values = ~y, pal = factorPal, 
+                         labelStyle = 'color: blue; font-size: 10px;')
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Symbol Styling
 
 ```{r}
-map |> addLegendFactor(values = ~y, pal = factorPal, shape = 'polygon',
-                       fillOpacity = .5, width = 20, height = 20)
+#| output: false
+lgd <- 
+  map |> addLegendFactor(values = ~y, pal = factorPal, shape = 'polygon',
+                         fillOpacity = .5, width = 20, height = 20)
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Make Symbol Icons
 
 ```{r}
+#| output: false
 symbolSet <- makeSymbolIcons(shape = c('rect', 'circle', 'triangle'), 
                              width = 10, color = 'grey', opacity = 1)
-map |> addMarkers(lng = ~lng, lat = ~lat, icon = ~symbolSet[as.factor(y)])
+lgd <- 
+  map |> addMarkers(lng = ~lng, lat = ~lat, icon = ~symbolSet[as.factor(y)])
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Make Symbols with Size Encodings
 
 ```{r}
-map |> addMarkers(lng = ~lng, lat = ~lat, 
-                  icon = ~makeSymbolsSize(x, color = 'black', 
-                                          fillColor = 'black', baseSize = 20, 
-                                          fillOpacity = .5))
+#| output: false
+lgd <- 
+  map |> addMarkers(lng = ~lng, lat = ~lat, 
+                    icon = ~makeSymbolsSize(x, color = 'black', 
+                                            fillColor = 'black',
+                                            baseSize = 20, 
+                                            fillOpacity = .5))
+lgd
+```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
 ```
 
 ### Legends with Overlay Controls
 
 ```{r}
-map |> addLegendFactor(values = ~y, pal = factorPal, group = 'Legend') |> 
-  addLayersControl(overlayGroups = 'Legend', 
-                   options = layersControlOptions(collapsed = FALSE))
+#| output: false
+lgd <- 
+  map |> addLegendFactor(values = ~y, pal = factorPal, group = 'Legend') |> 
+    addLayersControl(overlayGroups = 'Legend', 
+                     options = layersControlOptions(collapsed = FALSE))
+lgd
 ```
+
+```{r, results='asis'}
+#| echo: false
+i <- save_widget_png(lgd, i = i, vwidth = vwidth, vheight = vheight)
+```
+
