@@ -1082,6 +1082,7 @@ addLegendQuantile <- function(map,
 #'
 addLegendBin <- function(map,
                          pal,
+                         values,
                          title = NULL,
                          labelStyle = '',
                          shape = c('rect', 'circle', 'triangle', 'plus',
