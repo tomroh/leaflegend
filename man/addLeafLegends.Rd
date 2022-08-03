@@ -58,6 +58,7 @@ addLegendQuantile(
 addLegendBin(
   map,
   pal,
+  values,
   title = NULL,
   labelStyle = "",
   shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
