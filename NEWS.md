@@ -4,7 +4,7 @@
 
 * The default argument for `baseSize` in `addLegendSize` has been changed to 20.
 
-* `values` argument has been removed from `addLegendBin` since it is not 
+* `values` argument is no longer used by  `addLegendBin` since it is not 
 necessary and causes problems when number of values is less than the number 
 of bins.
 
