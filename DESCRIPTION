@@ -1,7 +1,7 @@
 Package: leaflegend
 Type: Package
 Title: Add Custom Legends to 'leaflet' Maps
-Version: 1.0.0
+Version: 1.0.2
 Authors@R: c(
     person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre")),
     person("Ricardo Rodrigo", "Basa", email = "radbasa@gmail.com", role = c("ctb")))
@@ -18,7 +18,7 @@ Imports:
     stats, 
     base64enc,
     htmlwidgets
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.2
 URL: https://leaflegend.roh.engineering, https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues
 Suggests: 

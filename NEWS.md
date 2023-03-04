@@ -1,3 +1,12 @@
+# leaflegend 1.0.2
+
+* The `breaks` argument in `addLegendLine` and `addLegendSize` now allows the 
+user to pass a named list where the names are the labels.
+
+* A new function `makePch` will create map symbols that are consistent with 
+base R `pch`. The `shape` argument can accept the name or an integer 
+(0-indexed)
+
 # leaflegend 1.0.0
 
 * A new function `addLegendSymbol` has been added to automatically encode character/factors as various map symbols.
