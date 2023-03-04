@@ -139,8 +139,8 @@ addLegendImage <- function(
       function(img, label, htmlTag, height, width, maxWidth) {
         marginWidth <- max(0, (maxWidth - width) / 2)
         imgStyle <- sprintf(
-          'vertical-align: %s; margin: %spx; margin-right: %spx; margin-left: %spx',
-          'middle', 5, marginWidth, marginWidth)
+      'vertical-align: %s; margin: %spx; margin-right: %spx; margin-left: %spx',
+      'middle', 5, marginWidth, marginWidth)
         if ( inherits(img, 'svgURI') ) {
           imgTag <- htmltools::tags$img(
             src = img,
@@ -358,7 +358,497 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
             ), reserved = TRUE))
   structure(svgURI, class = c(class(svgURI), 'svgURI'))
 }
-
+#' @name mapSymbols
+#'
+#' @export
+#'
+makePch <- function(shape, width, height = width, color, fillColor = color,
+  opacity = 1, fillOpacity = opacity, ...) {
+  strokewidth <- 1
+  if ( 'stroke-width' %in% names(list(...)) ) {
+    strokewidth <- list(...)[['stroke-width']]
+  }
+  stopifnot(is.numeric(width) & is.numeric(height))
+  stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
+  stopifnot(!is.na(shape))
+  pchShape <-
+    list(
+      'open-rect' = htmltools::tags$rect(
+        id = 'open-rect',
+        x = strokewidth,
+        y = strokewidth,
+        height = height,
+        width = width,
+        stroke = color,
+        fill = 'transparent',
+        'stroke-opacity' = opacity,
+        ...
+      ),
+      'open-circle' = htmltools::tags$circle(
+        id = 'circle',
+        cx = height / 2 + strokewidth,
+        cy = height / 2 + strokewidth,
+        r = height / 2,
+        stroke = color,
+        fill = 'transparent',
+        'stroke-opacity' = opacity,
+        ...
+      ),
+      'open-triangle' = htmltools::tags$polygon(
+        id = 'triangle',
+        points = drawTriangle(width = width, height = height,
+          offset = strokewidth),
+        stroke = color,
+        fill = 'transparent',
+        'stroke-opacity' = opacity,
+        ...
+      ),
+      'simple-plus' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'pline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height / 2 + strokewidth,
+          y2 = height / 2 + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'pline2',
+          x1 = width / 2 + strokewidth,
+          x2 = width / 2 + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'simple-cross' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'cline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'cline2',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height + strokewidth,
+          y2 = strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'open-diamond' =  htmltools::tags$polygon(
+        id = 'diamond',
+        points = drawDiamond(width = width, height = height,
+          offset = strokewidth),
+        stroke = color,
+        fill = 'transparent',
+        'stroke-opacity' = opacity,
+        ...
+      ),
+      'open-down-triangle' = htmltools::tags$polygon(
+        id = 'triangle',
+        points = drawTriangle(width = width, height = height,
+          offset = strokewidth),
+        stroke = color,
+        fill = 'transparent',
+        'stroke-opacity' = opacity,
+        transform = sprintf('rotate(180 %f %f)', height / 2 + strokewidth,
+          width / 2 + strokewidth),
+        ...
+      ),
+      'cross-rect' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'cline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'cline2',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height + strokewidth,
+          y2 = strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$rect(
+          id = 'open-rect',
+          x = strokewidth,
+          y = strokewidth,
+          height = height,
+          width = width,
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'simple-star' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'pline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height / 2 + strokewidth,
+          y2 = height / 2 + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'pline2',
+          x1 = width / 2 + strokewidth,
+          x2 = width / 2 + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'cline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'cline2',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height + strokewidth,
+          y2 = strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'plus-diamond' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'pline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height / 2 + strokewidth,
+          y2 = height / 2 + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'pline2',
+          x1 = width / 2 + strokewidth,
+          x2 = width / 2 + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$polygon(
+          id = 'diamond',
+          points = drawDiamond(width = width, height = height,
+            offset = strokewidth),
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'plus-circle' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'pline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height / 2 + strokewidth,
+          y2 = height / 2 + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'pline2',
+          x1 = width / 2 + strokewidth,
+          x2 = width / 2 + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$circle(
+          id = 'circle',
+          cx = height / 2 + strokewidth,
+          cy = height / 2 + strokewidth,
+          r = height / 2,
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'hexagram' = htmltools::tags$g(
+        htmltools::tags$polygon(
+          id = 'triangle',
+          points = drawTriangle(width = width, height = height,
+            offset = strokewidth),
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          transform = sprintf('rotate(180 %f %f)', height / 2 + strokewidth,
+            width / 2 + strokewidth),
+          ...
+        ),
+        htmltools::tags$polygon(
+          id = 'triangle',
+          points = drawTriangle(width = width, height = height,
+            offset = strokewidth),
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'plus-rect' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'pline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height / 2 + strokewidth,
+          y2 = height / 2 + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'pline2',
+          x1 = width / 2 + strokewidth,
+          x2 = width / 2 + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$rect(
+          id = 'open-rect',
+          x = strokewidth,
+          y = strokewidth,
+          height = height,
+          width = width,
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'cross-circle' = htmltools::tags$g(
+        htmltools::tags$line(
+          id = 'cline1',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = strokewidth,
+          y2 = height + strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$line(
+          id = 'cline2',
+          x1 = strokewidth,
+          x2 = width + strokewidth,
+          y1 = height + strokewidth,
+          y2 = strokewidth,
+          stroke = color,
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$circle(
+          id = 'circle',
+          cx = height / 2 + strokewidth,
+          cy = height / 2 + strokewidth,
+          r = height / 2,
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'triangle-rect' = htmltools::tags$g(
+        htmltools::tags$polygon(
+          id = 'triangle',
+          points = drawTriangle(width = width, height = height,
+            offset = strokewidth),
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        ),
+        htmltools::tags$rect(
+          id = 'open-rect',
+          x = strokewidth,
+          y = strokewidth,
+          height = height,
+          width = width,
+          stroke = color,
+          fill = 'transparent',
+          'stroke-opacity' = opacity,
+          ...
+        )
+      ),
+      'solid-rect' = htmltools::tags$rect(
+        id = 'rect',
+        x = strokewidth,
+        y = strokewidth,
+        height = height,
+        width = width,
+        stroke = 'transparent',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'solid-circle-md' = htmltools::tags$circle(
+        id = 'circle',
+        cx = height / 2 + strokewidth,
+        cy = height / 2 + strokewidth,
+        r = height / 2 - strokewidth,
+        stroke = 'transparent',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'solid-triangle' = htmltools::tags$polygon(
+        id = 'triangle',
+        points = drawTriangle(width = width, height = height,
+          offset = strokewidth),
+        stroke = 'transparent',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'solid-diamond' = htmltools::tags$polygon(
+        id = 'diamond',
+        points = drawDiamond(width = width, height = height,
+          offset = strokewidth),
+        stroke = 'transparent',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'solid-circle-bg' = htmltools::tags$circle(
+        id = 'circle',
+        cx = height / 2 + strokewidth,
+        cy = height / 2 + strokewidth,
+        r = height / 2,
+        stroke = 'transparent',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'solid-circle-sm' = htmltools::tags$circle(
+        id = 'circle',
+        cx = height / 2 + strokewidth,
+        cy = height / 2 + strokewidth,
+        r = height / 2 - 2 * strokewidth,
+        stroke = 'transparent',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'circle' = htmltools::tags$circle(
+        id = 'circle',
+        cx = height / 2 + strokewidth,
+        cy = height / 2 + strokewidth,
+        r = height / 2,
+        stroke = color,
+        fill = fillColor,
+        'stroke-opacity' = opacity,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'rect' = htmltools::tags$rect(
+        id = 'rect',
+        x = strokewidth,
+        y = strokewidth,
+        height = height,
+        width = width,
+        stroke = color,
+        fill = fillColor,
+        'stroke-opacity' = opacity,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'diamond' = htmltools::tags$polygon(
+        id = 'diamond',
+        points = drawDiamond(width = width, height = height,
+          offset = strokewidth),
+        stroke = color,
+        fill = fillColor,
+        'stroke-opacity' = opacity,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'triangle' = htmltools::tags$polygon(
+        id = 'triangle',
+        points = drawTriangle(width = width, height = height,
+          offset = strokewidth),
+        stroke = color,
+        fill = fillColor,
+        'stroke-opacity' = opacity,
+        'fill-opacity' = fillOpacity,
+        ...
+      ),
+      'down-triangle' = htmltools::tags$polygon(
+        id = 'triangle',
+        points = drawTriangle(width = width, height = height,
+          offset = strokewidth),
+        stroke = color,
+        fill = fillColor,
+        'stroke-opacity' = opacity,
+        'fill-opacity' = fillOpacity,
+        transform = sprintf('rotate(180 %f %f)', height / 2 + strokewidth,
+          width / 2 + strokewidth),
+        ...
+      )
+    )
+  if (is.numeric(shape)) {
+    shape <- shape + 1L
+  } else {
+    if (!shape %in% names(pchShape)) {
+      stop(sprintf('"%s" is not a valid pch name', shape))
+    }
+  }
+  svgURI <-
+    sprintf('data:image/svg+xml,%s',
+      utils::URLencode(as.character(
+        htmltools::tags$svg(
+          xmlns = "http://www.w3.org/2000/svg",
+          version = "1.1",
+          width = width + strokewidth * 2,
+          height = height + strokewidth * 2,
+          pchShape[[shape]]
+        )
+      ), reserved = TRUE))
+  structure(svgURI, class = c(class(svgURI), 'svgURI'))
+}
 makeLegendSymbol <- function(label, labelStyle, ...) {
   shapeTag <- makeSymbol(...)
   htmltools::tagList(
@@ -412,6 +902,18 @@ drawPolygon <- function(n, width = 1, height = 1, offset = 0) {
     y <- (cos(radians) + 1) * 1 / 2 * height + offset
   }
   paste(x, y, sep = ',', collapse = ' ')
+}
+drawRect <- function(width = 1, height = 1, offset = 0) {
+  drawPolygon(n = 4, width = width, height = height, offset = offset)
+}
+drawTriangle <- function(width, height, offset) {
+  sprintf('%s,%s %s,%s %s,%s',
+    offset,
+    height + offset,
+    width + offset,
+    height + offset,
+    width / 2  + offset,
+    offset)
 }
 
 #' @export
@@ -1424,6 +1926,10 @@ addLegendSize <- function(map,
     stopifnot(length(fillColor) == 1 || length(fillColor) == length(breaks))
     fillColors <- fillColor
   }
+  labels <- numberFormat(as.numeric(names(sizes)))
+  if (length(names(breaks)) == length(breaks) && length(breaks) > 1) {
+    labels <- names(breaks)
+  }
   symbols <- Map(makeSymbol,
                  shape = shape,
                  width = sizes,
@@ -1434,7 +1940,7 @@ addLegendSize <- function(map,
                  fillOpacity = fillOpacity,
                  `stroke-width` = strokeWidth)
   addLegendImage(map, images = symbols,
-                 labels = numberFormat(as.numeric(names(sizes))),
+                 labels = labels,
                  title = title, labelStyle = labelStyle,
                  orientation = orientation, width = sizes, height = sizes,
                  group = group, className = className, ...)
@@ -1451,7 +1957,8 @@ sizeNumeric <- function(values, baseSize) {
 
 #' @param breaks
 #'
-#' an integer specifying the number of breaks or a numeric vector of the breaks
+#' an integer specifying the number of breaks or a numeric vector of the breaks;
+#' if a named vector then the names are used as labels.
 #'
 #' @param baseSize
 #'
@@ -1543,6 +2050,10 @@ addLegendLine <- function(map,
     stopifnot(length(color) == 1 || length(color) == length(breaks))
     colors <- color
   }
+  labels <- numberFormat(as.numeric(names(sizes)))
+  if (length(names(breaks)) == length(breaks) && length(breaks) > 1) {
+    labels <- names(breaks)
+  }
   symbols <- Map(makeSymbol,
                  shape = shape,
                  width = width,
@@ -1553,7 +2064,7 @@ addLegendLine <- function(map,
                  fillOpacity = fillOpacity,
                  `stroke-width` = 0)
   addLegendImage(map, images = symbols,
-                 labels = numberFormat(as.numeric(names(sizes))),
+                 labels = labels,
                  title = title, labelStyle = labelStyle,
                  orientation = orientation, width = width, height = sizes,
                  group = group, className = className, ...)
@@ -1759,20 +2270,20 @@ addLegendAwesomeIcon <- function(map,
         wrapElements(
         htmltools::tags$div(
           style = 'vertical-align: middle; display: inline-block; position: relative;',
-                            class = markerClass,
-                            htmltools::tags$i(class = sprintf('%1$s %1$s-%2$s %3$s',
-                                                              icon[['library']],
-                                                              icon[['icon']],
-                                                              ifelse(icon[['spin']], 'fa-spin', '')),
-                                              style = sprintf('color: %s; %s; margin-right: 0px', icon[['iconColor']],
-                                                              ifelse(icon[['iconRotate']] == 0, '',
-                                                                     sprintf('-webkit-transform: rotate(%1$sdeg);-moz-transform: rotate(%1$sdeg);-o-transform: rotate(%1$sdeg);-ms-transform: rotate(%1$sdeg);transform: rotate(%1$sdeg);',
-                                                                             icon[['iconRotate']]))
-                                              ),
-                                              if ( !is.null(icon[['text']]) ) {
-                                                icon[['text']]
-                                                }
-                            )
+              class = markerClass,
+              htmltools::tags$i(class = sprintf('%1$s %1$s-%2$s %3$s',
+                                                icon[['library']],
+                                                icon[['icon']],
+                                                ifelse(icon[['spin']], 'fa-spin', '')),
+                                style = sprintf('color: %s; %s; margin-right: 0px', icon[['iconColor']],
+                                                ifelse(icon[['iconRotate']] == 0, '',
+                                                       sprintf('-webkit-transform: rotate(%1$sdeg);-moz-transform: rotate(%1$sdeg);-o-transform: rotate(%1$sdeg);-ms-transform: rotate(%1$sdeg);transform: rotate(%1$sdeg);',
+                                                               icon[['iconRotate']]))
+                                ),
+                                if ( !is.null(icon[['text']]) ) {
+                                  icon[['text']]
+                                  }
+              )
         ),
         htmltools::tags$span(label, style = sprintf('%s', labelStyle))
       )
@@ -1800,24 +2311,26 @@ leaflegendAddControl <- function(map,
 
     lf <- leaflet::addControl(map, html = html, className = className, ...)
     htmlwidgets::onRender(lf, "
-                function(el, x) {
-                  var updateLeafLegend = function() {
-                    var controlGroups = document.querySelectorAll('input.leaflet-control-layers-selector');
-                    controlGroups.forEach(g => {
-                      var groupName = g.nextSibling.innerText.substr(1);
-                      var className = 'leaflegend-group-' + groupName.replace(/[^a-zA-Z0-9]/g, '');
-                      var checked = g.checked;
-                      document.querySelectorAll('.legend.' + className).forEach(l => {
-                        l.hidden = !checked;
-                      })
-                    })
-                  }
+function(el, x) {
+  var updateLeafLegend = function() {
+    var controlGroups = document.querySelectorAll(
+      'input.leaflet-control-layers-selector');
+    controlGroups.forEach(g => {
+      var groupName = g.nextSibling.innerText.substr(1);
+      var className = 'leaflegend-group-' +
+        groupName.replace(/[^a-zA-Z0-9]/g, '');
+      var checked = g.checked;
+      document.querySelectorAll('.legend.' + className).forEach(l => {
+        l.hidden = !checked;
+      })
+    })
+  }
 
-                  updateLeafLegend();
-                  this.on('baselayerchange', el => updateLeafLegend())
-                  this.on('overlayadd', el => updateLeafLegend());
-                  this.on('overlayremove', el => updateLeafLegend());
-                }
+  updateLeafLegend();
+  this.on('baselayerchange', el => updateLeafLegend())
+  this.on('overlayadd', el => updateLeafLegend());
+  this.on('overlayremove', el => updateLeafLegend());
+}
                         ")
   } else {
     leaflet::addControl(map, html = html, className = className, ...)

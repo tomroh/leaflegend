@@ -5,7 +5,6 @@ library(leaflet)
 library(leaflegend)
 data(quakes)
 
-
 # Image Legend ------------------------------------------------------------
 
 quakes1 <- quakes[1:10,]
@@ -277,81 +276,41 @@ leaflet() %>%
 
 library(leaflet)
 data("quakes")
-numPal <- colorNumeric('viridis', quakes$depth)
-symbols <- makeSizeIcons(values = quakes$mag,
-                         shape = 'triangle',
-                         pal = numPal,
-                         color = 'black',
-                         colorValues = quakes$depth,
-                         baseSize = 10,
-                         opacity = .5)
-symbols <- makeSizeIcons(values = quakes$mag,
-                         shape = 'triangle',
-                         pal = numPal,
-                         #color = 'black',
-                         colorValues = quakes$depth,
-                         baseSize = 10,
-                         opacity = .5,
-                         fillOpacity = 1)
-leaflet() %>%
+numPal <- colorNumeric('viridis', 10^(quakes$mag))
+leaflet(quakes) %>%
   addTiles() %>%
-  addMarkers(data = quakes,
-             icon = symbols,
-             lat = ~lat, lng = ~long) %>%
+  addSymbolsSize(values = ~10^(mag),
+    lat = ~lat,
+    lng = ~long,
+    shape = 'plus',
+    color = ~numPal(10^(mag)),
+    fillColor = ~numPal(10^(mag)),
+    opacity = .5,
+    baseSize = 1) %>%
   addLegendSize(
-    values = quakes$mag,
-    color = 'black',
+    values = ~10^(mag),
+    pal = numPal,
     title = 'Magnitude',
-    labelStyle = 'margin: auto;',
-    shape = c('triangle'),
+    baseSize = 1,
+    shape = 'plus',
     orientation = 'horizontal',
-    opacity = .7,
+    opacity = .5,
+    fillOpacity = .3,
+    position = 'bottomleft',
     breaks = 5) %>%
   addLegendSize(
-    values = quakes$mag,
-    color = 'black',
-    fillColor = 'transparent',
+    values = ~10^(mag),
+    pal = numPal,
     title = 'Magnitude',
-    labelStyle = 'margin: auto;',
-    shape = c('triangle'),
+    baseSize = 1,
+    shape = 'plus',
     orientation = 'horizontal',
-    opacity = .7,
-    breaks = 5) %>%
-  addLegendNumeric(values = quakes$depth,
-                   pal = numPal,
-                   orientation = 'horizontal',
-                   width = 100,
-                   height = 18,
-                   title = 'Depth') %>%
-  addLegendSize(
-    values = quakes$depth,
-    pal = numPal,
-    title = 'Depth',
-    labelStyle = 'margin: auto;',
-    shape = c('cross'),
-    orientation ='horizontal',
-    opacity = .7,
-    color = 'black',
-    breaks = 5) %>%
-  addLegendSize(
-    values = quakes$depth,
-    pal = numPal,
-    title = 'Depth',
-    labelStyle = 'margin: auto;',
-    shape = c('cross'),
-    orientation ='horizontal',
-    opacity = .7,
-    fillColor = 'black',
-    breaks = 5) %>%
-  addLegendSize(
-    values = quakes$depth,
-    pal = numPal,
-    title = 'Depth',
-    labelStyle = 'margin: auto;',
-    shape = c('cross'),
-    orientation ='horizontal',
-    opacity = .7,
-    breaks = 5)
+    opacity = .5,
+    fillOpacity = .3,
+    position = 'bottomleft',
+    breaks = stats::setNames(seq(500000, 2500000, 500000),
+      c('Very Small', 'Small', 'Medium', 'Large', 'Very Large'))
+  )
 
 # Group Layers ------------------------------------------------------------
 numPal <- colorNumeric('viridis', quakes$depth)
@@ -407,3 +366,76 @@ leaflet(quakes) %>%
                  title = htmltools::tags$div('Leaf',
                                              style = 'font-size: 24px; text-align: center;'),
                  position = 'topright', orientation = 'vertical')
+
+# Vary Text ---------------------------------------------------------------
+library(leaflet)
+library(leaflegend)
+data(quakes)
+fontSize <- c('small' = 10, 'medium' = 20 , 'large' = 30)
+leaflet(quakes) |> addLegendSize(values = ~depth, color = 'black', shape  = 'plus',
+    breaks = 3, labelStyle = sprintf('font-size: %dpx;vertical-align: middle;',
+      fontSize['medium'])) |>
+  addLegendSize(values = ~depth, color = 'black', shape  = 'plus',
+    breaks = 3, labelStyle = sprintf('font-size: %dpx;vertical-align: middle;',
+      fontSize['large']),
+    orientation = 'horizontal')
+
+
+# Multi-Column ------------------------------------------------------------
+
+symbols <- Map(f = makeSymbol,
+  shape = c('rect', 'circle', 'triangle', 'plus', 'cross', 'star')
+  ,fillColor = c('blue', 'red', 'green', 'yellow', 'orange', 'purple')
+  ,color = 'black'
+    ,opacity = 1
+  ,fillOpacity = .5
+  ,height = 24
+  ,width = 24
+  ,'stroke-width' = 2)
+m <- leaflet(x) |>
+  addLegendImage(title = 'Legend', images = symbols[1:3], labels = 1:3, position = 'topright') |>
+  addLegendImage(title = htmltools::HTML('<br>'), images = symbols[4:6], labels = 4:6, position = 'topright')
+htmltools::browsable(
+  htmltools::tagList(
+    htmltools::tags$style('
+      div.leaflet-top.leaflet-right{
+      display: flex;
+      }
+      .info.legend.leaflet-control:first-child {
+      margin-right: 0px;
+      border-radius: 0px;
+      background-color: white;
+      box-shadow: none;
+      }
+      .info.legend.leaflet-control {
+      border-radius: 0px;
+      background-color: white;
+      box-shadow: none;
+      }'),
+    m
+  )
+)
+
+
+
+# Pch Symbols -------------------------------------------------------------
+
+pchNames <- stats::setNames(seq(0L, 25L, 1L),
+  c('open-rect', 'open-circle', 'open-triangle', 'simple-plus',
+    'simple-cross', 'open-diamond', 'open-down-triangle', 'cross-rect',
+    'simple-star', 'plus-diamond', 'plus-circle', 'hexagram', 'plus-rect',
+    'cross-circle', 'triangle-rect', 'solid-rect', 'solid-circle-md',
+    'solid-triangle', 'solid-diamond', 'solid-circle-bg', 'solid-circle-sm', 'circle',
+    'rect', 'diamond', 'triangle', 'down-triangle'
+  ))
+defaultSize <- 20
+i <- 1:26
+pchSvg <- lapply(names(pchNames)[i], makePch, width = defaultSize,
+  color = 'black', `stroke-width` = 2, fillOpacity = .5)
+pchSvgI <- lapply(i-1, makePch, width = defaultSize,
+  color = 'black', `stroke-width` = 2, fillOpacity = .5)
+leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
+  addLegendImage(images = pchSvg, labels =names(pchNames),
+    width = defaultSize, height = defaultSize, position = 'topright') |>
+  addLegendImage(images = pchSvgI, labels = i-1,
+    width = defaultSize, height = defaultSize, position = 'topleft')

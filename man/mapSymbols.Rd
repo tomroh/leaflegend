@@ -3,6 +3,7 @@
 \name{mapSymbols}
 \alias{mapSymbols}
 \alias{makeSymbol}
+\alias{makePch}
 \alias{makeSymbolIcons}
 \alias{addSymbols}
 \alias{addSymbolsSize}
@@ -22,9 +23,20 @@ makeSymbol(
   ...
 )
 
+makePch(
+  shape,
+  width,
+  height = width,
+  color,
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  ...
+)
+
 makeSymbolIcons(
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
-    "stadium", "line", "polygon"),
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
+    "line", "polygon"),
   color,
   fillColor = color,
   opacity,
@@ -74,8 +86,8 @@ sizeBreaks(values, breaks, baseSize, ...)
 
 makeSymbolsSize(
   values,
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star",
-    "stadium", "polygon"),
+  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
+    "polygon"),
   color,
   fillColor,
   opacity = 1,
@@ -126,7 +138,8 @@ overridden}
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
 
-\item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks}
+\item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks;
+if a named vector then the names are used as labels.}
 }
 \value{
 HTML svg element
