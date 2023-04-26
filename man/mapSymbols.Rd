@@ -3,8 +3,10 @@
 \name{mapSymbols}
 \alias{mapSymbols}
 \alias{makeSymbol}
+\alias{makeSvgUri}
 \alias{makePch}
 \alias{makeSymbolIcons}
+\alias{makePchIcons}
 \alias{addSymbols}
 \alias{addSymbolsSize}
 \alias{sizeNumeric}
@@ -23,9 +25,11 @@ makeSymbol(
   ...
 )
 
+makeSvgUri(svg, width, height, strokeWidth)
+
 makePch(
   shape,
-  width,
+  width = 20,
   height = width,
   color,
   fillColor = color,
@@ -37,6 +41,18 @@ makePch(
 makeSymbolIcons(
   shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
     "line", "polygon"),
+  color,
+  fillColor = color,
+  opacity,
+  fillOpacity = opacity,
+  strokeWidth = 1,
+  width,
+  height = width,
+  ...
+)
+
+makePchIcons(
+  shape,
   color,
   fillColor = color,
   opacity,
@@ -113,6 +129,8 @@ makeSymbolsSize(
 \item{fillOpacity}{fill opacity}
 
 \item{...}{arguments to pass to \code{pretty}}
+
+\item{svg}{inner svg tags for symbol}
 
 \item{strokeWidth}{stroke width in pixels}
 

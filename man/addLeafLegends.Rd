@@ -27,6 +27,8 @@ addLegendNumeric(
   decreasing = FALSE,
   fillOpacity = 1,
   group = NULL,
+  labels = NULL,
+  na.label = "NA",
   className = "info legend leaflet-control",
   data = leaflet::getMapData(map),
   ...
@@ -128,6 +130,10 @@ colorNumeric palette}
 \item{fillOpacity}{fill opacity of the legend items}
 
 \item{group}{group name of a leaflet layer group}
+
+\item{labels}{labels}
+
+\item{na.label}{the legend label for NAs in values}
 
 \item{className}{extra CSS class to append to the control, space separated}
 
