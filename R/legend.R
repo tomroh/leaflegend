@@ -388,26 +388,6 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
           fill = 'transparent',
           'stroke-opacity' = opacity,
           ...
-        ),
-        htmltools::tags$line(
-          id = 'pline1',
-          x1 = 0,
-          x2 = width,
-          y1 = height / 2,
-          y2 = height / 2,
-          stroke = color,
-          'stroke-opacity' = opacity,
-          ...
-        ),
-        htmltools::tags$line(
-          id = 'pline2',
-          x1 = width / 2,
-          x2 = width / 2,
-          y1 = 0,
-          y2 = height,
-          stroke = color,
-          'stroke-opacity' = opacity,
-          ...
         )
       ),
       'open-circle' = htmltools::tags$g(
