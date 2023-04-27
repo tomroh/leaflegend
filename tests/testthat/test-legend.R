@@ -38,7 +38,7 @@ testthat::test_that('Symbols', {
     testthat::expect_error()
   m %>%
     addSymbols(lat = ~lat, lng = ~lng, color = 'black',
-               values = 1:8, data = mapData) %>%
+               values = 1:11, data = mapData) %>%
     testthat::expect_error()
   m %>%
     addSymbols(lat = ~lat, lng = ~lng, color = 'black',

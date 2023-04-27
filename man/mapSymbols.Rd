@@ -4,9 +4,7 @@
 \alias{mapSymbols}
 \alias{makeSymbol}
 \alias{makeSvgUri}
-\alias{makePch}
 \alias{makeSymbolIcons}
-\alias{makePchIcons}
 \alias{addSymbols}
 \alias{addSymbolsSize}
 \alias{sizeNumeric}
@@ -27,31 +25,7 @@ makeSymbol(
 
 makeSvgUri(svg, width, height, strokeWidth)
 
-makePch(
-  shape,
-  width = 20,
-  height = width,
-  color,
-  fillColor = color,
-  opacity = 1,
-  fillOpacity = opacity,
-  ...
-)
-
 makeSymbolIcons(
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "line", "polygon"),
-  color,
-  fillColor = color,
-  opacity,
-  fillOpacity = opacity,
-  strokeWidth = 1,
-  width,
-  height = width,
-  ...
-)
-
-makePchIcons(
   shape,
   color,
   fillColor = color,
@@ -68,7 +42,7 @@ addSymbols(
   lng,
   lat,
   values,
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star"),
+  shape,
   color,
   fillColor = color,
   opacity = 1,
@@ -85,7 +59,7 @@ addSymbolsSize(
   lng,
   lat,
   values,
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star"),
+  shape,
   color,
   fillColor = color,
   opacity = 1,
@@ -102,8 +76,7 @@ sizeBreaks(values, breaks, baseSize, ...)
 
 makeSymbolsSize(
   values,
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "polygon"),
+  shape = "rect",
   color,
   fillColor,
   opacity = 1,
@@ -114,7 +87,7 @@ makeSymbolsSize(
 )
 }
 \arguments{
-\item{shape}{the desired shape of the symbol}
+\item{shape}{the desired shape of the symbol, See \link[leaflegend]{availableShapes}}
 
 \item{width}{in pixels}
 

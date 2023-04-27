@@ -13,8 +13,7 @@ addLegendSize(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "polygon"),
+  shape = "rect",
   orientation = c("vertical", "horizontal"),
   color,
   fillColor = color,
@@ -62,8 +61,7 @@ addLegendSymbol(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "polygon"),
+  shape,
   orientation = c("vertical", "horizontal"),
   color,
   fillColor = color,
@@ -91,7 +89,7 @@ function}
 
 \item{labelStyle}{character string of style argument for HTML text}
 
-\item{shape}{shape of the color symbols}
+\item{shape}{the desired shape of the symbol, See \link[leaflegend]{availableShapes}}
 
 \item{orientation}{stack the legend items vertically or horizontally}
 

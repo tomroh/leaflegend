@@ -181,7 +181,7 @@ addLegendImage <- function(
 #'
 #' @param shape
 #'
-#' the desired shape of the symbol
+#' the desired shape of the symbol, See \link[leaflegend]{availableShapes}
 #'
 #' @param width
 #'
@@ -225,19 +225,40 @@ addLegendImage <- function(
 #'
 makeSymbol <- function(shape, width, height = width, color, fillColor = color,
                        opacity = 1, fillOpacity = opacity, ...) {
-  strokewidth <- 1
-  if ( 'stroke-width' %in% names(list(...)) ) {
-    strokewidth <- list(...)[['stroke-width']]
-  }
   stopifnot(is.numeric(width) & is.numeric(height))
   stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
   stopifnot(!is.na(shape))
-  svg <- switch(
+  if (shape %in% availableShapes()[['symbols']]) {
+    svg <- symbolSvg(shape = shape,  width = width, height = height,
+      color = color, fillColor = fillColor, opacity = opacity,
+      fillOpacity = fillOpacity, ...)
+  } else if (shape %in% availableShapes()[['pch']] || shape %in%
+      (seq_along(availableShapes()[['pch']]) - 1)) {
+    svg <- pchSvg(shape = shape,  width = width, height = height,
+      color = color, fillColor = fillColor, opacity = opacity,
+      fillOpacity = fillOpacity, ...)
+  } else {
+    stop('Argument "shape" is invalid. See `availableShapes()`.')
+  }
+  strokeWidth <- 1
+  if ( 'stroke-width' %in% names(list(...)) ) {
+    strokeWidth <- list(...)[['stroke-width']]
+  }
+  makeSvgUri(svg = svg, width = width, height = height,
+    strokeWidth = strokeWidth)
+}
+symbolSvg <- function(shape, width, height, color, fillColor, opacity,
+  fillOpacity, ...) {
+  strokeWidth <- 1
+  if ( 'stroke-width' %in% names(list(...)) ) {
+    strokeWidth <- list(...)[['stroke-width']]
+  }
+  switch(
     shape,
     'rect' = htmltools::tags$rect(
       id = 'rect',
-      x = strokewidth,
-      y = strokewidth,
+      x = strokeWidth,
+      y = strokeWidth,
       height = height,
       width = width,
       stroke = color,
@@ -248,8 +269,8 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     'circle' = htmltools::tags$circle(
       id = 'circle',
-      cx = height / 2 + strokewidth,
-      cy = height / 2 + strokewidth,
+      cx = height / 2 + strokeWidth,
+      cy = height / 2 + strokeWidth,
       r = height / 2,
       stroke = color,
       fill = fillColor,
@@ -260,12 +281,12 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     'triangle' = htmltools::tags$polygon(
       id = 'triangle',
       points = sprintf('%s,%s %s,%s %s,%s',
-                       strokewidth,
-                       height + strokewidth,
-                       width + strokewidth,
-                       height + strokewidth,
-                       width / 2  + strokewidth,
-                       strokewidth),
+        strokeWidth,
+        height + strokeWidth,
+        width + strokeWidth,
+        height + strokeWidth,
+        width / 2  + strokeWidth,
+        strokeWidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -274,7 +295,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     'plus' = htmltools::tags$polygon(
       id = 'plus',
-      points = drawPlus(width = width, height = height, offset = strokewidth),
+      points = drawPlus(width = width, height = height, offset = strokeWidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -283,7 +304,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     'cross' = htmltools::tags$polygon(
       id = 'cross',
-      points = drawCross(width = width, height = height, offset = strokewidth),
+      points = drawCross(width = width, height = height, offset = strokeWidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -293,7 +314,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     'diamond' = htmltools::tags$polygon(
       id = 'diamond',
       points = drawDiamond(width = width, height = height,
-                           offset = strokewidth),
+        offset = strokeWidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -302,7 +323,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     'star' = htmltools::tags$polygon(
       id = 'star',
-      points = drawStar(width = width, height = height, offset = strokewidth),
+      points = drawStar(width = width, height = height, offset = strokeWidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -311,8 +332,8 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     'stadium' = htmltools::tags$rect(
       id = 'stadium',
-      x = strokewidth,
-      y = strokewidth,
+      x = strokeWidth,
+      y = strokeWidth,
       height = height,
       width = width,
       rx = "25%",
@@ -325,9 +346,9 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     'line' = htmltools::tags$line(
       id = 'line',
       x1 = 0,
-      x2 = width + strokewidth * 2,
-      y1 = height / 2 + strokewidth,
-      y2 = height / 2 + strokewidth,
+      x2 = width + strokeWidth * 2,
+      y1 = height / 2 + strokeWidth,
+      y2 = height / 2 + strokeWidth,
       stroke = color,
       'stroke-opacity' = opacity,
       'fill-opacity' = fillOpacity,
@@ -336,7 +357,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     'polygon' = htmltools::tags$polygon(
       id = 'polygon',
       points = drawPolygon(n = 5, width = width, height = height,
-                            offset = strokewidth),
+        offset = strokeWidth),
       stroke = color,
       fill = fillColor,
       'stroke-opacity' = opacity,
@@ -345,51 +366,19 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     ),
     stop('Invalid shape argument.')
   )
-  makeSvgUri(svg = svg, width = width, height = height,
-    strokeWidth = strokewidth)
 }
-#' @param svg
-#'
-#' inner svg tags for symbol
-#'
-#' @name mapSymbols
-#'
-#' @export
-#'
-makeSvgUri <- function(svg, width, height, strokeWidth) {
-  svgURI <-
-    sprintf('data:image/svg+xml,%s',
-      utils::URLencode(as.character(
-        htmltools::tags$svg(
-          xmlns = "http://www.w3.org/2000/svg",
-          version = "1.1",
-          width = width + strokeWidth * 2,
-          height = height + strokeWidth * 2,
-          svg
-        )
-      ), reserved = TRUE))
-  structure(svgURI, class = c(class(svgURI), 'svgURI'))
-}
-
-#' @name mapSymbols
-#'
-#' @export
-#'
-makePch <- function(shape, width = 20, height = width, color, fillColor = color,
-  opacity = 1, fillOpacity = opacity, ...) {
-  strokewidth <- 1
-  if ( 'stroke-width' %in% names(list(...)) ) {
-    strokewidth <- list(...)[['stroke-width']]
-  }
-  stopifnot(is.numeric(width) & is.numeric(height))
-  stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
-  stopifnot(!is.na(shape))
+pchSvg <- function(shape, width, height, color, fillColor, opacity,
+  fillOpacity, ...) {
   hexPercentOffset <- .8
+  strokeWidth <- 1
+  if ( 'stroke-width' %in% names(list(...)) ) {
+    strokeWidth <- list(...)[['stroke-width']]
+  }
   pchShape <-
     list(
       'open-rect' = htmltools::tags$g(
-          transform = sprintf('translate(%f %f)', strokewidth, strokewidth),
-          htmltools::tags$rect(
+        transform = sprintf('translate(%f %f)', strokeWidth, strokeWidth),
+        htmltools::tags$rect(
           id = 'open-rect',
           x = 0,
           y = 0,
@@ -399,7 +388,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
           fill = 'transparent',
           'stroke-opacity' = opacity,
           ...
-          ),
+        ),
         htmltools::tags$line(
           id = 'pline1',
           x1 = 0,
@@ -422,8 +411,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
         )
       ),
       'open-circle' = htmltools::tags$g(
-        transform = sprintf('translate(%f %f)', strokewidth, strokewidth),
-          htmltools::tags$circle(
+        transform = sprintf('translate(%f %f)', strokeWidth, strokeWidth),
+        htmltools::tags$circle(
           id = 'circle',
           cx = height / 2,
           cy = height / 2,
@@ -432,11 +421,11 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
           fill = 'transparent',
           'stroke-opacity' = opacity,
           ...
-          )
+        )
       ),
       'open-triangle' = htmltools::tags$g(
-        transform = sprintf('translate(%f %f)', strokewidth, strokewidth),
-          htmltools::tags$polygon(
+        transform = sprintf('translate(%f %f)', strokeWidth, strokeWidth),
+        htmltools::tags$polygon(
           id = 'triangle',
           points = drawTriangle(width = width, height = height,
             offset = 0),
@@ -444,10 +433,10 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
           fill = 'transparent',
           'stroke-opacity' = opacity,
           ...
-          )
+        )
       ),
       'simple-plus' = htmltools::tags$g(
-        transform = sprintf('translate(%f %f)', strokewidth, strokewidth),
+        transform = sprintf('translate(%f %f)', strokeWidth, strokeWidth),
         htmltools::tags$line(
           id = 'pline1',
           x1 = 0,
@@ -470,7 +459,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
         )
       ),
       'simple-cross' = htmltools::tags$g(
-        transform = sprintf('translate(%f %f)', strokewidth, strokewidth),
+        transform = sprintf('translate(%f %f)', strokeWidth, strokeWidth),
         htmltools::tags$line(
           id = 'cline1',
           x1 = 0,
@@ -495,7 +484,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'open-diamond' =  htmltools::tags$polygon(
         id = 'diamond',
         points = drawDiamond(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = color,
         fill = 'transparent',
         'stroke-opacity' = opacity,
@@ -504,39 +493,39 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'open-down-triangle' = htmltools::tags$polygon(
         id = 'triangle',
         points = drawTriangle(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = color,
         fill = 'transparent',
         'stroke-opacity' = opacity,
-        transform = sprintf('rotate(180 %f %f)', height / 2 + strokewidth,
-          width / 2 + strokewidth),
+        transform = sprintf('rotate(180 %f %f)', height / 2 + strokeWidth,
+          width / 2 + strokeWidth),
         ...
       ),
       'cross-rect' = htmltools::tags$g(
         htmltools::tags$line(
           id = 'cline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'cline2',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height + strokewidth,
-          y2 = strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height + strokeWidth,
+          y2 = strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$rect(
           id = 'open-rect',
-          x = strokewidth,
-          y = strokewidth,
+          x = strokeWidth,
+          y = strokeWidth,
           height = height,
           width = width,
           stroke = color,
@@ -548,40 +537,40 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'simple-star' = htmltools::tags$g(
         htmltools::tags$line(
           id = 'pline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height / 2 + strokewidth,
-          y2 = height / 2 + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height / 2 + strokeWidth,
+          y2 = height / 2 + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'pline2',
-          x1 = width / 2 + strokewidth,
-          x2 = width / 2 + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = width / 2 + strokeWidth,
+          x2 = width / 2 + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'cline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'cline2',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height + strokewidth,
-          y2 = strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height + strokeWidth,
+          y2 = strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
@@ -590,20 +579,20 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'plus-diamond' = htmltools::tags$g(
         htmltools::tags$line(
           id = 'pline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height / 2 + strokewidth,
-          y2 = height / 2 + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height / 2 + strokeWidth,
+          y2 = height / 2 + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'pline2',
-          x1 = width / 2 + strokewidth,
-          x2 = width / 2 + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = width / 2 + strokeWidth,
+          x2 = width / 2 + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
@@ -611,7 +600,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
         htmltools::tags$polygon(
           id = 'diamond',
           points = drawDiamond(width = width, height = height,
-            offset = strokewidth),
+            offset = strokeWidth),
           stroke = color,
           fill = 'transparent',
           'stroke-opacity' = opacity,
@@ -621,28 +610,28 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'plus-circle' = htmltools::tags$g(
         htmltools::tags$line(
           id = 'pline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height / 2 + strokewidth,
-          y2 = height / 2 + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height / 2 + strokeWidth,
+          y2 = height / 2 + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'pline2',
-          x1 = width / 2 + strokewidth,
-          x2 = width / 2 + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = width / 2 + strokeWidth,
+          x2 = width / 2 + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$circle(
           id = 'circle',
-          cx = height / 2 + strokewidth,
-          cy = height / 2 + strokewidth,
+          cx = height / 2 + strokeWidth,
+          cy = height / 2 + strokeWidth,
           r = height / 2,
           stroke = color,
           fill = 'transparent',
@@ -651,8 +640,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
         )
       ),
       'hexagram' = htmltools::tags$g(
-        transform = sprintf('translate(%f %f)', strokewidth,
-          strokewidth + height * (1-hexPercentOffset) / 2),
+        transform = sprintf('translate(%f %f)', strokeWidth,
+          strokeWidth + height * (1-hexPercentOffset) / 2),
         htmltools::tags$polygon(
           id = 'triangle',
           points = drawTriangle(width = width * hexPercentOffset,
@@ -685,28 +674,28 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'plus-rect' = htmltools::tags$g(
         htmltools::tags$line(
           id = 'pline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height / 2 + strokewidth,
-          y2 = height / 2 + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height / 2 + strokeWidth,
+          y2 = height / 2 + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'pline2',
-          x1 = width / 2 + strokewidth,
-          x2 = width / 2 + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = width / 2 + strokeWidth,
+          x2 = width / 2 + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$rect(
           id = 'open-rect',
-          x = strokewidth,
-          y = strokewidth,
+          x = strokeWidth,
+          y = strokeWidth,
           height = height,
           width = width,
           stroke = color,
@@ -718,28 +707,28 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'cross-circle' = htmltools::tags$g(
         htmltools::tags$line(
           id = 'cline1',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = strokewidth,
-          y2 = height + strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = strokeWidth,
+          y2 = height + strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$line(
           id = 'cline2',
-          x1 = strokewidth,
-          x2 = width + strokewidth,
-          y1 = height + strokewidth,
-          y2 = strokewidth,
+          x1 = strokeWidth,
+          x2 = width + strokeWidth,
+          y1 = height + strokeWidth,
+          y2 = strokeWidth,
           stroke = color,
           'stroke-opacity' = opacity,
           ...
         ),
         htmltools::tags$circle(
           id = 'circle',
-          cx = height / 2 + strokewidth,
-          cy = height / 2 + strokewidth,
+          cx = height / 2 + strokeWidth,
+          cy = height / 2 + strokeWidth,
           r = height / 2,
           stroke = color,
           fill = 'transparent',
@@ -751,7 +740,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
         htmltools::tags$polygon(
           id = 'triangle',
           points = drawTriangle(width = width, height = height,
-            offset = strokewidth),
+            offset = strokeWidth),
           stroke = color,
           fill = 'transparent',
           'stroke-opacity' = opacity,
@@ -759,8 +748,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
         ),
         htmltools::tags$rect(
           id = 'open-rect',
-          x = strokewidth,
-          y = strokewidth,
+          x = strokeWidth,
+          y = strokeWidth,
           height = height,
           width = width,
           stroke = color,
@@ -771,8 +760,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       ),
       'solid-rect' = htmltools::tags$rect(
         id = 'rect',
-        x = strokewidth,
-        y = strokewidth,
+        x = strokeWidth,
+        y = strokeWidth,
         height = height,
         width = width,
         stroke = 'transparent',
@@ -782,8 +771,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       ),
       'solid-circle-md' = htmltools::tags$circle(
         id = 'circle',
-        cx = height / 2 + strokewidth,
-        cy = height / 2 + strokewidth,
+        cx = height / 2 + strokeWidth,
+        cy = height / 2 + strokeWidth,
         r =  height *  3 / 4 / 2,
         stroke = 'transparent',
         fill = fillColor,
@@ -793,7 +782,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'solid-triangle' = htmltools::tags$polygon(
         id = 'triangle',
         points = drawTriangle(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = 'transparent',
         fill = fillColor,
         'fill-opacity' = fillOpacity,
@@ -802,7 +791,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'solid-diamond' = htmltools::tags$polygon(
         id = 'diamond',
         points = drawDiamond(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = 'transparent',
         fill = fillColor,
         'fill-opacity' = fillOpacity,
@@ -810,8 +799,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       ),
       'solid-circle-bg' = htmltools::tags$circle(
         id = 'circle',
-        cx = height / 2 + strokewidth,
-        cy = height / 2 + strokewidth,
+        cx = height / 2 + strokeWidth,
+        cy = height / 2 + strokeWidth,
         r =  height *  4 / 4 / 2,
         stroke = 'transparent',
         fill = fillColor,
@@ -820,8 +809,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       ),
       'solid-circle-sm' = htmltools::tags$circle(
         id = 'circle',
-        cx = height / 2 + strokewidth,
-        cy = height / 2 + strokewidth,
+        cx = height / 2 + strokeWidth,
+        cy = height / 2 + strokeWidth,
         r = height *  2 / 4 / 2,
         stroke = 'transparent',
         fill = fillColor,
@@ -830,8 +819,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       ),
       'circle' = htmltools::tags$circle(
         id = 'circle',
-        cx = height / 2 + strokewidth,
-        cy = height / 2 + strokewidth,
+        cx = height / 2 + strokeWidth,
+        cy = height / 2 + strokeWidth,
         r = height / 2,
         stroke = color,
         fill = fillColor,
@@ -841,8 +830,8 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       ),
       'rect' = htmltools::tags$rect(
         id = 'rect',
-        x = strokewidth,
-        y = strokewidth,
+        x = strokeWidth,
+        y = strokeWidth,
         height = height,
         width = width,
         stroke = color,
@@ -854,7 +843,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'diamond' = htmltools::tags$polygon(
         id = 'diamond',
         points = drawDiamond(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = color,
         fill = fillColor,
         'stroke-opacity' = opacity,
@@ -864,7 +853,7 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'triangle' = htmltools::tags$polygon(
         id = 'triangle',
         points = drawTriangle(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = color,
         fill = fillColor,
         'stroke-opacity' = opacity,
@@ -874,13 +863,13 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       'down-triangle' = htmltools::tags$polygon(
         id = 'triangle',
         points = drawTriangle(width = width, height = height,
-          offset = strokewidth),
+          offset = strokeWidth),
         stroke = color,
         fill = fillColor,
         'stroke-opacity' = opacity,
         'fill-opacity' = fillOpacity,
-        transform = sprintf('rotate(180 %f %f)', height / 2 + strokewidth,
-          width / 2 + strokewidth),
+        transform = sprintf('rotate(180 %f %f)', height / 2 + strokeWidth,
+          width / 2 + strokeWidth),
         ...
       )
     )
@@ -891,9 +880,31 @@ makePch <- function(shape, width = 20, height = width, color, fillColor = color,
       stop(sprintf('"%s" is not a valid pch name', shape))
     }
   }
-  makeSvgUri(svg = pchShape[[shape]], width = width, height = height,
-    strokeWidth = strokewidth)
+  pchShape[[shape]]
 }
+#' @param svg
+#'
+#' inner svg tags for symbol
+#'
+#' @name mapSymbols
+#'
+#' @export
+#'
+makeSvgUri <- function(svg, width, height, strokeWidth) {
+  svgURI <-
+    sprintf('data:image/svg+xml,%s',
+      utils::URLencode(as.character(
+        htmltools::tags$svg(
+          xmlns = "http://www.w3.org/2000/svg",
+          version = "1.1",
+          width = width + strokeWidth * 2,
+          height = height + strokeWidth * 2,
+          svg
+        )
+      ), reserved = TRUE))
+  structure(svgURI, class = c(class(svgURI), 'svgURI'))
+}
+
 makeLegendSymbol <- function(label, labelStyle, ...) {
   shapeTag <- makeSymbol(...)
   htmltools::tagList(
@@ -964,46 +975,7 @@ drawTriangle <- function(width, height, offset) {
 #' @export
 #'
 #' @rdname mapSymbols
-makeSymbolIcons <- function(shape = c('rect',
-                                      'circle',
-                                      'triangle',
-                                      'plus',
-                                      'cross',
-                                      'diamond',
-                                      'star',
-                                      'stadium',
-                                      'line',
-                                      'polygon'),
-                            color,
-                            fillColor = color,
-                            opacity,
-                            fillOpacity = opacity,
-                            strokeWidth = 1,
-                            width,
-                            height = width,
-                            ...) {
-  symbols <- Map(
-    makeSymbol,
-    shape = shape,
-    width = width,
-    height = height,
-    color = color,
-    fillColor = fillColor,
-    opacity = opacity,
-    fillOpacity = fillOpacity,
-    `stroke-width` = strokeWidth,
-    ...
-  )
-  leaflet::icons(
-    iconUrl = unname(symbols),
-    iconAnchorX = width / 2,
-    iconAnchorY = height / 2
-  )
-}
-#' @export
-#'
-#' @rdname mapSymbols
-makePchIcons <- function(shape,
+makeSymbolIcons <- function(shape,
   color,
   fillColor = color,
   opacity,
@@ -1055,7 +1027,7 @@ makePchIcons <- function(shape,
 #'
 #' @param shape
 #'
-#' the desired shape of the symbol
+#' the desired shape of the symbol, See \link[leaflegend]{availableShapes}
 #'
 #' @param color
 #'
@@ -1103,7 +1075,7 @@ addSymbols <- function(
     lng,
     lat,
     values,
-    shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star"),
+    shape,
     color,
     fillColor = color,
     opacity = 1,
@@ -1114,14 +1086,17 @@ addSymbols <- function(
     data = leaflet::getMapData(map),
     ...
 ) {
-  if ( missing(values) ) {
-    shape <- match.arg(shape)
-  } else {
+  if (missing(shape)) {
+    shape <- availableShapes()[['symbols']]
+  }
+  if ( !missing(values) ) {
     values <- as.factor(parseValues(values, data))
     if ( length(levels(values)) > length(shape) ) {
       stop('values has more factor levels than shape. Maximum levels is 7')
     }
     shape <- shape[values]
+  } else {
+    shape <- shape[1]
   }
   if ( inherits(color, 'formula') ) {
     color <- parseValues(color, data)
@@ -1145,7 +1120,7 @@ addSymbolsSize <- function(
     lng,
     lat,
     values,
-    shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star"),
+    shape,
     color,
     fillColor = color,
     opacity = 1,
@@ -1155,7 +1130,6 @@ addSymbolsSize <- function(
     data = leaflet::getMapData(map),
     ...
 ) {
-  shape <- match.arg(shape)
   values <- parseValues(values, data)
   sizes <- sizeNumeric(values, baseSize)
   if ( inherits(color, 'formula') ) {
@@ -1202,7 +1176,7 @@ addSymbolsSize <- function(
 #'
 #' @param shape
 #'
-#' shape of the color symbols
+#' the desired shape of the symbol, See \link[leaflegend]{availableShapes}
 #'
 #' @param orientation
 #'
@@ -1647,9 +1621,7 @@ addLegendQuantile <- function(map,
                               values,
                               title = NULL,
                               labelStyle = '',
-                              shape = c('rect', 'circle', 'triangle', 'plus',
-                                        'cross', 'diamond', 'star', 'stadium',
-                                        'line', 'polygon'),
+                              shape = 'rect',
                               orientation = c('vertical', 'horizontal'),
                               width = 24,
                               height = 24,
@@ -1665,7 +1637,6 @@ addLegendQuantile <- function(map,
                               ...) {
   stopifnot( attr(pal, 'colorType') == 'quantile' )
   stopifnot( width >= 0 && height >= 0 )
-  shape <- match.arg(shape)
   orientation <- match.arg(orientation)
   probs <- attr(pal, 'colorArgs')[['probs']]
   values <- parseValues(values = values, data = data)
@@ -1705,9 +1676,7 @@ addLegendBin <- function(map,
                          values,
                          title = NULL,
                          labelStyle = '',
-                         shape = c('rect', 'circle', 'triangle', 'plus',
-                                   'cross', 'diamond', 'star', 'stadium',
-                                   'line', 'polygon'),
+                         shape = 'rect',
                          orientation = c('vertical', 'horizontal'),
                          width = 24,
                          height = 24,
@@ -1723,7 +1692,6 @@ addLegendBin <- function(map,
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
   stopifnot( width >= 0 && height >= 0 )
-  shape <- match.arg(shape)
   orientation <- match.arg(orientation)
   bins <- attr(pal, 'colorArgs')[['bins']]
   labels <- sprintf(' %s - %s', numberFormat(bins[-length(bins)]),
@@ -1750,9 +1718,7 @@ addLegendFactor <- function(map,
                             values,
                             title = NULL,
                             labelStyle = '',
-                            shape = c('rect', 'circle', 'triangle', 'plus',
-                                      'cross', 'diamond', 'star', 'stadium',
-                                      'line', 'polygon'),
+                            shape = 'rect',
                             orientation = c('vertical', 'horizontal'),
                             width = 24,
                             height = 24,
@@ -1764,7 +1730,6 @@ addLegendFactor <- function(map,
                             ...) {
   stopifnot( attr(pal, 'colorType') == 'factor' )
   stopifnot( width >= 0 && height >= 0 )
-  shape <- match.arg(shape)
   orientation <- match.arg(orientation)
   values <- parseValues(values = values, data = data)
   values <- sort(unique(values))
@@ -1830,7 +1795,7 @@ makeLegendCategorical <- function(shape, labels, colors, labelStyle, height,
 #'
 #' @param shape
 #'
-#' shape of the color symbols
+#' the desired shape of the symbol, See \link[leaflegend]{availableShapes}
 #'
 #' @param orientation
 #'
@@ -2005,9 +1970,7 @@ addLegendSize <- function(map,
                           values,
                           title = NULL,
                           labelStyle = '',
-                          shape = c('rect', 'circle', 'triangle', 'plus',
-                                    'cross', 'diamond', 'star', 'stadium',
-                                    'polygon'),
+                          shape = 'rect',
                           orientation = c('vertical', 'horizontal'),
                           color,
                           fillColor = color,
@@ -2024,7 +1987,6 @@ addLegendSize <- function(map,
                           className = 'info legend leaflet-control',
                           data = leaflet::getMapData(map),
                           ...) {
-  shape <- match.arg(shape) # is this necessary
   values <- parseValues(values = values, data = data)
   sizes <- sizeBreaks(values, breaks, baseSize)
   if ( missing(color) ) {
@@ -2103,9 +2065,7 @@ sizeBreaks <- function(values, breaks, baseSize, ...) {
 #'
 #' @rdname mapSymbols
 makeSymbolsSize <- function(values,
-                          shape = c('rect', 'circle', 'triangle', 'plus',
-                                    'cross', 'diamond', 'star', 'stadium',
-                                    'polygon'),
+                          shape = 'rect',
                           color,
                           fillColor,
                           opacity = 1,
@@ -2114,10 +2074,10 @@ makeSymbolsSize <- function(values,
                           baseSize,
                           ...
                           ) {
-  shape <- match.arg(shape)
   stopifnot(strokeWidth >= 0)
   stopifnot(length(color) == 1 || length(color) == length(values))
   stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
+  stopifnot(length(shape) < 2)
   sizes <- sizeNumeric(values, baseSize)
   makeSymbolIcons(
     shape = shape,
@@ -2201,9 +2161,7 @@ addLegendSymbol <- function(map,
                             values,
                             title = NULL,
                             labelStyle = '',
-                            shape = c('rect', 'circle', 'triangle', 'plus',
-                                      'cross', 'diamond', 'star', 'stadium',
-                                      'polygon'),
+                            shape,
                             orientation = c('vertical', 'horizontal'),
                             color,
                             fillColor = color,
@@ -2217,6 +2175,9 @@ addLegendSymbol <- function(map,
                             data = leaflet::getMapData(map),
                             ...
 ) {
+  if (missing(shape)) {
+    shape <- availableShapes()[['symbols']]
+  }
   values <- sort(unique(as.factor(parseValues(values, data))))
   if ( length(levels(values)) > length(shape) ) {
     stop('values has more factor levels than shape. Maximum levels is 7')
@@ -2462,6 +2423,30 @@ parseValues <- function(values, data) {
   } else {
     values
   }
+}
+
+#' Available shapes for map symbols
+#'
+#' @return
+#'
+#' list of available shapes
+#'
+#' @export
+#'
+availableShapes <- function() {
+  list(
+    'symbols' =
+      c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star',
+        'stadium', 'line', 'polygon'),
+    'pch' =
+      c('open-rect', 'open-circle', 'open-triangle', 'simple-plus',
+        'simple-cross', 'open-diamond', 'open-down-triangle', 'cross-rect',
+        'simple-star', 'plus-diamond', 'plus-circle', 'hexagram', 'plus-rect',
+        'cross-circle', 'triangle-rect', 'solid-rect', 'solid-circle-md',
+        'solid-triangle', 'solid-diamond', 'solid-circle-bg', 'solid-circle-sm',
+        'circle', 'rect', 'diamond', 'triangle', 'down-triangle'
+      )
+  )
 }
 
 # Borrowed from "leaflet" package internal functions
