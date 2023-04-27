@@ -40,8 +40,7 @@ addLegendQuantile(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "line", "polygon"),
+  shape = "rect",
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
@@ -63,8 +62,7 @@ addLegendBin(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "line", "polygon"),
+  shape = "rect",
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
@@ -86,8 +84,7 @@ addLegendFactor(
   values,
   title = NULL,
   labelStyle = "",
-  shape = c("rect", "circle", "triangle", "plus", "cross", "diamond", "star", "stadium",
-    "line", "polygon"),
+  shape = "rect",
   orientation = c("vertical", "horizontal"),
   width = 24,
   height = 24,
@@ -108,7 +105,7 @@ addLegendFactor(
 
 \item{title}{the legend title, pass in HTML to style}
 
-\item{shape}{shape of the color symbols}
+\item{shape}{the desired shape of the symbol, See \link[leaflegend]{availableShapes}}
 
 \item{orientation}{stack the legend items vertically or horizontally}
 
