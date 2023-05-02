@@ -8,7 +8,7 @@ addLegendImage(
   map,
   images,
   labels,
-  title = "",
+  title = NULL,
   labelStyle = "font-size: 24px; vertical-align: middle;",
   orientation = c("vertical", "horizontal"),
   width = 20,

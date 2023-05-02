@@ -28,7 +28,7 @@ addLegendNumeric(
   fillOpacity = 1,
   group = NULL,
   labels = NULL,
-  na.label = "NA",
+  naLabel = "NA",
   className = "info legend leaflet-control",
   data = leaflet::getMapData(map),
   ...
@@ -52,6 +52,7 @@ addLegendQuantile(
   fillOpacity = opacity,
   group = NULL,
   className = "info legend leaflet-control",
+  naLabel = "NA",
   data = leaflet::getMapData(map),
   ...
 )
@@ -74,6 +75,7 @@ addLegendBin(
   fillOpacity = opacity,
   group = NULL,
   className = "info legend leaflet-control",
+  naLabel = "NA",
   data = leaflet::getMapData(map),
   ...
 )
@@ -92,6 +94,7 @@ addLegendFactor(
   fillOpacity = opacity,
   group = NULL,
   className = "info legend leaflet-control",
+  naLabel = "NA",
   data = leaflet::getMapData(map),
   ...
 )
@@ -130,7 +133,7 @@ colorNumeric palette}
 
 \item{labels}{labels}
 
-\item{na.label}{the legend label for NAs in values}
+\item{naLabel}{the legend label for NAs in values}
 
 \item{className}{extra CSS class to append to the control, space separated}
 
@@ -256,55 +259,8 @@ leaflet() \%>\%
 # Bin Legend
 # Restyle the text of the labels, change the legend item orientation
 
-binPal <- colorBin('Set1', quakes$mag)
-leaflet() \%>\%
-  addTiles() \%>\%
-  addCircleMarkers(
-    data = quakes,
-    lat = ~ lat,
-    lng = ~ long,
-    color = ~ binPal(mag),
-    opacity = 1,
-    fillOpacity = 1
-  ) \%>\%
-  addLegendBin(
-    pal = binPal,
-    position = 'topright',
-    title = 'addLegendBin',
-    labelStyle = 'font-size: 18px; font-weight: bold;',
-    orientation = 'horizontal'
-  ) \%>\%
-  addLegend(pal = binPal,
-            values = quakes$mag,
-            title = 'addLegend')
 
 # Group Layer Control
 # Works with baseGroups and overlayGroups
 
-leaflet() \%>\%
-  addTiles() \%>\%
-  addLegendNumeric(
-    pal = numPal,
-    values = quakes$depth,
-    position = 'topright',
-    title = 'addLegendNumeric',
-    group = 'Numeric Data'
-  ) \%>\%
-  addLegendQuantile(
-    pal = quantPal,
-    values = quakes$mag,
-    position = 'topright',
-    title = 'addLegendQuantile',
-    group = 'Quantile'
-  ) \%>\%
-  addLegendBin(
-    pal = binPal,
-    position = 'bottomleft',
-    title = 'addLegendBin',
-    group = 'Bin'
-  ) \%>\%
-  addLayersControl(
-    baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
-    position = 'bottomright'
-  )
 }
