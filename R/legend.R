@@ -109,7 +109,7 @@ addLegendImage <- function(
     map,
     images,
     labels,
-    title = '',
+    title = NULL,
     labelStyle = 'font-size: 24px; vertical-align: middle;',
     orientation = c('vertical', 'horizontal'),
     width = 20,
@@ -165,11 +165,7 @@ addLegendImage <- function(
         htmlTag(imgTag, htmltools::tags$span(label, style = labelStyle))
       }
   )
-  if (!is.null(title)) {
-    htmlElements <-
-      append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))),
-             after = 0)
-  }
+  htmlElements <- addTitle(title = title, htmlElements = htmlElements)
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
                        className = className, group = group, ...)
 }
@@ -940,9 +936,6 @@ drawPolygon <- function(n, width = 1, height = 1, offset = 0) {
   }
   paste(x, y, sep = ',', collapse = ' ')
 }
-drawRect <- function(width = 1, height = 1, offset = 0) {
-  drawPolygon(n = 4, width = width, height = height, offset = offset)
-}
 drawTriangle <- function(width, height, offset) {
   sprintf('%s,%s %s,%s %s,%s',
     offset,
@@ -1207,7 +1200,7 @@ addSymbolsSize <- function(
 #'
 #' labels
 #'
-#' @param na.label
+#' @param naLabel
 #'
 #' the legend label for NAs in values
 #'
@@ -1332,57 +1325,59 @@ addSymbolsSize <- function(
 #' # Bin Legend
 #' # Restyle the text of the labels, change the legend item orientation
 #'
-#' binPal <- colorBin('Set1', quakes$mag)
-#' leaflet() %>%
-#'   addTiles() %>%
-#'   addCircleMarkers(
-#'     data = quakes,
-#'     lat = ~ lat,
-#'     lng = ~ long,
-#'     color = ~ binPal(mag),
-#'     opacity = 1,
-#'     fillOpacity = 1
-#'   ) %>%
-#'   addLegendBin(
-#'     pal = binPal,
-#'     position = 'topright',
-#'     title = 'addLegendBin',
-#'     labelStyle = 'font-size: 18px; font-weight: bold;',
-#'     orientation = 'horizontal'
-#'   ) %>%
-#'   addLegend(pal = binPal,
-#'             values = quakes$mag,
-#'             title = 'addLegend')
+# binPal <- colorBin('Set1', quakes$mag)
+# leaflet() %>%
+#   addTiles() %>%
+#   addCircleMarkers(
+#     data = quakes,
+#     lat = ~ lat,
+#     lng = ~ long,
+#     color = ~ binPal(mag),
+#     opacity = 1,
+#     fillOpacity = 1
+#   ) %>%
+#   addLegendBin(
+#     pal = binPal,
+#     position = 'topright',
+#     values = ~mag,
+#     title = 'addLegendBin',
+#     labelStyle = 'font-size: 18px; font-weight: bold;',
+#     orientation = 'horizontal'
+#   ) %>%
+#   addLegend(pal = binPal,
+#             values = quakes$mag,
+#             title = 'addLegend')
 #'
 #' # Group Layer Control
 #' # Works with baseGroups and overlayGroups
 #'
-#' leaflet() %>%
-#'   addTiles() %>%
-#'   addLegendNumeric(
-#'     pal = numPal,
-#'     values = quakes$depth,
-#'     position = 'topright',
-#'     title = 'addLegendNumeric',
-#'     group = 'Numeric Data'
-#'   ) %>%
-#'   addLegendQuantile(
-#'     pal = quantPal,
-#'     values = quakes$mag,
-#'     position = 'topright',
-#'     title = 'addLegendQuantile',
-#'     group = 'Quantile'
-#'   ) %>%
-#'   addLegendBin(
-#'     pal = binPal,
-#'     position = 'bottomleft',
-#'     title = 'addLegendBin',
-#'     group = 'Bin'
-#'   ) %>%
-#'   addLayersControl(
-#'     baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
-#'     position = 'bottomright'
-#'   )
+# leaflet() %>%
+#   addTiles() %>%
+#   addLegendNumeric(
+#     pal = numPal,
+#     values = quakes$depth,
+#     position = 'topright',
+#     title = 'addLegendNumeric',
+#     group = 'Numeric Data'
+#   ) %>%
+#   addLegendQuantile(
+#     pal = quantPal,
+#     values = quakes$mag,
+#     position = 'topright',
+#     title = 'addLegendQuantile',
+#     group = 'Quantile'
+#   ) %>%
+#   addLegendBin(
+#     pal = binPal,
+#     position = 'bottomleft',
+#     title = 'addLegendBin',
+#     group = 'Bin',
+#     values = ~mag
+#   ) %>%
+#   addLayersControl(
+#     baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
+#     position = 'bottomright'
+#   )
 addLegendNumeric <- function(map,
                              pal,
                              values,
@@ -1403,12 +1398,10 @@ addLegendNumeric <- function(map,
                              fillOpacity = 1,
                              group = NULL,
                              labels = NULL,
-                             na.label = 'NA',
+                             naLabel = 'NA',
                              className = 'info legend leaflet-control',
                              data = leaflet::getMapData(map),
                              ...) {
-  #TODO: use percent for placemnt of labels and ticks
-  #TODO: use javascript to size text div?
   stopifnot(is.logical(decreasing))
   stopifnot(attr(pal, 'colorType') == 'numeric')
   stopifnot(is.numeric(width) && is.numeric(height) && width >= 0 &&
@@ -1431,21 +1424,20 @@ addLegendNumeric <- function(map,
     breaks[length(breaks)] <- rng[2]
   }
   colors <- pal(breaks)
-  hasNA <- any(is.na(values))
-
+  hasNa <- any(is.na(values))
   if (vertical) {
     htmlElements <- makeNumericVertical(id = id, breaks = breaks,
       labels = labels, colors = colors, decreasing = decreasing,
-      hasNA = hasNA, tickLength = tickLength, tickWidth = tickWidth,
+      hasNa = hasNa, tickLength = tickLength, tickWidth = tickWidth,
       rng = rng, height = height, width = width, fillOpacity = fillOpacity,
-      shape = shape, naColor = pal(NA), na.label = na.label, title = title,
+      shape = shape, naColor = pal(NA), naLabel = naLabel, title = title,
       numberFormat = numberFormat)
   } else {
     htmlElements <- makeNumericHorizontal(id = id, breaks = breaks,
       labels = labels, colors = colors, decreasing = decreasing,
-      hasNA = hasNA, tickLength = tickLength, tickWidth = tickWidth,
+      hasNa = hasNa, tickLength = tickLength, tickWidth = tickWidth,
       rng = rng, height = height, width = width, fillOpacity = fillOpacity,
-      shape = shape, naColor = pal(NA), na.label = na.label, title = title,
+      shape = shape, naColor = pal(NA), naLabel = naLabel, title = title,
       numberFormat = numberFormat)
   }
   leaflegendAddControl(map, html = htmlElements, className = className,
@@ -1453,9 +1445,9 @@ addLegendNumeric <- function(map,
 }
 
 
-makeNumericHorizontal <- function(id, breaks, labels, colors, decreasing, hasNA,
+makeNumericHorizontal <- function(id, breaks, labels, colors, decreasing, hasNa,
   tickWidth, tickLength, rng, height, width, fillOpacity, shape, naColor,
-  na.label, title, numberFormat) {
+  naLabel, title, numberFormat) {
   x1 <- 0
   x2 <- 1
   y1 <- 0
@@ -1519,49 +1511,48 @@ makeNumericHorizontal <- function(id, breaks, labels, colors, decreasing, hasNA,
   )
   cexAdj <- 1.22
   pixel2Inch <- 72
-  textWidth <- max(graphics::strwidth(labels, units = 'inches',
-                                      cex = cexAdj)) * pixel2Inch
-  textHeight <- max(graphics::strheight(labels, units = 'inches',
-                                        cex = cexAdj)) * pixel2Inch
- htmlElements <- list(
+  textWidth <- graphics::strwidth(labels, units = 'inches', cex = cexAdj) *
+    pixel2Inch
+  maxTextWidth <- max(textWidth)
+  left1 <- 0
+  if (textWidth[1] < maxTextWidth  ) {
+    left1 <- (maxTextWidth / 2 - textWidth[1] / 2) / (width + maxTextWidth)
+  }
+  left2 <- (width) / (width + maxTextWidth)
+  if (textWidth[2] < maxTextWidth) {
+    left2 <- (width + maxTextWidth / 2 - textWidth[2] / 2) / (width + maxTextWidth)
+  }
+  maxTextWidth <- max(textWidth)
+  htmlElements <- list(
     htmltools::tags$div(
-      style = sprintf('margin-right: %spx; margin-left: %spx', textWidth / 2,
-        textWidth / 2 ), svgElement),
+      style = sprintf('margin-right: %spx; margin-left: %spx',
+        maxTextWidth / 2, maxTextWidth / 2 ), svgElement),
     htmltools::tags$div(
-      style = sprintf("width: 100%%; height: 1rem; position: relative; %s",
-        labelStyle),
+      style = sprintf("width: %.3f; height: 1rem; position: relative; %s",
+        width + maxTextWidth, labelStyle),
       htmltools::tags$div(
-        style = sprintf("position:absolute; left:%spx; top: 0px;", 0),
+        style = sprintf("position:absolute; left:%.3f%%; top: 0%%;",
+          left1 * 100),
         labels[1]),
       htmltools::tags$div(
-        style = sprintf("position:absolute; left:%spx; top: 0px;",
-          width - diff(graphics::strwidth(labels,
-            units = 'inches',
-            cex = cexAdj)) * 72),
+        style = sprintf("position:absolute; left:%.3f%%; top: 0%%;",
+          left2 * 100
+          ),
         labels[2])
 
     )
   )
   htmlElements <- addTitle(title = title, htmlElements = htmlElements)
-  if (hasNA) {
-    naLegend <- list(htmltools::div(
-      style='margin-top: .3rem;',
-      makeLegendNa(shape = shape, labels = na.label,
-      colors = naColor,
-      labelStyle = labelStyle,
-      height = naSize, width = naSize,
-      opacity = fillOpacity,
-      fillOpacity = fillOpacity,
-      orientation = orientation, title = NULL)))
-    htmlElements <-
-      append(htmlElements, naLegend)
-  }
+  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
+    shape = shape, labels = naLabel, colors = naColor, labelStyle = labelStyle,
+    height = naSize, width = naSize, opacity = fillOpacity,
+    fillOpacity = fillOpacity, strokeWidth = 0)
   htmltools::tagList(htmlElements)
 }
 
-makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNA,
+makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNa,
   tickWidth, tickLength, rng, height, width, fillOpacity, shape, naColor,
-  na.label, title, numberFormat) {
+  naLabel, title, numberFormat) {
   x1 <- 0
   x2 <- 0
   y1 <- 0
@@ -1583,7 +1574,6 @@ makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNA,
   linex2 <- width + tickLength
   liney1 <- scaledbreaks[-outer] * height
   liney2 <- scaledbreaks[-outer] * height
-  texty <- scaledbreaks[-outer] * height
   naSize <- width
   labelStyle <- ''
   rx <- '0%'
@@ -1594,6 +1584,7 @@ makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNA,
   svgElement <- htmltools::tags$svg(
     width = svgwidth,
     height = svgheight,
+    style = 'margin: 1px;',
     htmltools::tags$def(
       htmltools::tags$linearGradient(
         id = id,
@@ -1630,13 +1621,14 @@ makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNA,
   htmlElements <- list(htmltools::tags$div(style = 'display: flex;',
     htmltools::tags$div(svgElement, style = "margin-right: 5px"),
     htmltools::tags$div(
-      style = sprintf("width: %spx; height: %spx; display: flex;
+      style = sprintf("width: %.3fpx; height: %.3fpx; display: flex;
         justify-content: flex-end; position: relative; %s",
         textWidth, height, labelStyle),
       class = "container",
       Map(function(y, label) {
         htmltools::tags$div(
-          style = sprintf("position:absolute; top: %.3f%%;", y), htmltools::HTML(label))
+          style = sprintf("position:absolute; top: %.3f%%;", y),
+          htmltools::HTML(label))
       },
         y = (scaledbreaks[-outer] - textHeight / height) * 100,
         label = labels
@@ -1645,16 +1637,10 @@ makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNA,
     , htmltools::tags$div(style = "width: 8px; position: relative;")
   ))
   htmlElements <- addTitle(title, htmlElements)
-  if (hasNA) {
-    naLegend <- makeLegendNa(shape = shape, labels = na.label,
-      colors = naColor,
-      labelStyle = labelStyle,
-      height = naSize, width = naSize,
-      opacity = fillOpacity,
-      fillOpacity = fillOpacity,
-      orientation = orientation, title = NULL)
-    htmlElements <- append(htmlElements, naLegend)
-  }
+  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
+    shape = shape, labels = naLabel, colors = naColor, labelStyle = labelStyle,
+    height = naSize, width = naSize, opacity = fillOpacity,
+    fillOpacity = fillOpacity, strokeWidth = 0)
   htmltools::tagList(htmlElements)
 }
 
@@ -1692,6 +1678,7 @@ addLegendQuantile <- function(map,
                               fillOpacity = opacity,
                               group = NULL,
                               className = 'info legend leaflet-control',
+                              naLabel = 'NA',
                               data = leaflet::getMapData(map),
                               ...) {
   stopifnot( attr(pal, 'colorType') == 'quantile' )
@@ -1715,13 +1702,16 @@ addLegendQuantile <- function(map,
   }
   colors <- unique(pal(sort(values)))
   htmlElements <- makeLegendCategorical(shape = shape, labels = labels,
-                                        colors = colors,
-                                        labelStyle = labelStyle,
-                                        height = height, width = width,
-                                        opacity = opacity,
-                                        fillOpacity = fillOpacity,
-                                        orientation = orientation,
-                                        title = title)
+    colors = colors,
+    labelStyle = labelStyle,
+    height = height, width = width,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    orientation = orientation,
+    title = title,
+    hasNa = any(is.na(values)),
+    naLabel = naLabel,
+    naColor = pal(NA))
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
                        className = className, group = group, ...)
 }
@@ -1747,23 +1737,28 @@ addLegendBin <- function(map,
                          fillOpacity = opacity,
                          group = NULL,
                          className = 'info legend leaflet-control',
+                         naLabel = 'NA',
                          data = leaflet::getMapData(map),
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
   stopifnot( width >= 0 && height >= 0 )
   orientation <- match.arg(orientation)
+  values <- parseValues(values = values, data = data)
   bins <- attr(pal, 'colorArgs')[['bins']]
   labels <- sprintf(' %s - %s', numberFormat(bins[-length(bins)]),
                     numberFormat(bins[-1]))
   colors <- pal((bins[-1] + bins[-length(bins)]) / 2 )
   htmlElements <- makeLegendCategorical(shape = shape, labels = labels,
-                                        colors = colors,
-                                        labelStyle = labelStyle,
-                                        height = height, width = width,
-                                        opacity = opacity,
-                                        fillOpacity = fillOpacity,
-                                        orientation = orientation,
-                                        title = title)
+    colors = colors,
+    labelStyle = labelStyle,
+    height = height, width = width,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    orientation = orientation,
+    title = title,
+    hasNa = any(is.na(values)),
+    naLabel = naLabel,
+    naColor = pal(NA))
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
                        className = className, group = group, ...)
 }
@@ -1785,6 +1780,7 @@ addLegendFactor <- function(map,
                             fillOpacity = opacity,
                             group = NULL,
                             className = 'info legend leaflet-control',
+                            naLabel = 'NA',
                             data = leaflet::getMapData(map),
                             ...) {
   stopifnot( attr(pal, 'colorType') == 'factor' )
@@ -1801,13 +1797,17 @@ addLegendFactor <- function(map,
                                         opacity = opacity,
                                         fillOpacity = fillOpacity,
                                         orientation = orientation,
-                                        title = title)
+                                        title = title,
+                                        hasNa = any(is.na(values)),
+                                        naLabel = naLabel,
+                                        naColor = pal(NA))
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
                        className = className, group = group, ...)
 }
 
 makeLegendCategorical <- function(shape, labels, colors, labelStyle, height,
-                              width, opacity, fillOpacity, orientation, title) {
+                              width, opacity, fillOpacity, orientation, title,
+  hasNa, naLabel, naColor) {
   htmlElements <- Map(
     f = makeLegendSymbol,
     shape = shape,
@@ -1824,28 +1824,34 @@ makeLegendCategorical <- function(shape, labels, colors, labelStyle, height,
     htmlElements <- lapply(htmlElements, htmltools::tagList,
                            htmltools::tags$br())
   }
-  if (!is.null(title)) {
-    htmlElements <-
-      append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))),
-             after = 0)
-  }
+  htmlElements <- addTitle(title = title, htmlElements = htmlElements)
+  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
+    shape = shape, labels = naLabel, colors = naColor, labelStyle = labelStyle,
+    height = height, width = width, opacity = fillOpacity,
+    fillOpacity = fillOpacity, strokeWidth = 1)
   htmlElements
 }
 
-makeLegendNa <- function(shape, labels, colors, labelStyle, height,
-  width, opacity, fillOpacity, orientation, title) {
-  htmlElements <- makeLegendSymbol(
-    shape = shape,
-    label = labels,
-    color = colors,
-    labelStyle = labelStyle,
-    height = height,
-    width = width,
-    opacity = opacity,
-    fillOpacity = fillOpacity,
-    'stroke-width' = 0,
-    imgStyle = 'vertical-align: middle;'
-  )
+addNa <- function(hasNa, htmlElements, shape, labels, colors,
+  labelStyle, height,  width, opacity, fillOpacity, strokeWidth) {
+  if (hasNa) {
+    naLegend <- list(htmltools::div(
+      style = 'margin-top: .3rem;',
+      makeLegendSymbol(
+        shape = shape,
+        label = labels,
+        color = colors,
+        labelStyle = labelStyle,
+        height = height,
+        width = width,
+        opacity = opacity,
+        fillOpacity = fillOpacity,
+        'stroke-width' = strokeWidth,
+        imgStyle = 'vertical-align: middle; margin: 1px;'
+      )))
+    htmlElements <- append(htmlElements, naLegend)
+  }
+  htmlElements
 }
 
 #' Add a legend for the sizing of symbols or the width of lines
@@ -2443,11 +2449,7 @@ addLegendAwesomeIcon <- function(map,
       )
       )
     })
-  if (!is.null(title)) {
-    htmlElements <-
-      append(htmlElements, list(htmltools::div(htmltools::tags$strong(title))),
-             after = 0)
-  }
+  htmlElements <- addTitle(title = title, htmlElements = htmlElements)
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
                        className = className, group = group, ...)
 }

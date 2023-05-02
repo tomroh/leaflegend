@@ -140,7 +140,7 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(
     '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3" height="3">
   <rect id="rect" x="1" y="1" height="1" width="1" stroke="black" fill="black" stroke-opacity="1" fill-opacity="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "></span>')
   makeLegendSymbol(label = '', labelStyle = '', shape = 'rect', width = 1,
                    color = 'black', orientation = 'horizontal') %>%
@@ -149,7 +149,7 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(
       '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3" height="3">
   <rect id="rect" x="1" y="1" height="1" width="1" stroke="black" fill="black" stroke-opacity="1" fill-opacity="1" orientation="horizontal"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "></span>')
   # test negative sizes
   sizeNumeric(values = 1:4, baseSize = -5) %>%
@@ -251,7 +251,11 @@ testthat::test_that('Symbols', {
       c("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"15.3333333333333\" height=\"15.3333333333333\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"13.3333333333333\" width=\"13.3333333333333\" stroke=\"#FFF5F0\" fill=\"#FFF5F0\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\"></rect>\n</svg>",
         "data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"28.6666666666667\" height=\"28.6666666666667\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"26.6666666666667\" width=\"26.6666666666667\" stroke=\"#FDA081\" fill=\"#FDA081\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\"></rect>\n</svg>"
       ))
-
+  drawPolygon(4) %>%
+    testthat::expect_equal('0,0.5 0.5,0 1,0.5 0.5,1 0,0.5')
+  symbolSvg('notashape', width = 20, height = 20, color = 'black', fillColor =
+      'black', opacity = 1, fillOpacity = 1) %>%
+    testthat::expect_error()
 })
 
 testthat::test_that('Symbol Legends', {
@@ -410,7 +414,10 @@ testthat::test_that('Image Legend', {
     getElement('args') %>%
     getElement(1) %>%
     testthat::expect_equal(
-      '<div>\n  <strong></strong>\n</div>\n<span>\n  <img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAABmJLR0QA/wD/AP+gvaeTAAAAKUlEQVQokWNkYGBwgGJiwAEWqOJ6IjUwMBGrcFTD4NLAwsDAcIAE9QcAil0DmynVMvUAAAAASUVORK5CYII=\" style=\"vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px\" height=\"20\" width=\"20\"/>\n  <span style=\"font-size: 24px; vertical-align: middle;\">rect</span>\n</span>'
+      '<span>
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAABmJLR0QA/wD/AP+gvaeTAAAAKUlEQVQokWNkYGBwgGJiwAEWqOJ6IjUwMBGrcFTD4NLAwsDAcIAE9QcAil0DmynVMvUAAAAASUVORK5CYII=" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="20" width="20"/>
+  <span style="font-size: 24px; vertical-align: middle;">rect</span>
+</span>'
       )
   m %>% addLegendImage(
     images = makeSymbol('rect', width = 10, color = 'black'),
@@ -423,9 +430,6 @@ testthat::test_that('Image Legend', {
     URLdecode() %>%
     testthat::expect_equal(
       '<div>
-  <strong></strong>
-</div>
-<div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="12" height="12">
   <rect id="rect" x="1" y="1" height="10" width="10" stroke="black" fill="black" stroke-opacity="1" fill-opacity="1"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="20" width="20"/>
@@ -435,7 +439,7 @@ testthat::test_that('Image Legend', {
 })
 
 testthat::test_that('Numeric Legend', {
-  mapData <- data.frame(x = 1:2)
+  mapData <- data.frame(x = 1:3)
   m <- leaflet::leaflet(mapData)
   pal <- leaflet::colorNumeric('Reds', mapData[['x']])
   # test args
@@ -470,10 +474,6 @@ testthat::test_that('Numeric Legend', {
     testthat::expect_error()
   m %>% addLegendNumeric(pal = pal,
                          values = ~x,
-                         decreasing = NA) %>%
-    testthat::expect_error()
-  m %>% addLegendNumeric(pal = pal,
-                         values = ~x,
                          decreasing = NULL) %>%
     testthat::expect_error()
   m %>% addLegendNumeric(pal = pal,
@@ -489,55 +489,88 @@ testthat::test_that('Numeric Legend', {
                          tickWidth = -1) %>%
     testthat::expect_error()
   # test results
-  numVert <- m %>% addLegendNumeric(pal = pal, values = ~x)
-  numHori <- m %>% addLegendNumeric(pal = pal, values = ~x,
-                                    orientation = 'horizontal')
-#   testthat::expect_equal(numVert[["x"]][["calls"]][[1]][["args"]][[1]],
-#     expected = '<div style="display: flex;">
+  numVert <- m %>% addLegendNumeric(pal = pal, values = c(1, NA, 3))
+  numHori <- m %>% addLegendNumeric(pal = pal, values = c(1, NA, 3),
+                                    orientation = 'horizontal',
+    width = 100, height = 20)
+#   numVert %>%
+#     getElement('x') %>%
+#     getElement('calls') %>%
+#     getElement(1) %>%
+#     getElement('args') %>%
+#     getElement(1) %>%
+#     strsplit('<img') %>%
+#     getElement(1) %>%
+#     getElement(1) %>%
+#     testthat::expect_equal(
+#       expected = '<div style="display: flex;">
 #   <div style="margin-right: 5px">
-#     <svg width="24" height="100">
+#     <svg width="24" height="100" style="margin: 1px;">
 #       <defs>
-#         <linearGradient id="gradient-x" x1="0" y1="0" x2="0" y2="1">
-#           <stop offset="0.000000%" stop-color="#FFF5F0"></stop>
-#           <stop offset="20.000000%" stop-color="#FDCAB4"></stop>
-#           <stop offset="40.000000%" stop-color="#FC8A6A"></stop>
-#           <stop offset="60.000000%" stop-color="#F24632"></stop>
-#           <stop offset="80.000000%" stop-color="#BC141A"></stop>
-#           <stop offset="100.000000%" stop-color="#67000D"></stop>
+#         <linearGradient id="gradient-c1NA3-1" x1="0" y1="0" x2="0" y2="1">
+#           <stop offset="0.000%" stop-color="#FFF5F0"></stop>
+#           <stop offset="25.000%" stop-color="#FCBBA1"></stop>
+#           <stop offset="50.000%" stop-color="#FB6A4A"></stop>
+#           <stop offset="75.000%" stop-color="#CB181D"></stop>
+#           <stop offset="100.000%" stop-color="#67000D"></stop>
 #         </linearGradient>
 #       </defs>
 #       <g>
-#         <rect height="100" width="20" x="0" rx="0%" fill-opacity="1" fill="url(#gradient-x)"></rect>
+#         <rect height="100" width="20" x="0" rx="0%" fill-opacity="1" fill="url(#gradient-c1NA3-1)"></rect>
 #       </g>
-#       <line x1="20" x2="24" y1="20" y2="20" stroke-width="1" stroke="black"></line>
-#       <line x1="20" x2="24" y1="40" y2="40" stroke-width="1" stroke="black"></line>
-#       <line x1="20" x2="24" y1="60" y2="60" stroke-width="1" stroke="black"></line>
-#       <line x1="20" x2="24" y1="80" y2="80" stroke-width="1" stroke="black"></line>
+#       <line x1="20" x2="24" y1="25" y2="25" stroke-width="1" stroke="black"></line>
+#       <line x1="20" x2="24" y1="50" y2="50" stroke-width="1" stroke="black"></line>
+#       <line x1="20" x2="24" y1="75" y2="75" stroke-width="1" stroke="black"></line>
 #     </svg>
 #   </div>
-#   <div style="width: 16.7441860465116px; height: 100px; position: relative; " class="container">
-#     <div style="position:absolute; left:0px; top: 10.7906976744186px;">1.2</div>
-#     <div style="position:absolute; left:0px; top: 30.7906976744186px;">1.4</div>
-#     <div style="position:absolute; left:0px; top: 50.7906976744186px;">1.6</div>
-#     <div style="position:absolute; left:0px; top: 70.7906976744186px;">1.8</div>
+#   <div style="width: 19.535px; height: 100.000px; display: flex;&#10;        justify-content: flex-end; position: relative; " class="container">
+#     <div style="position:absolute; top: 15.512%;">1.5</div>
+#     <div style="position:absolute; top: 40.512%;">2</div>
+#     <div style="position:absolute; top: 65.512%;">2.5</div>
 #   </div>
 #   <div style="width: 8px; position: relative;"></div>
+# </div>
+# <div style="margin-top: .3rem;">
+#   ')
+#   numVert %>%
+#     getElement('x') %>%
+#     getElement('calls') %>%
+#     getElement(1) %>%
+#     getElement('args') %>%
+#     getElement(1) %>%
+#     strsplit('<img') %>%
+#     getElement(1) %>%
+#     getElement(2) %>%
+#     sprintf(fmt = '%2$s%1$s', '<img') %>%
+#     URLdecode() %>%
+#     testthat::expect_equal(
+#       expected = '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="20">
+#   <rect id="rect" x="0" y="0" height="20" width="20" stroke="#808080" fill="#808080" stroke-opacity="1" fill-opacity="1" stroke-width="0"></rect>
+# </svg>" style="vertical-align: middle; margin: 1px;"/>
+#   <span style="vertical-align: middle; padding: 1px; ">NA</span>
 # </div>')
-#   testthat::expect_equal(numHori[["x"]][["calls"]][[1]][["args"]][[1]],
-#                          '<div style="margin-right: 3.34883720930233px; margin-left: 3.34883720930233px">
+#   numHori %>%
+#     getElement('x') %>%
+#     getElement('calls') %>%
+#     getElement(1) %>%
+#     getElement('args') %>%
+#     getElement(1) %>%
+#     strsplit('<img') %>%
+#     getElement(1) %>%
+#     sprintf(fmt = '%2$s%1$s', c('', '<img')) %>%
+#     mapply(function(x,fun) fun(x), x = ., fun = c(identity, URLdecode)) %>%
+#     paste0(collapse = '\n') %>%
+#     testthat::expect_equal(
+#       '<div style="margin-right: 3.90697674418605px; margin-left: 3.90697674418605px">
 #   <svg width="20" height="104">
 #     <defs>
-#       <linearGradient id="gradient-x" x1="0" y1="0" x2="1" y2="0">
-#         <stop offset="0.000000%" stop-color="#FFF5F0"></stop>
-#         <stop offset="20.000000%" stop-color="#FDCAB4"></stop>
-#         <stop offset="40.000000%" stop-color="#FC8A6A"></stop>
-#         <stop offset="60.000000%" stop-color="#F24632"></stop>
-#         <stop offset="80.000000%" stop-color="#BC141A"></stop>
-#         <stop offset="100.000000%" stop-color="#67000D"></stop>
+#       <linearGradient id="gradient-c1NA3-1" x1="0" y1="0" x2="1" y2="0">
+#         <stop offset="0.000%" stop-color="#FFF5F0"></stop>
+#         <stop offset="100.000%" stop-color="#67000D"></stop>
 #       </linearGradient>
 #     </defs>
 #     <g>
-#       <rect height="100" width="20" x="0" rx="0%" fill-opacity="1" fill="url(#gradient-x)"></rect>
+#       <rect height="100" width="20" x="0" ry="0%" fill-opacity="1" fill="url(#gradient-c1NA3-1)"></rect>
 #     </g>
 #     <line x1="0" x2="0" y1="100" y2="104" stroke-width="1" stroke="black"></line>
 #     <line x1="20" x2="20" y1="100" y2="104" stroke-width="1" stroke="black"></line>
@@ -545,7 +578,14 @@ testthat::test_that('Numeric Legend', {
 # </div>
 # <div style="width: 100%; height: 1rem; position: relative; ">
 #   <div style="position:absolute; left:0px; top: 0px;">1</div>
-#   <div style="position:absolute; left:20px; top: 0px;">2</div>
+#   <div style="position:absolute; left:20px; top: 0px;">3</div>
+# </div>
+# <div style="margin-top: .3rem;">
+#
+# <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100">
+#   <rect id="rect" x="0" y="0" height="100" width="100" stroke="#808080" fill="#808080" stroke-opacity="1" fill-opacity="1" stroke-width="0"></rect>
+# </svg>" style="vertical-align: middle; margin: 1px;"/>
+#   <span style="vertical-align: middle; padding: 1px; ">NA</span>
 # </div>')
 
 })
@@ -649,15 +689,15 @@ testthat::test_that('Categorical Legends', {
     testthat::expect_equal(
       '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="26" height="26">
   <rect id="rect" x="1" y="1" height="24" width="24" stroke="#FEE0D2" fill="#FEE0D2" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; ">  0% -  50% (1 - 6)</span>
 <br/>
 <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="26" height="26">
   <rect id="rect" x="1" y="1" height="24" width="24" stroke="#DE2D26" fill="#DE2D26" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "> 50% - 100% (6 - 10)</span>
 <br/>')
-  m %>% addLegendBin(pal = palBin) %>%
+  m %>% addLegendBin(pal = palBin, values = ~x) %>%
     getElement(1) %>%
     getElement('calls') %>%
     getElement(1) %>%
@@ -667,12 +707,12 @@ testthat::test_that('Categorical Legends', {
     testthat::expect_equal(
       '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="26" height="26">
   <rect id="rect" x="1" y="1" height="24" width="24" stroke="#DEEBF7" fill="#DEEBF7" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "> 0 - 5</span>
 <br/>
 <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="26" height="26">
   <rect id="rect" x="1" y="1" height="24" width="24" stroke="#3182BD" fill="#3182BD" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "> 5 - 10</span>
 <br/>')
   m %>% addLegendFactor(pal = palFactor,
@@ -686,12 +726,12 @@ testthat::test_that('Categorical Legends', {
     testthat::expect_equal(
       '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="26" height="26">
   <rect id="rect" x="1" y="1" height="24" width="24" stroke="#440154" fill="#440154" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "> A</span>
 <br/>
 <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="26" height="26">
   <rect id="rect" x="1" y="1" height="24" width="24" stroke="#FDE725" fill="#FDE725" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
-</svg>" style="vertical-align: middle; padding: 1px;"/>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
 <span style="vertical-align: middle; padding: 1px; "> B</span>
 <br/>')
 })
@@ -781,3 +821,68 @@ testthat::test_that('Helper Functions', {
     testthat::expect_equal(leaflet:::leafletAmBootstrapDependencies())
 })
 
+testthat::test_that('pch', {
+  defaultSize <- 20
+  makeSymbol(shape = -1, width = defaultSize, color = 'black') |>
+    testthat::expect_error()
+  makeSymbol(shape = 1.5, width = defaultSize, color = 'black') |>
+    testthat::expect_error()
+  makeSymbol(shape = 26, width = defaultSize, color = 'black') |>
+    testthat::expect_error()
+  makeLegendSymbol(label = '', labelStyle = '', shape = 'open-rect', width = 1,
+    color = 'black', orientation = 'horizontal') %>%
+    as.character() %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3" height="3">
+  <g transform="translate(1.000000 1.000000)">
+    <rect id="open-rect" x="0" y="0" height="1" width="1" stroke="black" fill="transparent" stroke-opacity="1" orientation="horizontal"></rect>
+  </g>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
+<span style="vertical-align: middle; padding: 1px; "></span>')
+  makeLegendSymbol(label = '', labelStyle = '', shape = 0, width = 1,
+    color = 'black', orientation = 'horizontal') %>%
+    as.character() %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      '<img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3" height="3">
+  <g transform="translate(1.000000 1.000000)">
+    <rect id="open-rect" x="0" y="0" height="1" width="1" stroke="black" fill="transparent" stroke-opacity="1" orientation="horizontal"></rect>
+  </g>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
+<span style="vertical-align: middle; padding: 1px; "></span>')
+  makeSymbol(availableShapes()[['pch']][26], width = 1, height = 2,
+    color = 'black', fillColor = 'blue',
+    opacity = .9, fillOpacity = .7) %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3" height="4">
+  <polygon id="triangle" points="1,3 2,3 1.5,1" stroke="black" fill="blue" stroke-opacity="0.9" fill-opacity="0.7" transform="rotate(180 2.000000 1.500000)"></polygon>
+</svg>')
+  pchSvg('notashape', width = 20, height = 20, color = 'black', fillColor =
+      'black', opacity = 1, fillOpacity = 1, `stroke-width` = 2) %>%
+    testthat::expect_error()
+})
+
+testthat::test_that('utils', {
+  addTitle(htmltools::div('title'), list()) %>%
+    getElement(1) %>%
+    as.character() %>%
+    testthat::expect_equal('<div>
+  <div>title</div>
+</div>')
+  addNa(hasNa = TRUE, htmlElements = list(), shape = 'rect', labels = 'NA',
+    colors = 'grey', labelStyle = '', height = 10, width = 10, opacity = 1,
+    fillOpacity = 1, strokeWidth = 0) %>%
+    getElement(1) %>%
+    as.character() %>%
+    URLdecode() %>%
+    testthat::expect_equal('<div style="margin-top: .3rem;">
+  <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">
+  <rect id="rect" x="0" y="0" height="10" width="10" stroke="grey" fill="grey" stroke-opacity="1" fill-opacity="1" stroke-width="0"></rect>
+</svg>" style="vertical-align: middle; margin: 1px;"/>
+  <span style="vertical-align: middle; padding: 1px; ">NA</span>
+</div>')
+  verifyIconLibrary('bad') %>%
+    testthat::expect_error()
+})
