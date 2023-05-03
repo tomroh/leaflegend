@@ -10,6 +10,12 @@
     <loc>https://leaflegend.roh.engineering/index.html</loc>
   </url>
   <url>
+    <loc>https://leaflegend.roh.engineering/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://leaflegend.roh.engineering/news/index.html</loc>
   </url>
   <url>
@@ -25,21 +31,18 @@
     <loc>https://leaflegend.roh.engineering/reference/addLegendSize.html</loc>
   </url>
   <url>
-    <loc>https://leaflegend.roh.engineering/reference/index.html</loc>
+    <loc>https://leaflegend.roh.engineering/reference/availableShapes.html</loc>
   </url>
   <url>
-    <loc>https://leaflegend.roh.engineering/reference/makeSymbol.html</loc>
+    <loc>https://leaflegend.roh.engineering/reference/index.html</loc>
   </url>
   <url>
     <loc>https://leaflegend.roh.engineering/reference/legendSymbols.html</loc>
   </url>
   <url>
+    <loc>https://leaflegend.roh.engineering/reference/makeSymbol.html</loc>
+  </url>
+  <url>
     <loc>https://leaflegend.roh.engineering/reference/mapSymbols.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/LICENSE.html</loc>
   </url>
 </urlset>

@@ -224,7 +224,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
   stopifnot(is.numeric(width) & is.numeric(height))
   stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
   stopifnot(!is.na(shape))
-  if (shape %in% availableShapes()[['symbols']]) {
+  if (shape %in% availableShapes()[['default']]) {
     svg <- symbolSvg(shape = shape,  width = width, height = height,
       color = color, fillColor = fillColor, opacity = opacity,
       fillOpacity = fillOpacity, ...)
@@ -1061,7 +1061,7 @@ addSymbols <- function(
     ...
 ) {
   if (missing(shape)) {
-    shape <- availableShapes()[['symbols']]
+    shape <- availableShapes()[['default']]
   }
   if ( !missing(values) ) {
     values <- as.factor(parseValues(values, data))
@@ -2257,7 +2257,7 @@ addLegendSymbol <- function(map,
                             ...
 ) {
   if (missing(shape)) {
-    shape <- availableShapes()[['symbols']]
+    shape <- availableShapes()[['default']]
   }
   values <- sort(unique(as.factor(parseValues(values, data))))
   if ( length(levels(values)) > length(shape) ) {
@@ -2512,7 +2512,7 @@ parseValues <- function(values, data) {
 #'
 availableShapes <- function() {
   list(
-    'symbols' =
+    'default' =
       c('rect', 'circle', 'triangle', 'plus', 'cross', 'diamond', 'star',
         'stadium', 'line', 'polygon'),
     'pch' =

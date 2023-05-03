@@ -1,11 +1,25 @@
-# leaflegend 1.0.2
+# leaflegend 1.1.0
+
+* `availableShapes` is provided for convenience to look up supported symbol
+names.
+
+* `addLegendFactor`, `addLegendBin`, and `addLegendQuantile` will now show a 
+symbol for missing values if they exist and gain the `naLabel` argument.
+
+* Label spacing adjustments for `addLegendNumeric` which should support longer labels.
+
+* `addLegendNumeric` gains an argument `naLabel` and now shows the NA color 
+when there are missing values.
+
+* `addLegendNumeric` gains an argument `labels` which allows the user to 
+pass label names for numeric breaks.
 
 * The `breaks` argument in `addLegendLine` and `addLegendSize` now allows the 
 user to pass a named list where the names are the labels.
 
-* A new function `makePch` will create map symbols that are consistent with 
+* `makeSymbol` and `makeSymbolIcons` can now create map symbols that are consistent with 
 base R `pch`. The `shape` argument can accept the name or an integer 
-(0-indexed)
+(0-indexed). `availableShapes` provides a list of named options.
 
 # leaflegend 1.0.0
 
