@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="74">
+  <g transform="translate(2.000000 2.000000)">
+    <line id="pline1" x1="0" x2="50" y1="25" y2="25" stroke="black" stroke-opacity="1" stroke-width="2"></line>
+    <line id="pline2" x1="25" x2="25" y1="0" y2="50" stroke="black" stroke-opacity="1" stroke-width="2"></line>
+  </g>
+<text x="25" y="70" font-family="sans-serif" text-anchor="middle" font-size="6px">simple-plus</text>
+</svg>

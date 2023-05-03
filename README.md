@@ -41,6 +41,8 @@ devtools::install_github("tomroh/leaflegend")
 
 ## Map Symbols
 
+**default**
+
 <img src="man/figures/rect.svg" alt="rect" width = 50 height = 70 style="margin: 5px;"></img>
 <img src="man/figures/circle.svg" alt="circle" width = 50 height = 70 style="margin: 5px;"></img>
 <img src="man/figures/triangle.svg" alt="triangle" width = 50 height = 70 style="margin: 5px;"></img>
@@ -51,6 +53,35 @@ devtools::install_github("tomroh/leaflegend")
 <img src="man/figures/stadium.svg" alt="stadium" width = 50 height = 70 style="margin: 5px;"></img>
 <img src="man/figures/line.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
 <img src="man/figures/polygon.svg" alt="polygon" width = 50 height = 70 style="margin: 5px;"></img>
+
+**pch**
+
+<img src="man/figures/open-rect-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/open-circle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/open-triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/simple-plus-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/simple-cross-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/open-diamond-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/open-down-triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/cross-rect-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/simple-star-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/plus-diamond-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/plus-circle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/hexagram-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/plus-rect-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/cross-circle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/triangle-rect-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/solid-rect-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/solid-circle-md-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/solid-triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/solid-diamond-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/solid-circle-bg-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/solid-circle-sm-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/circle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/rect-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/diamond-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+<img src="man/figures/down-triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
 
 ## Example
 

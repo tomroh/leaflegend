@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="54" height="74">
+  <g>
+    <line id="cline1" x1="2" x2="52" y1="2" y2="52" stroke="black" stroke-opacity="1" stroke-width="2"></line>
+    <line id="cline2" x1="2" x2="52" y1="52" y2="2" stroke="black" stroke-opacity="1" stroke-width="2"></line>
+    <circle id="circle" cx="27" cy="27" r="25" stroke="black" fill="transparent" stroke-opacity="1" stroke-width="2"></circle>
+  </g>
+<text x="25" y="70" font-family="sans-serif" text-anchor="middle" font-size="6px">cross-circle</text>
+</svg>
