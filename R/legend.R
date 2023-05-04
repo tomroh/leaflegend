@@ -1453,11 +1453,6 @@ makeNumericHorizontal <- function(id, breaks, labels, colors, decreasing, hasNa,
   y1 <- 0
   y2 <- 0
   outer <- c(1L, length(breaks))
-  breaks <- breaks[outer]
-  colors <- colors[outer]
-  if (is.null(labels)) {
-    labels <- numberFormat(breaks)
-  }
   if (isTRUE(decreasing)) {
     x1 <- 1
     x2 <- 0
@@ -1465,6 +1460,12 @@ makeNumericHorizontal <- function(id, breaks, labels, colors, decreasing, hasNa,
   }
   scaledbreaks <- (breaks - rng[1]) / (rng[2] - rng[1])
   offsets <- sprintf('%.3f%%', scaledbreaks * 100)
+  breaks <- breaks[outer]
+  if (is.null(labels)) {
+    labels <- numberFormat(breaks)
+  }
+  colors <- colors
+  scaledbreaks <- scaledbreaks[outer]
   svgwidth <- width
   svgheight <- height + tickLength
   rectx <- 0
@@ -1787,6 +1788,7 @@ addLegendFactor <- function(map,
   stopifnot( width >= 0 && height >= 0 )
   orientation <- match.arg(orientation)
   values <- parseValues(values = values, data = data)
+  hasNa <- any(is.na(values))
   values <- sort(unique(values))
   labels <- sprintf(' %s', values)
   colors <- pal(values)
@@ -1798,7 +1800,7 @@ addLegendFactor <- function(map,
                                         fillOpacity = fillOpacity,
                                         orientation = orientation,
                                         title = title,
-                                        hasNa = any(is.na(values)),
+                                        hasNa = hasNa,
                                         naLabel = naLabel,
                                         naColor = pal(NA))
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
