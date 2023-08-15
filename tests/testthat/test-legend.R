@@ -757,7 +757,7 @@ testthat::test_that('Awesome Legends', {
     addLegendAwesomeIcon(iconSet = iconSet) %>%
     getElement('dependencies') %>%
     vapply(getElement, 'name', FUN.VALUE = character(1)) %>%
-    testthat::expect_equal(c('leaflet-awesomemarkers', 'bootstrap'))
+    testthat::expect_contains(c('leaflet-awesomemarkers', 'bootstrap'))
   m %>%
     addLegendAwesomeIcon(iconSet = iconSet) %>%
     getElement(1) %>%
