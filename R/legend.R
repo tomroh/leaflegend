@@ -370,8 +370,6 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
   if ( 'stroke-width' %in% names(list(...)) ) {
     strokeWidth <- list(...)[['stroke-width']]
   }
-  # TODO: handle 15-20, contains solid
-  # if missing fillColor, use color
   pchShape <-
     list(
       'open-rect' = htmltools::tags$g(
