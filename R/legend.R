@@ -370,6 +370,8 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
   if ( 'stroke-width' %in% names(list(...)) ) {
     strokeWidth <- list(...)[['stroke-width']]
   }
+  # TODO: handle 15-20, contains solid
+  # if missing fillColor, use color
   pchShape <-
     list(
       'open-rect' = htmltools::tags$g(
@@ -741,7 +743,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         height = height,
         width = width,
         stroke = 'transparent',
-        fill = fillColor,
+        fill = coalesce_missing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -751,7 +753,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         cy = height / 2 + strokeWidth,
         r =  height *  3 / 4 / 2,
         stroke = 'transparent',
-        fill = fillColor,
+        fill = coalesce_missing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -760,7 +762,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         points = drawTriangle(width = width, height = height,
           offset = strokeWidth),
         stroke = 'transparent',
-        fill = fillColor,
+        fill = coalesce_missing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -769,7 +771,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         points = drawDiamond(width = width, height = height,
           offset = strokeWidth),
         stroke = 'transparent',
-        fill = fillColor,
+        fill = coalesce_missing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -779,7 +781,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         cy = height / 2 + strokeWidth,
         r =  height *  4 / 4 / 2,
         stroke = 'transparent',
-        fill = fillColor,
+        fill = coalesce_missing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -789,7 +791,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         cy = height / 2 + strokeWidth,
         r = height *  2 / 4 / 2,
         stroke = 'transparent',
-        fill = fillColor,
+        fill = coalesce_missing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -857,6 +859,9 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
     }
   }
   pchShape[[shape]]
+}
+coalesce_missing <- function(x, y) {
+  if (missing(x)) y else x
 }
 #' @param svg
 #'
