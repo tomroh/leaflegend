@@ -1,3 +1,9 @@
+# leaflegend 1.1.1
+
+* updating test for 'leaflet' changes in v2.2.0
+
+* pch solid symbols 15-20 will use `color` if `fillColor` is missing
+
 # leaflegend 1.1.0
 
 * `availableShapes` is provided for convenience to look up supported symbol
