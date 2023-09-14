@@ -1034,6 +1034,10 @@ makeSymbolIcons <- function(shape,
 #'
 #' in pixels
 #'
+#' @param dashArray
+#'
+#' a string or vector/list of strings that defines the stroke dash pattern
+#'
 #' @param data
 #'
 #' the data object from which the argument values are derived; by default, it
@@ -1060,6 +1064,7 @@ addSymbols <- function(
     strokeWidth = 1,
     width = 20,
     height = width,
+    dashArray = NULL,
     data = leaflet::getMapData(map),
     ...
 ) {
@@ -1081,13 +1086,17 @@ addSymbols <- function(
   if ( inherits(fillColor, 'formula') ) {
     fillColor <- parseValues(fillColor, data)
   }
+  if (is.null(dashArray)) {
+    dashArray <- 'none'
+  }
   iconSymbols <- makeSymbolIcons(shape = shape, color = color,
                                  fillColor = fillColor, opacity = opacity,
                                  fillOpacity = fillOpacity,
                                  strokeWidth = strokeWidth, width = width,
-                                 height = width)
-  leaflet::addMarkers(map = map, lng = lng, lat = lat, icon = iconSymbols,
-                      data = data, ...)
+                                 height = width,
+                                 `stroke-dasharray` = dashArray)
+  leaflet::addMarkers(map = map, lng = lng, lat = lat,
+    icon = iconSymbols, data = data, ...)
 }
 #' @export
 #'
@@ -2239,6 +2248,10 @@ addLegendLine <- function(map,
 #'
 #' in pixels
 #'
+#' @param dashArray
+#'
+#' a string or vector/list of strings that defines the stroke dash pattern
+#'
 #' @export
 #'
 #' @rdname legendSymbols
@@ -2258,6 +2271,7 @@ addLegendSymbol <- function(map,
                             height = width,
                             group = NULL,
                             className = 'info legend leaflet-control',
+                            dashArray = NULL,
                             data = leaflet::getMapData(map),
                             ...
 ) {
@@ -2286,6 +2300,9 @@ addLegendSymbol <- function(map,
     stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
     fillColors <- fillColor
   }
+  if (is.null(dashArray)) {
+    dashArray <- 'none'
+  }
   symbols <- Map(makeSymbol,
                  shape = shape,
                  width = width,
@@ -2294,7 +2311,8 @@ addLegendSymbol <- function(map,
                  fillColor = fillColors,
                  opacity = opacity,
                  fillOpacity = fillOpacity,
-                 `stroke-width` = strokeWidth)
+                 `stroke-width` = strokeWidth,
+                 `stroke-dasharray` = dashArray)
   addLegendImage(map, images = symbols,
                  labels = as.character(values),
                  title = title, labelStyle = labelStyle,
