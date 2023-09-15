@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">leaflegend</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,6 +95,7 @@
 <span>  strokeWidth <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  width <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  height <span class="op">=</span> <span class="va">width</span>,</span>
+<span>  dashArray <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/getMapData.html" class="external-link">getMapData</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -195,6 +196,10 @@ column from <code>data</code>)</p></dd>
 <dt>values</dt>
 <dd><p>the values used to generate shapes; can be omitted for a single type of
 shape</p></dd>
+
+
+<dt>dashArray</dt>
+<dd><p>a string or vector/list of strings that defines the stroke dash pattern</p></dd>
 
 
 <dt>data</dt>
