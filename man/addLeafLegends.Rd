@@ -53,6 +53,7 @@ addLegendQuantile(
   group = NULL,
   className = "info legend leaflet-control",
   naLabel = "NA",
+  between = " &ndash; ",
   data = leaflet::getMapData(map),
   ...
 )
@@ -76,6 +77,7 @@ addLegendBin(
   group = NULL,
   className = "info legend leaflet-control",
   naLabel = "NA",
+  between = " &ndash; ",
   data = leaflet::getMapData(map),
   ...
 )
@@ -150,6 +152,8 @@ spatial data frames from the \pkg{sf} package.}
 \item{labelStyle}{character string of style argument for HTML text}
 
 \item{opacity}{opacity of the legend items}
+
+\item{between}{a separator between legend range labels}
 }
 \value{
 an object from \link[leaflet]{addControl}

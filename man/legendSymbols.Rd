@@ -72,6 +72,7 @@ addLegendSymbol(
   height = width,
   group = NULL,
   className = "info legend leaflet-control",
+  dashArray = NULL,
   data = leaflet::getMapData(map),
   ...
 )
@@ -133,6 +134,8 @@ spatial data frames from the \pkg{sf} package.}
 \item{width}{width in pixels of the lines}
 
 \item{height}{in pixels}
+
+\item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
 }
 \value{
 an object from \link[leaflet]{addControl}

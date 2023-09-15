@@ -233,8 +233,8 @@ testthat::test_that('Symbols', {
     getElement('data') %>%
     URLdecode() %>%
     testthat::expect_equal(
-      c("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"22\" height=\"22\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"20\" width=\"20\" stroke=\"#FFF5F0\" fill=\"#FFF5F0\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\"></rect>\n</svg>",
-        "data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"22\" height=\"22\">\n  <circle id=\"circle\" cx=\"11\" cy=\"11\" r=\"10\" stroke=\"#FDA081\" fill=\"#FDA081\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\"></circle>\n</svg>"
+      c("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"22\" height=\"22\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"20\" width=\"20\" stroke=\"#FFF5F0\" fill=\"#FFF5F0\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\" stroke-dasharray=\"none\"></rect>\n</svg>",
+        "data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"22\" height=\"22\">\n  <circle id=\"circle\" cx=\"11\" cy=\"11\" r=\"10\" stroke=\"#FDA081\" fill=\"#FDA081\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\" stroke-dasharray=\"none\"></circle>\n</svg>"
       ))
   m %>%
     addSymbolsSize(lat = ~lat, lng = ~lng, color = ~pal(x), fillColor = ~pal(x),
@@ -248,8 +248,8 @@ testthat::test_that('Symbols', {
     getElement('data') %>%
     URLdecode() %>%
     testthat::expect_equal(
-      c("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"15.3333333333333\" height=\"15.3333333333333\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"13.3333333333333\" width=\"13.3333333333333\" stroke=\"#FFF5F0\" fill=\"#FFF5F0\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\"></rect>\n</svg>",
-        "data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"28.6666666666667\" height=\"28.6666666666667\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"26.6666666666667\" width=\"26.6666666666667\" stroke=\"#FDA081\" fill=\"#FDA081\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\"></rect>\n</svg>"
+      c("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"15.3333333333333\" height=\"15.3333333333333\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"13.3333333333333\" width=\"13.3333333333333\" stroke=\"#FFF5F0\" fill=\"#FFF5F0\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\" stroke-dasharray=\"none\"></rect>\n</svg>",
+        "data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"28.6666666666667\" height=\"28.6666666666667\">\n  <rect id=\"rect\" x=\"1\" y=\"1\" height=\"26.6666666666667\" width=\"26.6666666666667\" stroke=\"#FDA081\" fill=\"#FDA081\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"1\" stroke-dasharray=\"none\"></rect>\n</svg>"
       ))
   drawPolygon(4) %>%
     testthat::expect_equal('0,0.5 0.5,0 1,0.5 0.5,1 0,0.5')
@@ -366,13 +366,13 @@ testthat::test_that('Symbol Legends', {
     testthat::expect_equal(
       '<div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="22" height="22">
-  <rect id="rect" x="1" y="1" height="20" width="20" stroke="black" fill="#E41A1C" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
+  <rect id="rect" x="1" y="1" height="20" width="20" stroke="black" fill="#E41A1C" stroke-opacity="1" fill-opacity="1" stroke-width="1" stroke-dasharray="none"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="20" width="20"/>
   <span style="">1</span>
 </div>
 <div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="22" height="22">
-  <circle id="circle" cx="11" cy="11" r="10" stroke="black" fill="#4DAF4A" stroke-opacity="1" fill-opacity="1" stroke-width="1"></circle>
+  <circle id="circle" cx="11" cy="11" r="10" stroke="black" fill="#4DAF4A" stroke-opacity="1" fill-opacity="1" stroke-width="1" stroke-dasharray="none"></circle>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="20" width="20"/>
   <span style="">2</span>
 </div>')

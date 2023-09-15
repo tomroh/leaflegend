@@ -1095,8 +1095,13 @@ addSymbols <- function(
                                  strokeWidth = strokeWidth, width = width,
                                  height = width,
                                  `stroke-dasharray` = dashArray)
-  leaflet::addMarkers(map = map, lng = lng, lat = lat,
-    icon = iconSymbols, data = data, ...)
+  if (!missing(lng) & !missing(lat)) {
+    leaflet::addMarkers(map = map, lng = lng, lat = lat, icon = iconSymbols,
+      data = data, ...)
+  } else {
+    leaflet::addMarkers(map = map, icon = iconSymbols,
+      data = data, ...)
+  }
 }
 #' @export
 #'
@@ -1124,10 +1129,17 @@ addSymbolsSize <- function(
   if ( inherits(fillColor, 'formula') ) {
     fillColor <- parseValues(fillColor, data)
   }
-  addSymbols(map = map, lng = lng, lat = lat, shape = shape, color = color,
-             fillColor = fillColor, opacity = opacity,
-             fillOpacity = fillOpacity, strokeWidth = strokeWidth,
-             width = sizes, data = data, ...)
+  if (!missing(lng) & !missing(lat)) {
+    addSymbols(map = map,  lng = lng, lat = lat, shape = shape, color = color,
+      fillColor = fillColor, opacity = opacity,
+      fillOpacity = fillOpacity, strokeWidth = strokeWidth,
+      width = sizes, data = data, ...)
+  } else {
+    addSymbols(map = map, shape = shape, color = color,
+               fillColor = fillColor, opacity = opacity,
+               fillOpacity = fillOpacity, strokeWidth = strokeWidth,
+               width = sizes, data = data, ...)
+  }
 }
 
 #' Add Customizable Color Legends to a 'leaflet' map widget
@@ -1692,6 +1704,7 @@ addLegendQuantile <- function(map,
                               group = NULL,
                               className = 'info legend leaflet-control',
                               naLabel = 'NA',
+                              between = ' - ',
                               data = leaflet::getMapData(map),
                               ...) {
   stopifnot( attr(pal, 'colorType') == 'quantile' )
@@ -1700,17 +1713,20 @@ addLegendQuantile <- function(map,
   probs <- attr(pal, 'colorArgs')[['probs']]
   values <- parseValues(values = values, data = data)
   if ( is.null(numberFormat) ) {
-    labels <- sprintf(' %3.0f%% - %3.0f%%',
+    labels <- sprintf(' %3.0f%%%s%3.0f%%',
                       probs[-length(probs)] * 100,
+                      between,
                       probs[-1] * 100)
 
   } else {
     breaks <- stats::quantile(x = values, probs = probs, na.rm = TRUE)
     labels <- numberFormat(breaks)
-    labels <- sprintf('%3.0f%% - %3.0f%% (%s - %s)',
+    labels <- sprintf('%3.0f%%%s%3.0f%% (%s%s%s)',
                     probs[-length(probs)] * 100,
+                    between,
                     probs[-1] * 100,
                     labels[-length(labels)],
+                    between,
                     labels[-1])
   }
   colors <- unique(pal(sort(values)))
@@ -1729,6 +1745,10 @@ addLegendQuantile <- function(map,
                        className = className, group = group, ...)
 }
 
+#' @param between
+#'
+#' a separator between legend range labels
+#'
 #' @export
 #'
 #' @rdname addLeafLegends
@@ -1751,6 +1771,7 @@ addLegendBin <- function(map,
                          group = NULL,
                          className = 'info legend leaflet-control',
                          naLabel = 'NA',
+                         between = ' - ',
                          data = leaflet::getMapData(map),
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
@@ -1758,7 +1779,7 @@ addLegendBin <- function(map,
   orientation <- match.arg(orientation)
   values <- parseValues(values = values, data = data)
   bins <- attr(pal, 'colorArgs')[['bins']]
-  labels <- sprintf(' %s - %s', numberFormat(bins[-length(bins)]),
+  labels <- sprintf(' %s%s%s', numberFormat(bins[-length(bins)]), between,
                     numberFormat(bins[-1]))
   colors <- pal((bins[-1] + bins[-length(bins)]) / 2 )
   htmlElements <- makeLegendCategorical(shape = shape, labels = labels,
