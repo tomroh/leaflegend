@@ -2505,7 +2505,7 @@ leaflegendAddControl <- function(map,
                                  ...) {
 
   if ( !is.null(group) ) {
-    leafLegendClassName <- paste('leaflegend-group', gsub('\\W', '', group),
+    leafLegendClassName <- paste('leaflegend-group', gsub('\\W|_', '', group),
                                  sep = '-')
     className <- paste(className, leafLegendClassName)
 
