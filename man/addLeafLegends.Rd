@@ -53,7 +53,7 @@ addLegendQuantile(
   group = NULL,
   className = "info legend leaflet-control",
   naLabel = "NA",
-  between = " &ndash; ",
+  between = " - ",
   data = leaflet::getMapData(map),
   ...
 )
@@ -77,7 +77,7 @@ addLegendBin(
   group = NULL,
   className = "info legend leaflet-control",
   naLabel = "NA",
-  between = " &ndash; ",
+  between = " - ",
   data = leaflet::getMapData(map),
   ...
 )

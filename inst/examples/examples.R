@@ -110,6 +110,79 @@ leaflet() %>%
     height = 100,
     width = 20
   )
+library(leaflet)
+library(leaflegend)
+data(quakes)
+quakes1000 <- quakes[1:1000, ]
+quakes1000[['x']] <- 1:1000
+numPal <- colorNumeric('viridis', log10(c(.01, 1000)))
+leaflet(quakes1000) %>%
+  addTiles() %>%
+  addCircleMarkers(color = ~numPal(log10(x))) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~log10(x),
+    position = 'topright',
+    orientation = 'vertical',
+    shape = 'stadium',
+    height = 129,
+    width = 18,
+    bins = 5,
+    fillOpacity = .5,
+    numberFormat = function(x) {
+      prettyNum(x^10, format = "f", big.mark = ",", digits =
+          3, scientific = FALSE)
+    }
+  )
+library(leaflet)
+library(leaflegend)
+data(quakes)
+quakes1000 <- quakes[1:1000, ]
+quakes1000[['x']] <- 1:1000
+numPal <- colorNumeric('viridis', log10(quakes1000$depth))
+leaflet(quakes1000) %>%
+  addTiles() %>%
+  addCircleMarkers(color = ~numPal(log10(depth))) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~log10(depth),
+    position = 'topright',
+    orientation = 'vertical',
+    shape = 'stadium',
+    height = 129,
+    width = 18,
+    bins = 5,
+    fillOpacity = .5,
+    numberFormat = function(x) {
+      prettyNum(x^10, format = "f", big.mark = ",", digits =
+          3, scientific = FALSE)
+    }
+  )
+
+library(leaflet)
+library(leaflegend)
+data(quakes)
+quakes1000 <- quakes[1:1000, ]
+quakes1000[['x']] <- 1:1000
+numPal <- colorNumeric('viridis', (quakes1000$depth))
+leaflet(quakes1000) %>%
+  addTiles() %>%
+  addCircleMarkers(color = ~numPal((depth))) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~(depth),
+    position = 'topright',
+    orientation = 'vertical',
+    shape = 'stadium',
+    height = 129,
+    width = 18,
+    bins = 5,
+    fillOpacity = .5,
+    numberFormat = function(x) {
+      prettyNum(x, format = "f", big.mark = ",", digits =
+          3, scientific = FALSE)
+    }
+  )
 
 # Quantile Legend ---------------------------------------------------------
 
@@ -313,11 +386,14 @@ leaflet(quakes) %>%
   )
 
 # Group Layers ------------------------------------------------------------
+library(leaflet)
+library(leaflegend)
 numPal <- colorNumeric('viridis', quakes$depth)
 quantPal <- colorQuantile('viridis', quakes$mag, n = 5)
 binPal <- colorBin('Set1', quakes$mag)
 leaflet() %>%
   addTiles() %>%
+  addMarkers(data = quakes, group = 'Bin') %>%
   addLegendNumeric(
     pal = numPal,
     values = quakes$depth,
