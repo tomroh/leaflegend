@@ -243,6 +243,25 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
   makeSvgUri(svg = svg, width = width, height = height,
     strokeWidth = strokeWidth)
 }
+makeSymbolElement <- function(shape, width, height = width, color, fillColor = color,
+  opacity = 1, fillOpacity = opacity, ...) {
+  stopifnot(is.numeric(width) & is.numeric(height))
+  stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
+  stopifnot(!is.na(shape))
+  if (shape %in% availableShapes()[['default']]) {
+    svg <- symbolSvg(shape = shape,  width = width, height = height,
+      color = color, fillColor = fillColor, opacity = opacity,
+      fillOpacity = fillOpacity, ...)
+  } else if (shape %in% availableShapes()[['pch']] || shape %in%
+      (seq_along(availableShapes()[['pch']]) - 1)) {
+    svg <- pchSvg(shape = shape,  width = width, height = height,
+      color = color, fillColor = fillColor, opacity = opacity,
+      fillOpacity = fillOpacity, ...)
+  } else {
+    stop('Argument "shape" is invalid. See `availableShapes()`.')
+  }
+  svg
+}
 symbolSvg <- function(shape, width, height, color, fillColor, opacity,
   fillOpacity, ...) {
   strokeWidth <- 1
@@ -878,6 +897,20 @@ makeSvgUri <- function(svg, width, height, strokeWidth) {
           version = "1.1",
           width = width + strokeWidth * 2,
           height = height + strokeWidth * 2,
+          svg
+        )
+      ), reserved = TRUE))
+  structure(svgURI, class = c(class(svgURI), 'svgURI'))
+}
+makeSvgUri2 <- function(svg, width, height) {
+  svgURI <-
+    sprintf('data:image/svg+xml,%s',
+      utils::URLencode(as.character(
+        htmltools::tags$svg(
+          xmlns = "http://www.w3.org/2000/svg",
+          version = "1.1",
+          width = width,
+          height = height,
           svg
         )
       ), reserved = TRUE))
@@ -1964,6 +1997,11 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'
 #' extra CSS class to append to the control, space separated
 #'
+#' @param stacked
+#'
+#' If \code{TRUE}, symbols are overlayed onto each other for a more compact
+#' size legend
+#'
 #' @param data a data object. Currently supported objects are matrices, data
 #'   frames, spatial objects from the \pkg{sp} package
 #'   (\code{SpatialPoints}, \code{SpatialPointsDataFrame}, \code{Polygon},
@@ -2101,6 +2139,7 @@ addLegendSize <- function(map,
                             },
                           group = NULL,
                           className = 'info legend leaflet-control',
+                          stacked = FALSE,
                           data = leaflet::getMapData(map),
                           ...) {
   values <- parseValues(values = values, data = data)
@@ -2135,11 +2174,55 @@ addLegendSize <- function(map,
                  opacity = opacity,
                  fillOpacity = fillOpacity,
                  `stroke-width` = strokeWidth)
-  addLegendImage(map, images = symbols,
-                 labels = labels,
-                 title = title, labelStyle = labelStyle,
-                 orientation = orientation, width = sizes, height = sizes,
-                 group = group, className = className, ...)
+  if (isTRUE(stacked)) {
+    #TODO: convert to formula
+    maxSize <- max(sizes)
+    svgElements <- Map(makeSymbolElement,
+      shape = shape,
+      width = sizes,
+      height = sizes,
+      color = colors,
+      fillColor = fillColors,
+      opacity = opacity,
+      fillOpacity = fillOpacity,
+      `stroke-width` = strokeWidth,
+      transform = sprintf('translate(%.02f,%.02f)', maxSize / 2 - sizes / 2,
+        maxSize - sizes))
+    tickLocations <- maxSize - sizes + strokeWidth
+    ticks <- Map(htmltools::tags$line, x1 = maxSize / 2 + strokeWidth * 3 / 2,
+      x2 = maxSize + strokeWidth * 2, y1 = tickLocations, y2 = tickLocations,
+      stroke = 'black',
+      id='line', `stroke-linecap` = 'square',
+      `stroke-opacity` = 1, `fill-opacity` = 1, `stroke-width` = strokeWidth)
+    htmlElements <- htmltools::tags$svg(
+      xmlns = "http://www.w3.org/2000/svg",
+      version = "1.1",
+      width = maxSize + strokeWidth * 2,
+      height = maxSize + strokeWidth * 2,
+      htmltools::tagList(rev(svgElements), ticks)
+    )
+    htmlElements <- htmltools::tags$img(src = makeSvgUri(htmlElements,
+      width = maxSize, height = maxSize, strokeWidth = strokeWidth))
+    htmlElements <- htmltools::tags$div(
+      style= sprintf('position: relative; width: calc(%1$spx + .5 * %2$dem); height: %1$spx; margin-top:1rem; %3$s',
+        max(sizes) + 2 * strokeWidth, max(nchar(labels)), labelStyle),
+      htmlElements,
+      Map(htmltools::p,
+      labels,
+      style=sprintf('position: absolute; margin: 0; top: calc(%.2fpx - .5rem); right: 0;',
+        tickLocations)
+    ))
+    htmlElements <- htmltools::tagList(title, htmlElements = htmlElements)
+    #htmlElements <- addTitle(title = title, htmlElements = htmlElements)
+    leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
+      className = className, group = group, ...)
+  } else {
+    addLegendImage(map, images = symbols,
+                   labels = labels,
+                   title = title, labelStyle = labelStyle,
+                   orientation = orientation, width = sizes, height = sizes,
+                   group = group, className = className, ...)
+  }
 
 }
 

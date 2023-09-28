@@ -28,6 +28,7 @@ addLegendSize(
  },
   group = NULL,
   className = "info legend leaflet-control",
+  stacked = FALSE,
   data = leaflet::getMapData(map),
   ...
 )
@@ -114,6 +115,9 @@ be this exact size}
 \item{group}{group name of a leaflet layer group}
 
 \item{className}{extra CSS class to append to the control, space separated}
+
+\item{stacked}{If \code{TRUE}, symbols are overlayed onto each other for a more compact
+size legend}
 
 \item{data}{a data object. Currently supported objects are matrices, data
 frames, spatial objects from the \pkg{sp} package

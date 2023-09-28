@@ -1,5 +1,8 @@
 # leaflegend 1.1.5
 
+* added `stacked` argument to `addLegendSize` to allow size legends that are 
+more compact when symbols are overlayed. See examples in `?addLegendSize`.
+
 * groups can now have underscores in their name for show/hide functionality.
 
 * added `between` argument to `addLegendBin` and `addLegendQuantile` so that 
