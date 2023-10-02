@@ -1,4 +1,7 @@
-# leaflegend 1.1.5
+# leaflegend 1.1.8
+
+* `addLegendNumeric` gains `labelStyle` argument and significant improvements 
+to the layout that will handle larger font sizes and long text widths.
 
 * added `stacked` argument to `addLegendSize` to allow size legends that are 
 more compact when symbols are overlayed. See examples in `?addLegendSize`.

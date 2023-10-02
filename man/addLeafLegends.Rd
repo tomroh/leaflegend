@@ -29,6 +29,7 @@ addLegendNumeric(
   group = NULL,
   labels = NULL,
   naLabel = "NA",
+  labelStyle = "",
   className = "info legend leaflet-control",
   data = leaflet::getMapData(map),
   ...
@@ -137,6 +138,8 @@ colorNumeric palette}
 
 \item{naLabel}{the legend label for NAs in values}
 
+\item{labelStyle}{character string of style argument for HTML text}
+
 \item{className}{extra CSS class to append to the control, space separated}
 
 \item{data}{a data object. Currently supported objects are matrices, data
@@ -148,8 +151,6 @@ frames, spatial objects from the \pkg{sp} package
 spatial data frames from the \pkg{sf} package.}
 
 \item{...}{arguments to pass to \link[leaflet]{addControl}}
-
-\item{labelStyle}{character string of style argument for HTML text}
 
 \item{opacity}{opacity of the legend items}
 

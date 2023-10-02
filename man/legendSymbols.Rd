@@ -238,4 +238,28 @@ leaflet() \%>\%
   addLegendNumeric(pal = pal,
                    title = 'MinPress',
                    values = atlStorms2005$MinPress)
+
+# Stacked Legends
+leaflet(quakes) \%>\%
+addTiles() \%>\%
+  addSymbolsSize(values = ~10^(mag),
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    opacity = 1,
+    baseSize = 5,
+    strokeWidth = strokeWidth) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = 5,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    labelStyle = 'font-size: 18px;',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5)
 }

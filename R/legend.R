@@ -902,20 +902,6 @@ makeSvgUri <- function(svg, width, height, strokeWidth) {
       ), reserved = TRUE))
   structure(svgURI, class = c(class(svgURI), 'svgURI'))
 }
-makeSvgUri2 <- function(svg, width, height) {
-  svgURI <-
-    sprintf('data:image/svg+xml,%s',
-      utils::URLencode(as.character(
-        htmltools::tags$svg(
-          xmlns = "http://www.w3.org/2000/svg",
-          version = "1.1",
-          width = width,
-          height = height,
-          svg
-        )
-      ), reserved = TRUE))
-  structure(svgURI, class = c(class(svgURI), 'svgURI'))
-}
 
 makeLegendSymbol <- function(label, labelStyle,
   imgStyle = "vertical-align: middle; margin: 1px;", ...) {
@@ -1439,7 +1425,6 @@ addLegendNumeric <- function(map,
                              pal,
                              values,
                              title = NULL,
-                             #labelStyle = 'font-size: 24px;',
                              shape = c('rect', 'stadium'),
                              orientation = c('vertical', 'horizontal'),
                              width = 20,
@@ -1456,6 +1441,7 @@ addLegendNumeric <- function(map,
                              group = NULL,
                              labels = NULL,
                              naLabel = 'NA',
+                             labelStyle = '',
                              className = 'info legend leaflet-control',
                              data = leaflet::getMapData(map),
                              ...) {
@@ -1472,8 +1458,6 @@ addLegendNumeric <- function(map,
   values <- parseValues(values = values, data = data)
   rng <- range(values, na.rm = TRUE)
   breaks <- pretty(values, bins)
-  orientation <- match.arg(orientation)
-  vertical <- orientation == 'vertical'
   if (breaks[1] < rng[1]) {
     breaks[1] <- rng[1]
   }
@@ -1482,224 +1466,153 @@ addLegendNumeric <- function(map,
   }
   colors <- pal(breaks)
   hasNa <- any(is.na(values))
-  if (vertical) {
-    htmlElements <- makeNumericVertical(id = id, breaks = breaks,
-      labels = labels, colors = colors, decreasing = decreasing,
-      hasNa = hasNa, tickLength = tickLength, tickWidth = tickWidth,
-      rng = rng, height = height, width = width, fillOpacity = fillOpacity,
-      shape = shape, naColor = pal(NA), naLabel = naLabel, title = title,
-      numberFormat = numberFormat)
+  orientation <- match.arg(orientation)
+  isVertical <- as.integer(orientation == 'vertical')
+  isHorizontal <- as.integer(orientation == 'horizontal')
+  #TODO: adjust size legend
+  if (decreasing) {
+    breaks <- rev(breaks)
+    stdBreaks <- (1 - (breaks - rng[1]) / diff(rng)) *
+      (height * isVertical + width * isHorizontal)
   } else {
-    htmlElements <- makeNumericHorizontal(id = id, breaks = breaks,
-      labels = labels, colors = colors, decreasing = decreasing,
-      hasNa = hasNa, tickLength = tickLength, tickWidth = tickWidth,
-      rng = rng, height = height, width = width, fillOpacity = fillOpacity,
-      shape = shape, naColor = pal(NA), naLabel = naLabel, title = title,
-      numberFormat = numberFormat)
+    stdBreaks <- (breaks - rng[1]) / diff(rng) *
+      (height * isVertical + width * isHorizontal)
   }
+  if (orientation == 'vertical' && length(breaks) > 2) {
+    i <- seq(2L, length(breaks) - 1L, 1L)
+  } else {
+    i <- c(1, length(breaks))
+  }
+  if (is.null(labels)) {
+    labels <- numberFormat(breaks)[i]
+  }
+  labels <- rev(labels)
+  ticks <- makeTicks(breaks = stdBreaks[i], width = tickLength,
+    height = height, strokeWidth = tickWidth, stroke = 'black', transform =
+      sprintf('translate(%.03f,%.03f)', width * isVertical,
+        height * isHorizontal),
+    orientation = orientation)
+  tickText <- makeTickText(labels =  labels,breaks = stdBreaks[i],
+    width = width, height = height, strokeWidth = tickWidth,
+    orientation = orientation)
+  svgGradient <- makeGradient(breaks = breaks, colors = colors,
+    height = height, width = width, id = id, fillOpacity = fillOpacity,
+    orientation = orientation, shape)
+  htmlElements <- assembleLegendWithTicks(
+    width = width + (isVertical * tickLength * 2),
+    height = height + (isHorizontal * tickLength * 2),
+    svgElements = svgGradient, ticks = ticks, tickText = tickText,
+    labelStyle = labelStyle,
+    marginRight = ifelse(isVertical,
+      sprintf('calc(.5 * %dem)', max(nchar(labels))), ''))
+  naSize <- width * isVertical + height * isHorizontal
+  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
+    shape = shape, labels = naLabel, colors = pal(NA), labelStyle = labelStyle,
+    height = naSize, width = naSize, opacity = fillOpacity,
+    fillOpacity = fillOpacity, strokeWidth = 0)
+  htmlElements <- addTitle(title = title, htmlElements = list(htmlElements))
   leaflegendAddControl(map, html = htmlElements, className = className,
     group = group, ...)
 }
 
-
-makeNumericHorizontal <- function(id, breaks, labels, colors, decreasing, hasNa,
-  tickWidth, tickLength, rng, height, width, fillOpacity, shape, naColor,
-  naLabel, title, numberFormat) {
-  x1 <- 0
-  x2 <- 1
-  y1 <- 0
-  y2 <- 0
-  outer <- c(1L, length(breaks))
-  if (isTRUE(decreasing)) {
-    x1 <- 1
-    x2 <- 0
-    labels <- rev(labels)
-  }
-  scaledbreaks <- (breaks - rng[1]) / (rng[2] - rng[1])
-  offsets <- sprintf('%.3f%%', scaledbreaks * 100)
-  breaks <- breaks[outer]
-  if (is.null(labels)) {
-    labels <- numberFormat(breaks)
-  }
-  colors <- colors
-  scaledbreaks <- scaledbreaks[outer]
-  svgwidth <- width
-  svgheight <- height + tickLength
-  rectx <- 0
-  linex1 <- scaledbreaks * width
-  linex2 <- scaledbreaks * width
-  liney1 <- height
-  liney2 <- height + tickLength
-  naSize <- height
-  labelStyle <- ''
-  ry <- '0%'
-  if ( shape == 'stadium' ) {
-    ry <- '10%'
-  }
-  rectround <- list(ry = ry)
-  svgElement <- htmltools::tags$svg(
-    width = svgwidth,
-    height = svgheight,
-    htmltools::tags$def(
-      htmltools::tags$linearGradient(
-        id = id,
-        x1 = x1, y1 = y1, x2 = x2, y2 = y2,
-        htmltools::tagList(Map(htmltools::tags$stop,
-          offset = offsets,
-          'stop-color' = colors))
+makeGradient <- function(breaks, colors, height, width, id, fillOpacity,
+  orientation, shape) {
+  stops <- (breaks - min(breaks)) /
+    (max(breaks) - min(breaks))
+  colors <- colors[order(stops)]
+  stops <- sort(stops)
+  offsets <- sprintf('%.03f%%', 100 * stops)
+  curvePercent <- ifelse(shape == 'stadium', '10%', '0')
+  if (orientation == 'vertical') {
+    htmltools::tagList(
+      htmltools::tags$def(
+        htmltools::tags$linearGradient(
+          id = id,
+          x1 = 0, y1 = 0, x2 = 0, y2 = 1,
+          htmltools::tagList(Map(htmltools::tags$stop,
+            offset = offsets,
+            'stop-color' = colors))
+        )
+      ),
+      htmltools::tags$g(
+        htmltools::tags$rect(height = height, width = width, x = 0,
+          rx = curvePercent, 'fill-opacity' = fillOpacity,
+          fill = sprintf('url(#%s)', id))
       )
-    ),
-    htmltools::tags$g(
-      do.call(htmltools::tags$rect,
-        c(height = height,
-          width = width,
-          x = rectx,
-          rectround,
-          'fill-opacity' = fillOpacity,
-          fill = sprintf('url(#%s)', id)))
-    ),
-    Map(htmltools::tags$line,
-      x1 = linex1,
-      x2 = linex2,
-      y1 = liney1,
-      y2 = liney2,
-      'stroke-width' = tickWidth,
-      stroke = 'black'
     )
-  )
-  cexAdj <- 1.22
-  pixel2Inch <- 72
-  textWidth <- graphics::strwidth(labels, units = 'inches', cex = cexAdj) *
-    pixel2Inch
-  maxTextWidth <- max(textWidth)
-  left1 <- 0
-  if (textWidth[1] < maxTextWidth  ) {
-    left1 <- (maxTextWidth / 2 - textWidth[1] / 2) / (width + maxTextWidth)
-  }
-  left2 <- (width) / (width + maxTextWidth)
-  if (textWidth[2] < maxTextWidth) {
-    left2 <- (width + maxTextWidth / 2 - textWidth[2] / 2) / (width + maxTextWidth)
-  }
-  maxTextWidth <- max(textWidth)
-  htmlElements <- list(
-    htmltools::tags$div(
-      style = sprintf('margin-right: %spx; margin-left: %spx',
-        maxTextWidth / 2, maxTextWidth / 2 ), svgElement),
-    htmltools::tags$div(
-      style = sprintf("width: %.3f; height: 1rem; position: relative; %s",
-        width + maxTextWidth, labelStyle),
-      htmltools::tags$div(
-        style = sprintf("position:absolute; left:%.3f%%; top: 0%%;",
-          left1 * 100),
-        labels[1]),
-      htmltools::tags$div(
-        style = sprintf("position:absolute; left:%.3f%%; top: 0%%;",
-          left2 * 100
-          ),
-        labels[2])
-
+  } else {
+    htmltools::tagList(
+      htmltools::tags$def(
+        htmltools::tags$linearGradient(
+          id = id,
+          x1 = 0, y1 = 0, x2 = 1, y2 = 0,
+          htmltools::tagList(Map(htmltools::tags$stop,
+            offset = offsets,
+            'stop-color' = colors))
+        )
+      ),
+      htmltools::tags$g(
+        htmltools::tags$rect(height = height, width = width, x = 0,
+          ry = curvePercent, 'fill-opacity' = fillOpacity,
+          fill = sprintf('url(#%s)', id))
+      )
     )
-  )
-  htmlElements <- addTitle(title = title, htmlElements = htmlElements)
-  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
-    shape = shape, labels = naLabel, colors = naColor, labelStyle = labelStyle,
-    height = naSize, width = naSize, opacity = fillOpacity,
-    fillOpacity = fillOpacity, strokeWidth = 0)
-  htmltools::tagList(htmlElements)
+  }
 }
 
-makeNumericVertical <- function(id, breaks, labels, colors, decreasing, hasNa,
-  tickWidth, tickLength, rng, height, width, fillOpacity, shape, naColor,
-  naLabel, title, numberFormat) {
-  x1 <- 0
-  x2 <- 0
-  y1 <- 0
-  y2 <- 1
-  outer <- c(1, length(breaks))
-  if (is.null(labels)) {
-    labels <- numberFormat(breaks)[-outer]
+makeTicks <- function(breaks, width, height, strokeWidth, orientation, ...) {
+  if (orientation == 'vertical') {
+    tickLocations <- height - breaks
+    ticks <- Map(htmltools::tags$line, x1 = 0,
+      x2 = width, y1 = tickLocations, y2 = tickLocations,
+      `stroke-width` = strokeWidth,
+      ...)
+  } else {
+    tickLocations <- breaks
+    ticks <- Map(htmltools::tags$line, x1 = tickLocations, x2 = tickLocations,
+      y1 = 0, y2 = width, `stroke-width` = strokeWidth, ...)
   }
-  if (isTRUE(decreasing)) {
-    y1 <- 1
-    y2 <- 0
-    labels <- rev(labels)
-  }
-  scaledbreaks <- (breaks - rng[1]) / (rng[2] - rng[1])
-  svgwidth <- width + tickLength
-  svgheight <- height
-  rectx <- 0
-  linex1 <- width
-  linex2 <- width + tickLength
-  liney1 <- scaledbreaks[-outer] * height
-  liney2 <- scaledbreaks[-outer] * height
-  naSize <- width
-  labelStyle <- ''
-  rx <- '0%'
-  if (shape == 'stadium') {
-    rx <- '10%'
-  }
-  rectround <- list(rx = rx)
-  svgElement <- htmltools::tags$svg(
-    width = svgwidth,
-    height = svgheight,
-    style = 'margin: 1px;',
-    htmltools::tags$def(
-      htmltools::tags$linearGradient(
-        id = id,
-        x1 = x1, y1 = y1, x2 = x2, y2 = y2,
-        htmltools::tagList(Map(htmltools::tags$stop,
-          offset = sprintf('%.3f%%', scaledbreaks * 100),
-          'stop-color' = colors))
-      )
-    ),
-    htmltools::tags$g(
-      do.call(htmltools::tags$rect,
-        c(height = height,
-          width = width,
-          x = rectx,
-          rectround,
-          'fill-opacity' = fillOpacity,
-          fill = sprintf('url(#%s)', id)))
-    ),
-    Map(htmltools::tags$line,
-      x1 = linex1,
-      x2 = linex2,
-      y1 = liney1,
-      y2 = liney2,
-      'stroke-width' = tickWidth,
-      stroke = 'black'
+  ticks
+}
+makeTickText <- function(labels, breaks, width, height, strokeWidth, orientation) {
+  if (orientation == 'vertical') {
+    tickLocations <- height - breaks
+    Map(
+      htmltools::p,
+      labels,
+      style=sprintf('position: absolute; margin: 0; top: calc(%.2fpx - .5em); right: 0; line-height:1;',
+        tickLocations)
     )
+  } else {
+    tickLocations <- breaks
+    Map(
+      htmltools::p,
+      labels,
+      style=sprintf('position: absolute; margin: 0; %s: 0; bottom: 0; line-height:1;',
+        c('right', 'left'))
+    )
+  }
+
+}
+assembleLegendWithTicks <- function(width, height, svgElements, ticks, tickText,
+  labelStyle, marginRight) {
+  htmlElements <- htmltools::tags$svg(
+    xmlns = "http://www.w3.org/2000/svg",
+    version = "1.1",
+    width = width,
+    height = height,
+    htmltools::tagList(svgElements, ticks)
   )
-  cexAdj <- 1.22
-  pixel2Inch <- 72
-  textWidth <- max(graphics::strwidth(labels, units = 'inches',
-    cex = cexAdj)) * pixel2Inch
-  textHeight <- max(graphics::strheight(labels, units = 'inches',
-    cex = 1)) * pixel2Inch
-  htmlElements <- list(htmltools::tags$div(style = 'display: flex;',
-    htmltools::tags$div(svgElement, style = "margin-right: 5px"),
-    htmltools::tags$div(
-      style = sprintf("width: %.3fpx; height: %.3fpx; display: flex;
-        justify-content: flex-end; position: relative; %s",
-        textWidth, height, labelStyle),
-      class = "container",
-      Map(function(y, label) {
-        htmltools::tags$div(
-          style = sprintf("position:absolute; top: %.3f%%;", y),
-          htmltools::HTML(label))
-      },
-        y = (scaledbreaks[-outer] - textHeight / height) * 100,
-        label = labels
-      )
-    )
-    , htmltools::tags$div(style = "width: 8px; position: relative;")
-  ))
-  htmlElements <- addTitle(title, htmlElements)
-  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
-    shape = shape, labels = naLabel, colors = naColor, labelStyle = labelStyle,
-    height = naSize, width = naSize, opacity = fillOpacity,
-    fillOpacity = fillOpacity, strokeWidth = 0)
-  htmltools::tagList(htmlElements)
+  htmlElements <- htmltools::tags$img(src = makeSvgUri(htmlElements,
+    width = width, height = height,
+    strokeWidth = 0), style=sprintf('margin-right: %s;', marginRight))
+  # need to somehow pass orientation
+  htmltools::tags$div(
+    style= sprintf('position: relative; margin-top:.5em; margin-bottom:.5em; %s',
+      labelStyle),
+    htmlElements,
+    tickText
+  )
 }
 
 addTitle <- function(title, htmlElements) {
@@ -1712,7 +1625,8 @@ addTitle <- function(title, htmlElements) {
   } else {
     stop('Title must be character vector or an html tags object')
   }
-  append(htmlElements, title, after = 0)
+  htmltools::tagList(title, htmlElements)
+  # append(htmlElements, title, after = 0)
 }
 
 #' @export
@@ -1915,9 +1829,9 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
         opacity = opacity,
         fillOpacity = fillOpacity,
         'stroke-width' = strokeWidth,
-        imgStyle = 'vertical-align: middle; margin: 1px;'
+        imgStyle = 'vertical-align: middle;'
       )))
-    htmlElements <- append(htmlElements, naLegend)
+    htmlElements <- htmltools::tagList(htmlElements, naLegend)
   }
   htmlElements
 }
@@ -2119,6 +2033,30 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'   addLegendNumeric(pal = pal,
 #'                    title = 'MinPress',
 #'                    values = atlStorms2005$MinPress)
+#'
+#' # Stacked Legends
+#' leaflet(quakes) %>%
+#' addTiles() %>%
+#'   addSymbolsSize(values = ~10^(mag),
+#'     lat = ~lat,
+#'     lng = ~long,
+#'     shape = 'circle',
+#'     color = 'black',
+#'     fillColor = 'red',
+#'     opacity = 1,
+#'     baseSize = 5,
+#'     strokeWidth = strokeWidth) |>
+#'   addLegendSize(
+#'     values = ~10^(mag),
+#'     title = 'Magnitude',
+#'     baseSize = 5,
+#'     shape = 'circle',
+#'     color = 'black',
+#'     fillColor = 'red',
+#'     labelStyle = 'font-size: 18px;',
+#'     position = 'bottomleft',
+#'     stacked = TRUE,
+#'     breaks = 5)
 addLegendSize <- function(map,
                           pal,
                           values,
@@ -2175,9 +2113,8 @@ addLegendSize <- function(map,
                  fillOpacity = fillOpacity,
                  `stroke-width` = strokeWidth)
   if (isTRUE(stacked)) {
-    #TODO: convert to formula
     maxSize <- max(sizes)
-    svgElements <- Map(makeSymbolElement,
+    svgElements <- rev(Map(makeSymbolElement,
       shape = shape,
       width = sizes,
       height = sizes,
@@ -2187,31 +2124,18 @@ addLegendSize <- function(map,
       fillOpacity = fillOpacity,
       `stroke-width` = strokeWidth,
       transform = sprintf('translate(%.02f,%.02f)', maxSize / 2 - sizes / 2,
-        maxSize - sizes))
-    tickLocations <- maxSize - sizes + strokeWidth
-    ticks <- Map(htmltools::tags$line, x1 = maxSize / 2 + strokeWidth * 3 / 2,
-      x2 = maxSize + strokeWidth * 2, y1 = tickLocations, y2 = tickLocations,
-      stroke = 'black',
-      id='line', `stroke-linecap` = 'square',
-      `stroke-opacity` = 1, `fill-opacity` = 1, `stroke-width` = strokeWidth)
-    htmlElements <- htmltools::tags$svg(
-      xmlns = "http://www.w3.org/2000/svg",
-      version = "1.1",
-      width = maxSize + strokeWidth * 2,
-      height = maxSize + strokeWidth * 2,
-      htmltools::tagList(rev(svgElements), ticks)
-    )
-    htmlElements <- htmltools::tags$img(src = makeSvgUri(htmlElements,
-      width = maxSize, height = maxSize, strokeWidth = strokeWidth))
-    htmlElements <- htmltools::tags$div(
-      style= sprintf('position: relative; width: calc(%1$spx + .5 * %2$dem); height: %1$spx; margin-top:1rem; %3$s',
-        max(sizes) + 2 * strokeWidth, max(nchar(labels)), labelStyle),
-      htmlElements,
-      Map(htmltools::p,
-      labels,
-      style=sprintf('position: absolute; margin: 0; top: calc(%.2fpx - .5rem); right: 0;',
-        tickLocations)
-    ))
+        maxSize - sizes)))
+    ticks <- makeTicks(breaks = sizes, width = maxSize / 2 + strokeWidth,
+      height = maxSize,
+      strokeWidth = strokeWidth, `stroke-linecap` = 'square', stroke = 'black',
+      transform = sprintf('translate(%.03f,0)',
+        maxSize / 2 + strokeWidth * 3 / 2))
+    tickText <- makeTickText(labels = labels, breaks = sizes, width = maxSize,
+      height = maxSize)
+    htmlElements <- assembleLegendWithTicks(width = maxSize + strokeWidth * 2,
+      height = maxSize + strokeWidth * 2, svgElements = svgElements,
+      ticks = ticks, tickText = tickText, labelStyle = labelStyle,
+      maxNChar = max(nchar(labels)), strokeWidth = strokeWidth)
     htmlElements <- htmltools::tagList(title, htmlElements = htmlElements)
     #htmlElements <- addTitle(title = title, htmlElements = htmlElements)
     leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
