@@ -1493,8 +1493,7 @@ addLegendNumeric <- function(map,
         height * isHorizontal),
     orientation = orientation)
   tickText <- makeTickText(labels =  labels,breaks = stdBreaks[i],
-    width = width, height = height, strokeWidth = tickWidth,
-    orientation = orientation)
+    width = width, height = height, orientation = orientation)
   svgGradient <- makeGradient(breaks = breaks, colors = colors,
     height = height, width = width, id = id, fillOpacity = fillOpacity,
     orientation = orientation, shape)
@@ -1574,7 +1573,7 @@ makeTicks <- function(breaks, width, height, strokeWidth, orientation, ...) {
   }
   ticks
 }
-makeTickText <- function(labels, breaks, width, height, strokeWidth, orientation) {
+makeTickText <- function(labels, breaks, width, height, orientation) {
   if (orientation == 'vertical') {
     tickLocations <- height - breaks
     Map(
@@ -2125,19 +2124,18 @@ addLegendSize <- function(map,
       `stroke-width` = strokeWidth,
       transform = sprintf('translate(%.02f,%.02f)', maxSize / 2 - sizes / 2,
         maxSize - sizes)))
-    ticks <- makeTicks(breaks = sizes, width = maxSize / 2 + strokeWidth,
-      height = maxSize,
+    ticks <- makeTicks(breaks = sizes - strokeWidth, width = maxSize / 2 + strokeWidth,
+      height = maxSize, orientation = 'vertical',
       strokeWidth = strokeWidth, `stroke-linecap` = 'square', stroke = 'black',
       transform = sprintf('translate(%.03f,0)',
         maxSize / 2 + strokeWidth * 3 / 2))
-    tickText <- makeTickText(labels = labels, breaks = sizes, width = maxSize,
-      height = maxSize)
+    tickText <- makeTickText(labels = labels, breaks = sizes - strokeWidth,
+      width = maxSize, height = maxSize, orientation = 'vertical')
     htmlElements <- assembleLegendWithTicks(width = maxSize + strokeWidth * 2,
       height = maxSize + strokeWidth * 2, svgElements = svgElements,
       ticks = ticks, tickText = tickText, labelStyle = labelStyle,
-      maxNChar = max(nchar(labels)), strokeWidth = strokeWidth)
+      marginRight = sprintf('calc(.5 * %dem + 2px)', max(nchar(labels))))
     htmlElements <- htmltools::tagList(title, htmlElements = htmlElements)
-    #htmlElements <- addTitle(title = title, htmlElements = htmlElements)
     leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
       className = className, group = group, ...)
   } else {

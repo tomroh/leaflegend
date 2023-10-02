@@ -164,6 +164,7 @@ library(leaflegend)
 data(quakes)
 quakes1000 <- quakes[1:1000, ]
 quakes1000[['x']] <- 1:1000
+quakes1000[['depth']][2] <- NA
 numPal <- colorNumeric('viridis', (quakes1000$depth))
 leaflet(quakes1000) %>%
   addTiles() %>%
@@ -173,10 +174,72 @@ leaflet(quakes1000) %>%
     values = ~(depth),
     position = 'topright',
     orientation = 'vertical',
-    shape = 'stadium',
+    shape = 'rect',
+    decreasing = TRUE,
     height = 129,
     width = 18,
     bins = 5,
+    title = 'depth',
+    tickLength = 10,
+    tickWidth = 5,
+    fillOpacity = .5,
+    numberFormat = function(x) {
+      prettyNum(x, format = "f", big.mark = ",", digits =
+          3, scientific = FALSE)
+    }
+  ) |>
+  addLegendNumeric(
+    pal = numPal,
+    values = ~(depth),
+    position = 'topright',
+    orientation = 'vertical',
+    shape = 'stadium',
+    decreasing = FALSE,
+    height = 129,
+    width = 18,
+    bins = 5,
+    title = 'depth',
+    tickLength = 10,
+    labelStyle = 'font-size: 24px;',
+    tickWidth = 5,
+    fillOpacity = .5,
+    numberFormat = function(x) {
+      prettyNum(x, format = "f", big.mark = ",", digits =
+          3, scientific = FALSE)
+    }
+  ) |>
+  addLegendNumeric(
+    pal = numPal,
+    values = ~(depth),
+    position = 'topright',
+    orientation = 'horizontal',
+    shape = 'stadium',
+    height = 18,
+    width = 129,
+    bins = 5,
+    title = 'depth',
+    tickLength = 10,
+    tickWidth = 5,
+    fillOpacity = .5,
+    numberFormat = function(x) {
+      prettyNum(x, format = "f", big.mark = ",", digits =
+          3, scientific = FALSE)
+    }
+  ) |>
+  addLegendNumeric(
+    pal = numPal,
+    values = ~(depth),
+    position = 'topright',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 18,
+    width = 129,
+    decreasing = TRUE,
+    labels = c('high', 'low'),
+    bins = 5,
+    title = 'depth',
+    tickLength = 10,
+    tickWidth = 5,
     fillOpacity = .5,
     numberFormat = function(x) {
       prettyNum(x, format = "f", big.mark = ",", digits =
@@ -384,6 +447,215 @@ leaflet(quakes) %>%
     breaks = stats::setNames(seq(500000, 2500000, 500000),
       c('Very Small', 'Small', 'Medium', 'Large', 'Very Large'))
   )
+
+# Stacked Size Legend -----------------------------------------------------
+
+library(leaflet)
+data("quakes")
+numPal <- colorNumeric('viridis', 10^(quakes$mag))
+baseSize <- 5
+strokeWidth <- 1
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(values = ~10^(mag),
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    opacity = 1,
+    baseSize = baseSize,
+    strokeWidth = strokeWidth) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    labelStyle = 'font-size: 24px;',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = strokeWidth) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    labelStyle = 'font-size: 8px;',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = strokeWidth) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    labelStyle = 'font-size: 16px;',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = strokeWidth)
+
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomleft',
+    labelStyle = 'font-size: 20px;',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 1) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'triangle',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'diamond',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomleft',
+    labelStyle = 'color: black;',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 3) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'stadium',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 4) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'polygon',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomright',
+    labelStyle = 'font-size: 24px;',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 5) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'rect',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 6) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'star',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2) %>%
+  # addLegendSize(
+  #   values = ~10^(mag),
+  #   title = 'Magnitude',
+  #   baseSize = baseSize,
+  #   shape = 'plus',
+  #   color = 'black',
+  #   fillColor = 'red',
+  #   position = 'bottomright',
+  #   stacked = TRUE,
+  #   breaks = 5,
+  #   strokeWidth = 2) %>%
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'cross',
+    color = 'black',
+    fillColor = 'red',
+    position = 'bottomright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2)
+
+
+
+leaflet(quakes) |>
+  addTiles() |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    position = 'topright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'triangle',
+    color = 'black',
+    fillColor = 'red',
+    position = 'topright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'diamond',
+    color = 'black',
+    fillColor = 'red',
+    position = 'topright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = baseSize,
+    shape = 'stadium',
+    color = 'black',
+    fillColor = 'red',
+    position = 'topright',
+    stacked = TRUE,
+    breaks = 5,
+    strokeWidth = 2)
 
 # Group Layers ------------------------------------------------------------
 library(leaflet)
