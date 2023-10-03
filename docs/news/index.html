@@ -51,8 +51,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.5" id="leaflegend-115">leaflegend 1.1.5<a class="anchor" aria-label="anchor" href="#leaflegend-115"></a></h2>
-<ul><li><p>groups can now have underscores in their name for show/hide functionality.</p></li>
+<h2 class="pkg-version" data-toc-text="1.1.10" id="leaflegend-1110">leaflegend 1.1.10<a class="anchor" aria-label="anchor" href="#leaflegend-1110"></a></h2>
+<ul><li><p><code>addLegendNumeric</code> gains <code>labelStyle</code> argument and significant improvements to the layout that will handle larger font sizes and long text widths.</p></li>
+<li><p>added <code>stacked</code> argument to <code>addLegendSize</code> to allow size legends that are more compact when symbols are overlayed. See examples in <code><a href="../reference/legendSymbols.html">?addLegendSize</a></code>.</p></li>
+<li><p>groups can now have underscores in their name for show/hide functionality.</p></li>
 <li><p>added <code>between</code> argument to <code>addLegendBin</code> and <code>addLegendQuantile</code> so that users can change the dash.</p></li>
 <li><p>fixed issue where <code>addSymbols</code> and <code>addSymbolsSize</code> only worked when directly specifying <code>lat</code> and <code>lng</code>. These now work for sf objects.</p></li>
 <li><p>added <code>dashArray</code> argument for symbols functions. The main purpose is to allow dashed line encodings, but all symbols can have dashed outer lines.</p></li>
