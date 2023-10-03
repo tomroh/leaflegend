@@ -377,6 +377,12 @@ testthat::test_that('Symbol Legends', {
   <span style="">2</span>
 </div>')
 
+  # Stacked
+  m %>%
+    addLegendSize(color = 'black', fillColor = 'red',
+      values = 1:5, stacked = TRUE, breaks = 2, shape = 'circle') %>%
+    invisible() %>%
+    testthat::expect_invisible()
 })
 
 testthat::test_that('Image Legend', {
@@ -819,6 +825,12 @@ testthat::test_that('Helper Functions', {
     testthat::expect_equal(leaflet:::leafletAmIonIconDependencies())
   leafletAmBootstrapDependencies() %>%
     testthat::expect_equal(leaflet:::leafletAmBootstrapDependencies())
+  coalesceMissing(y = 1L) %>%
+    testthat::expect_equal(1L)
+  coalesceMissing(x = 2L, y = 1L) %>%
+    testthat::expect_equal(2L)
+  coalesceMissing(x = 1L) %>%
+    testthat::expect_equal(1L)
 })
 
 testthat::test_that('pch', {
