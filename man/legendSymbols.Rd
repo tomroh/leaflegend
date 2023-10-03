@@ -249,8 +249,7 @@ addTiles() \%>\%
     color = 'black',
     fillColor = 'red',
     opacity = 1,
-    baseSize = 5,
-    strokeWidth = strokeWidth) |>
+    baseSize = 5) |>
   addLegendSize(
     values = ~10^(mag),
     title = 'Magnitude',

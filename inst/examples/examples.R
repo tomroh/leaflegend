@@ -51,6 +51,7 @@ leaflet(data = quakes1) %>% addTiles() %>%
                  position = 'topright')
 
 # Numeric Legend ----------------------------------------------------------
+
 library(leaflet)
 data("quakes")
 numPal <- colorNumeric('viridis', quakes$depth * 1000)
@@ -247,8 +248,38 @@ leaflet(quakes1000) %>%
     }
   )
 
+
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet() %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    position = 'topright',
+    title = htmltools::HTML('addLegendNumeric<br>(Horizontal)'),
+    orientation = 'horizontal',
+    shape = 'rect',
+    decreasing = FALSE,
+    height = 20,
+    width = 100
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    position = 'topright',
+    title = htmltools::tags$div('addLegendNumeric (Decreasing)',
+      style = 'font-size: 24px; text-align: center; margin-bottom: 5px;'),
+    orientation = 'vertical',
+    shape = 'stadium',
+    decreasing = TRUE,
+    height = 100,
+    width = 20
+  ) %>%
+  addLegend(pal = numPal, values = quakes$depth, title = 'addLegend')
+
 # Quantile Legend ---------------------------------------------------------
 
+quakes$mag[1] <- NA
 quantPal <- colorQuantile('viridis', quakes$mag, n = 5)
 leaflet() %>%
   addTiles() %>%
@@ -272,7 +303,7 @@ leaflet() %>%
                                                 htmltools::tags$br(),
                                                 '(Omit Numbers)'),
                     numberFormat = NULL,
-                    shape = 'circle') %>%
+                    shape = 'rect') %>%
   addLegend(pal = quantPal, values = quakes$mag, title = 'addLegend')
 
 # Factor Legend -----------------------------------------------------------
@@ -364,7 +395,7 @@ leaflet() %>%
     opacity = 1,
     fillOpacity = .2,
     labelStyle = 'font-size: 18px; font-weight: bold;',
-    orientation = 'horizontal'
+    orientation = 'vertical'
   ) %>%
   addLegend(pal = binPal,
             values = quakes$mag,
@@ -386,7 +417,7 @@ leaflet() %>%
   ) %>%
   addLegendFactor(
     pal = factorPal,
-    title = htmltools::tags$div('addLegendFactor', style = 'font-size: 24px; color: red;'),
+    title = htmltools::tags$div('addLegendFactor', style = 'font-size: 24px; color: red;margin-bottom:5px;'),
     labelStyle = 'font-size: 18px; font-weight: bold;',
     orientation = 'horizontal',
     values = quakes$group,
@@ -441,6 +472,19 @@ leaflet(quakes) %>%
     baseSize = 1,
     shape = 'plus',
     orientation = 'horizontal',
+    opacity = .5,
+    fillOpacity = .3,
+    position = 'bottomleft',
+    breaks = stats::setNames(seq(500000, 2500000, 500000),
+      c('Very Small', 'Small', 'Medium', 'Large', 'Very Large'))
+  ) |>
+  addLegendSize(
+    values = ~10^(mag),
+    pal = numPal,
+    title = 'Magnitude',
+    baseSize = 1,
+    shape = 'plus',
+    orientation = 'vertical',
     opacity = .5,
     fillOpacity = .3,
     position = 'bottomleft',

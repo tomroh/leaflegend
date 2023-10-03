@@ -1,4 +1,4 @@
-# leaflegend 1.1.8
+# leaflegend 1.1.10
 
 * `addLegendNumeric` gains `labelStyle` argument and significant improvements 
 to the layout that will handle larger font sizes and long text widths.

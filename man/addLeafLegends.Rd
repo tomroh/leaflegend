@@ -264,8 +264,57 @@ leaflet() \%>\%
 # Bin Legend
 # Restyle the text of the labels, change the legend item orientation
 
+binPal <- colorBin('Set1', quakes$mag)
+leaflet(quakes) \%>\%
+  addTiles() \%>\%
+  addCircleMarkers(
+    lat = ~ lat,
+    lng = ~ long,
+    color = ~ binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) \%>\%
+  addLegendBin(
+    pal = binPal,
+    position = 'topright',
+    values = ~mag,
+    title = 'addLegendBin',
+    labelStyle = 'font-size: 18px; font-weight: bold;',
+    orientation = 'horizontal'
+  ) \%>\%
+  addLegend(pal = binPal,
+            values = quakes$mag,
+            title = 'addLegend')
 
 # Group Layer Control
 # Works with baseGroups and overlayGroups
 
+leaflet() \%>\%
+  addTiles() \%>\%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    position = 'topright',
+    title = 'addLegendNumeric',
+    group = 'Numeric Data'
+  ) \%>\%
+  addLegendQuantile(
+    pal = quantPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'addLegendQuantile',
+    group = 'Quantile'
+  ) \%>\%
+  addLegendBin(
+    data = quakes,
+    pal = binPal,
+    position = 'bottomleft',
+    title = 'addLegendBin',
+    group = 'Bin',
+    values = ~mag
+  ) \%>\%
+  addLayersControl(
+    baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
+    position = 'bottomright'
+  )
 }

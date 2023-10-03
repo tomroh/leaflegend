@@ -221,21 +221,9 @@ addLegendImage <- function(
 #'
 makeSymbol <- function(shape, width, height = width, color, fillColor = color,
                        opacity = 1, fillOpacity = opacity, ...) {
-  stopifnot(is.numeric(width) & is.numeric(height))
-  stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
-  stopifnot(!is.na(shape))
-  if (shape %in% availableShapes()[['default']]) {
-    svg <- symbolSvg(shape = shape,  width = width, height = height,
-      color = color, fillColor = fillColor, opacity = opacity,
-      fillOpacity = fillOpacity, ...)
-  } else if (shape %in% availableShapes()[['pch']] || shape %in%
-      (seq_along(availableShapes()[['pch']]) - 1)) {
-    svg <- pchSvg(shape = shape,  width = width, height = height,
-      color = color, fillColor = fillColor, opacity = opacity,
-      fillOpacity = fillOpacity, ...)
-  } else {
-    stop('Argument "shape" is invalid. See `availableShapes()`.')
-  }
+  svg <- makeSymbolElement(shape = shape, width, height = height,
+    color = color, fillColor = fillColor, opacity = opacity,
+    fillOpacity = fillOpacity, ...)
   strokeWidth <- 1
   if ( 'stroke-width' %in% names(list(...)) ) {
     strokeWidth <- list(...)[['stroke-width']]
@@ -243,8 +231,8 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
   makeSvgUri(svg = svg, width = width, height = height,
     strokeWidth = strokeWidth)
 }
-makeSymbolElement <- function(shape, width, height = width, color, fillColor = color,
-  opacity = 1, fillOpacity = opacity, ...) {
+makeSymbolElement <- function(shape, width, height = width, color,
+  fillColor = color, opacity = 1, fillOpacity = opacity, ...) {
   stopifnot(is.numeric(width) & is.numeric(height))
   stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
   stopifnot(!is.na(shape))
@@ -760,7 +748,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         height = height,
         width = width,
         stroke = 'transparent',
-        fill = coalesce_missing(fillColor, color),
+        fill = coalesceMissing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -770,7 +758,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         cy = height / 2 + strokeWidth,
         r =  height *  3 / 4 / 2,
         stroke = 'transparent',
-        fill = coalesce_missing(fillColor, color),
+        fill = coalesceMissing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -779,7 +767,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         points = drawTriangle(width = width, height = height,
           offset = strokeWidth),
         stroke = 'transparent',
-        fill = coalesce_missing(fillColor, color),
+        fill = coalesceMissing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -788,7 +776,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         points = drawDiamond(width = width, height = height,
           offset = strokeWidth),
         stroke = 'transparent',
-        fill = coalesce_missing(fillColor, color),
+        fill = coalesceMissing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -798,7 +786,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         cy = height / 2 + strokeWidth,
         r =  height *  4 / 4 / 2,
         stroke = 'transparent',
-        fill = coalesce_missing(fillColor, color),
+        fill = coalesceMissing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -808,7 +796,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
         cy = height / 2 + strokeWidth,
         r = height *  2 / 4 / 2,
         stroke = 'transparent',
-        fill = coalesce_missing(fillColor, color),
+        fill = coalesceMissing(fillColor, color),
         'fill-opacity' = fillOpacity,
         ...
       ),
@@ -877,7 +865,7 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
   }
   pchShape[[shape]]
 }
-coalesce_missing <- function(x, y) {
+coalesceMissing <- function(x, y) {
   if (missing(x)) y else x
 }
 #' @param svg
@@ -1114,7 +1102,7 @@ addSymbols <- function(
                                  strokeWidth = strokeWidth, width = width,
                                  height = width,
                                  `stroke-dasharray` = dashArray)
-  if (!missing(lng) & !missing(lat)) {
+  if (!missing(lng) && !missing(lat)) {
     leaflet::addMarkers(map = map, lng = lng, lat = lat, icon = iconSymbols,
       data = data, ...)
   } else {
@@ -1148,7 +1136,7 @@ addSymbolsSize <- function(
   if ( inherits(fillColor, 'formula') ) {
     fillColor <- parseValues(fillColor, data)
   }
-  if (!missing(lng) & !missing(lat)) {
+  if (!missing(lng) && !missing(lat)) {
     addSymbols(map = map,  lng = lng, lat = lat, shape = shape, color = color,
       fillColor = fillColor, opacity = opacity,
       fillOpacity = fillOpacity, strokeWidth = strokeWidth,
@@ -1368,59 +1356,59 @@ addSymbolsSize <- function(
 #' # Bin Legend
 #' # Restyle the text of the labels, change the legend item orientation
 #'
-# binPal <- colorBin('Set1', quakes$mag)
-# leaflet() %>%
-#   addTiles() %>%
-#   addCircleMarkers(
-#     data = quakes,
-#     lat = ~ lat,
-#     lng = ~ long,
-#     color = ~ binPal(mag),
-#     opacity = 1,
-#     fillOpacity = 1
-#   ) %>%
-#   addLegendBin(
-#     pal = binPal,
-#     position = 'topright',
-#     values = ~mag,
-#     title = 'addLegendBin',
-#     labelStyle = 'font-size: 18px; font-weight: bold;',
-#     orientation = 'horizontal'
-#   ) %>%
-#   addLegend(pal = binPal,
-#             values = quakes$mag,
-#             title = 'addLegend')
+#' binPal <- colorBin('Set1', quakes$mag)
+#' leaflet(quakes) %>%
+#'   addTiles() %>%
+#'   addCircleMarkers(
+#'     lat = ~ lat,
+#'     lng = ~ long,
+#'     color = ~ binPal(mag),
+#'     opacity = 1,
+#'     fillOpacity = 1
+#'   ) %>%
+#'   addLegendBin(
+#'     pal = binPal,
+#'     position = 'topright',
+#'     values = ~mag,
+#'     title = 'addLegendBin',
+#'     labelStyle = 'font-size: 18px; font-weight: bold;',
+#'     orientation = 'horizontal'
+#'   ) %>%
+#'   addLegend(pal = binPal,
+#'             values = quakes$mag,
+#'             title = 'addLegend')
 #'
 #' # Group Layer Control
 #' # Works with baseGroups and overlayGroups
 #'
-# leaflet() %>%
-#   addTiles() %>%
-#   addLegendNumeric(
-#     pal = numPal,
-#     values = quakes$depth,
-#     position = 'topright',
-#     title = 'addLegendNumeric',
-#     group = 'Numeric Data'
-#   ) %>%
-#   addLegendQuantile(
-#     pal = quantPal,
-#     values = quakes$mag,
-#     position = 'topright',
-#     title = 'addLegendQuantile',
-#     group = 'Quantile'
-#   ) %>%
-#   addLegendBin(
-#     pal = binPal,
-#     position = 'bottomleft',
-#     title = 'addLegendBin',
-#     group = 'Bin',
-#     values = ~mag
-#   ) %>%
-#   addLayersControl(
-#     baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
-#     position = 'bottomright'
-#   )
+#' leaflet() %>%
+#'   addTiles() %>%
+#'   addLegendNumeric(
+#'     pal = numPal,
+#'     values = quakes$depth,
+#'     position = 'topright',
+#'     title = 'addLegendNumeric',
+#'     group = 'Numeric Data'
+#'   ) %>%
+#'   addLegendQuantile(
+#'     pal = quantPal,
+#'     values = quakes$mag,
+#'     position = 'topright',
+#'     title = 'addLegendQuantile',
+#'     group = 'Quantile'
+#'   ) %>%
+#'   addLegendBin(
+#'     data = quakes,
+#'     pal = binPal,
+#'     position = 'bottomleft',
+#'     title = 'addLegendBin',
+#'     group = 'Bin',
+#'     values = ~mag
+#'   ) %>%
+#'   addLayersControl(
+#'     baseGroups = c('Numeric Data', 'Quantile'),  overlayGroups = c('Bin'),
+#'     position = 'bottomright'
+#'   )
 addLegendNumeric <- function(map,
                              pal,
                              values,
@@ -1469,7 +1457,6 @@ addLegendNumeric <- function(map,
   orientation <- match.arg(orientation)
   isVertical <- as.integer(orientation == 'vertical')
   isHorizontal <- as.integer(orientation == 'horizontal')
-  #TODO: adjust size legend
   if (decreasing) {
     breaks <- rev(breaks)
     stdBreaks <- (1 - (breaks - rng[1]) / diff(rng)) *
@@ -1492,7 +1479,7 @@ addLegendNumeric <- function(map,
       sprintf('translate(%.03f,%.03f)', width * isVertical,
         height * isHorizontal),
     orientation = orientation)
-  tickText <- makeTickText(labels =  labels,breaks = stdBreaks[i],
+  tickText <- makeTickText(labels =  labels, breaks = stdBreaks[i],
     width = width, height = height, orientation = orientation)
   svgGradient <- makeGradient(breaks = breaks, colors = colors,
     height = height, width = width, id = id, fillOpacity = fillOpacity,
@@ -1502,8 +1489,8 @@ addLegendNumeric <- function(map,
     height = height + (isHorizontal * tickLength * 2),
     svgElements = svgGradient, ticks = ticks, tickText = tickText,
     labelStyle = labelStyle,
-    marginRight = ifelse(isVertical,
-      sprintf('calc(.5 * %dem)', max(nchar(labels))), ''))
+    marginRight = ifelse(isVertical, max(nchar(labels)) * .5, 0),
+    marginBottom = ifelse(isHorizontal, 1, 0))
   naSize <- width * isVertical + height * isHorizontal
   htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
     shape = shape, labels = naLabel, colors = pal(NA), labelStyle = labelStyle,
@@ -1579,7 +1566,8 @@ makeTickText <- function(labels, breaks, width, height, orientation) {
     Map(
       htmltools::p,
       labels,
-      style=sprintf('position: absolute; margin: 0; top: calc(%.2fpx - .5em); right: 0; line-height:1;',
+      style = sprintf('position: absolute; margin: 0; top: calc(%.2fpx - .5em);
+        right: 0; line-height:1;',
         tickLocations)
     )
   } else {
@@ -1587,14 +1575,15 @@ makeTickText <- function(labels, breaks, width, height, orientation) {
     Map(
       htmltools::p,
       labels,
-      style=sprintf('position: absolute; margin: 0; %s: 0; bottom: 0; line-height:1;',
+      style = sprintf('position: absolute; margin: 0; %s: 0; bottom: 0;
+        line-height:1;',
         c('right', 'left'))
     )
   }
 
 }
 assembleLegendWithTicks <- function(width, height, svgElements, ticks, tickText,
-  labelStyle, marginRight) {
+  labelStyle, marginRight, marginBottom) {
   htmlElements <- htmltools::tags$svg(
     xmlns = "http://www.w3.org/2000/svg",
     version = "1.1",
@@ -1603,12 +1592,13 @@ assembleLegendWithTicks <- function(width, height, svgElements, ticks, tickText,
     htmltools::tagList(svgElements, ticks)
   )
   htmlElements <- htmltools::tags$img(src = makeSvgUri(htmlElements,
-    width = width, height = height,
-    strokeWidth = 0), style=sprintf('margin-right: %s;', marginRight))
-  # need to somehow pass orientation
+    width = width, height = height, strokeWidth = 0),
+    style = 'margin-left: 1px;')
   htmltools::tags$div(
-    style= sprintf('position: relative; margin-top:.5em; margin-bottom:.5em; %s',
-      labelStyle),
+    style = sprintf(
+      'position: relative; margin-top:.5em; margin-bottom:.5em; %s;
+      width: calc(%spx + %sem + 2px); height: calc(%spx + %sem);',
+      labelStyle, width, marginRight, height, marginBottom),
     htmlElements,
     tickText
   )
@@ -1625,7 +1615,6 @@ addTitle <- function(title, htmlElements) {
     stop('Title must be character vector or an html tags object')
   }
   htmltools::tagList(title, htmlElements)
-  # append(htmlElements, title, after = 0)
 }
 
 #' @export
@@ -1817,7 +1806,7 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
   labelStyle, height,  width, opacity, fillOpacity, strokeWidth) {
   if (hasNa) {
     naLegend <- list(htmltools::div(
-      style = 'margin-top: .3rem;',
+      #style = 'margin-top: .3rem;',
       makeLegendSymbol(
         shape = shape,
         label = labels,
@@ -1828,7 +1817,7 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
         opacity = opacity,
         fillOpacity = fillOpacity,
         'stroke-width' = strokeWidth,
-        imgStyle = 'vertical-align: middle;'
+        imgStyle = 'vertical-align: middle; margin: 1px;'
       )))
     htmlElements <- htmltools::tagList(htmlElements, naLegend)
   }
@@ -2043,8 +2032,7 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'     color = 'black',
 #'     fillColor = 'red',
 #'     opacity = 1,
-#'     baseSize = 5,
-#'     strokeWidth = strokeWidth) |>
+#'     baseSize = 5) |>
 #'   addLegendSize(
 #'     values = ~10^(mag),
 #'     title = 'Magnitude',
@@ -2124,9 +2112,10 @@ addLegendSize <- function(map,
       `stroke-width` = strokeWidth,
       transform = sprintf('translate(%.02f,%.02f)', maxSize / 2 - sizes / 2,
         maxSize - sizes)))
-    ticks <- makeTicks(breaks = sizes - strokeWidth, width = maxSize / 2 + strokeWidth,
-      height = maxSize, orientation = 'vertical',
-      strokeWidth = strokeWidth, `stroke-linecap` = 'square', stroke = 'black',
+    ticks <- makeTicks(breaks = sizes - strokeWidth,
+      width = maxSize / 2 + strokeWidth, height = maxSize,
+      orientation = 'vertical', strokeWidth = strokeWidth,
+      `stroke-linecap` = 'square', stroke = 'black',
       transform = sprintf('translate(%.03f,0)',
         maxSize / 2 + strokeWidth * 3 / 2))
     tickText <- makeTickText(labels = labels, breaks = sizes - strokeWidth,
@@ -2134,7 +2123,8 @@ addLegendSize <- function(map,
     htmlElements <- assembleLegendWithTicks(width = maxSize + strokeWidth * 2,
       height = maxSize + strokeWidth * 2, svgElements = svgElements,
       ticks = ticks, tickText = tickText, labelStyle = labelStyle,
-      marginRight = sprintf('calc(.5 * %dem + 2px)', max(nchar(labels))))
+      marginRight = .5 * max(nchar(labels)),
+      marginBottom = 0)
     htmlElements <- htmltools::tagList(title, htmlElements = htmlElements)
     leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
       className = className, group = group, ...)
@@ -2478,7 +2468,8 @@ addLegendAwesomeIcon <- function(map,
       htmltools::tagList(
         wrapElements(
         htmltools::tags$div(
-          style = 'vertical-align: middle; display: inline-block; position: relative;',
+          style = 'vertical-align: middle; display:
+          inline-block; position: relative;',
               class = markerClass,
               htmltools::tags$i(class = sprintf('%1$s %1$s-%2$s %3$s',
                                                 icon[['library']],
