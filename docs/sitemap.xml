@@ -1,34 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://leaflegend.roh.engineering/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/addLegendSize.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/makeSymbol.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/mapSymbols.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/legendSymbols.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/addLegendAwesomeIcon.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/addLeafLegends.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/addLegendImage.html</loc>
-  </url>
-  <url>
-    <loc>https://leaflegend.roh.engineering/reference/availableShapes.html</loc>
+    <loc>https://leaflegend.roh.engineering/authors.html</loc>
   </url>
   <url>
     <loc>https://leaflegend.roh.engineering/LICENSE.html</loc>
@@ -37,12 +10,33 @@
     <loc>https://leaflegend.roh.engineering/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://leaflegend.roh.engineering/authors.html</loc>
+    <loc>https://leaflegend.roh.engineering/index.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/legendSymbols.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/mapSymbols.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/addLegendImage.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/addLegendAwesomeIcon.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/addLeafLegends.html</loc>
+  </url>
+  <url>
+    <loc>https://leaflegend.roh.engineering/reference/availableShapes.html</loc>
   </url>
   <url>
     <loc>https://leaflegend.roh.engineering/404.html</loc>
   </url>
   <url>
-    <loc>https://leaflegend.roh.engineering/index.html</loc>
+    <loc>https://leaflegend.roh.engineering/news/index.html</loc>
   </url>
 </urlset>

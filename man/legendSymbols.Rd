@@ -28,6 +28,7 @@ addLegendSize(
  },
   group = NULL,
   className = "info legend leaflet-control",
+  stacked = FALSE,
   data = leaflet::getMapData(map),
   ...
 )
@@ -72,6 +73,7 @@ addLegendSymbol(
   height = width,
   group = NULL,
   className = "info legend leaflet-control",
+  dashArray = NULL,
   data = leaflet::getMapData(map),
   ...
 )
@@ -114,6 +116,9 @@ be this exact size}
 
 \item{className}{extra CSS class to append to the control, space separated}
 
+\item{stacked}{If \code{TRUE}, symbols are overlayed onto each other for a more compact
+size legend}
+
 \item{data}{a data object. Currently supported objects are matrices, data
 frames, spatial objects from the \pkg{sp} package
 (\code{SpatialPoints}, \code{SpatialPointsDataFrame}, \code{Polygon},
@@ -133,6 +138,8 @@ spatial data frames from the \pkg{sf} package.}
 \item{width}{width in pixels of the lines}
 
 \item{height}{in pixels}
+
+\item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
 }
 \value{
 an object from \link[leaflet]{addControl}
@@ -231,4 +238,27 @@ leaflet() \%>\%
   addLegendNumeric(pal = pal,
                    title = 'MinPress',
                    values = atlStorms2005$MinPress)
+
+# Stacked Legends
+leaflet(quakes) \%>\%
+addTiles() \%>\%
+  addSymbolsSize(values = ~10^(mag),
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    opacity = 1,
+    baseSize = 5) |>
+  addLegendSize(
+    values = ~10^(mag),
+    title = 'Magnitude',
+    baseSize = 5,
+    shape = 'circle',
+    color = 'black',
+    fillColor = 'red',
+    labelStyle = 'font-size: 18px;',
+    position = 'bottomleft',
+    stacked = TRUE,
+    breaks = 5)
 }

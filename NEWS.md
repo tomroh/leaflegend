@@ -1,3 +1,22 @@
+# leaflegend 1.1.10
+
+* `addLegendNumeric` gains `labelStyle` argument and significant improvements 
+to the layout that will handle larger font sizes and long text widths.
+
+* added `stacked` argument to `addLegendSize` to allow size legends that are 
+more compact when symbols are overlayed. See examples in `?addLegendSize`.
+
+* groups can now have underscores in their name for show/hide functionality.
+
+* added `between` argument to `addLegendBin` and `addLegendQuantile` so that 
+users can change the dash.
+
+* fixed issue where `addSymbols` and `addSymbolsSize` only worked when 
+directly specifying `lat` and `lng`. These now work for sf objects. 
+
+* added `dashArray` argument for symbols functions. The main purpose is to 
+allow dashed line encodings, but all symbols can have dashed outer lines.
+
 # leaflegend 1.1.1
 
 * updating test for 'leaflet' changes in v2.2.0

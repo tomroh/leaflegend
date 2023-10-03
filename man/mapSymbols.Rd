@@ -50,6 +50,7 @@ addSymbols(
   strokeWidth = 1,
   width = 20,
   height = width,
+  dashArray = NULL,
   data = leaflet::getMapData(map),
   ...
 )
@@ -121,6 +122,8 @@ column from \code{data})}
 
 \item{values}{the values used to generate shapes; can be omitted for a single type of
 shape}
+
+\item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
 
 \item{data}{the data object from which the argument values are derived; by default, it
 is the \code{data} object provided to \code{leaflet()} initially, but can be

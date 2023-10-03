@@ -1,8 +1,9 @@
 linters: linters_with_defaults(
     line_length_linter(80),
-    single_quotes_linter = NULL,
+    quotes_linter = NULL,
     object_name_linter = object_name_linter("camelCase"),
-    spaces_inside_linter = NULL
+    spaces_inside_linter = NULL,
+    indentation_linter = NULL
   )
 exclusions: list(
     "inst/",
