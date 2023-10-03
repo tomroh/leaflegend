@@ -767,7 +767,7 @@ testthat::test_that('Awesome Legends', {
     getElement(1) %>%
     testthat::expect_equal(
       '<div>
-  <div style="vertical-align: middle; display: inline-block; position: relative;" class="awesome-marker-icon-blue awesome-marker ">
+  <div style="vertical-align: middle; display:&#10;          inline-block; position: relative;" class="awesome-marker-icon-blue awesome-marker ">
     <i class="glyphicon glyphicon-home " style="color: white; ; margin-right: 0px"></i>
   </div>
   <span style="">home</span>
@@ -785,7 +785,7 @@ testthat::test_that('Awesome Legends', {
   <strong>Icons</strong>
 </div>
 <span>
-  <div style="vertical-align: middle; display: inline-block; position: relative;" class="awesome-marker-icon-blue awesome-marker ">
+  <div style="vertical-align: middle; display:&#10;          inline-block; position: relative;" class="awesome-marker-icon-blue awesome-marker ">
     <i class="glyphicon glyphicon-home " style="color: white; ; margin-right: 0px"></i>
   </div>
   <span style="">home</span>
@@ -866,7 +866,6 @@ testthat::test_that('pch', {
 
 testthat::test_that('utils', {
   addTitle(htmltools::div('title'), list()) %>%
-    getElement(1) %>%
     as.character() %>%
     testthat::expect_equal('<div>
   <div>title</div>
@@ -874,10 +873,9 @@ testthat::test_that('utils', {
   addNa(hasNa = TRUE, htmlElements = list(), shape = 'rect', labels = 'NA',
     colors = 'grey', labelStyle = '', height = 10, width = 10, opacity = 1,
     fillOpacity = 1, strokeWidth = 0) %>%
-    getElement(1) %>%
     as.character() %>%
     URLdecode() %>%
-    testthat::expect_equal('<div style="margin-top: .3rem;">
+    testthat::expect_equal('<div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">
   <rect id="rect" x="0" y="0" height="10" width="10" stroke="grey" fill="grey" stroke-opacity="1" fill-opacity="1" stroke-width="0"></rect>
 </svg>" style="vertical-align: middle; margin: 1px;"/>
