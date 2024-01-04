@@ -653,7 +653,11 @@ leaflet(quakes) %>%
     strokeWidth = 2)
 
 
-
+library(leaflet)
+library(leaflegend)
+data("quakes")
+baseSize <- 5
+numPal <- colorNumeric('viridis', 10^(quakes$mag))
 leaflet(quakes) |>
   addTiles() |>
   addLegendSize(
