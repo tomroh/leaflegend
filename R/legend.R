@@ -1511,7 +1511,7 @@ makeGradient <- function(breaks, colors, height, width, id, fillOpacity,
   curvePercent <- ifelse(shape == 'stadium', '10%', '0')
   if (orientation == 'vertical') {
     htmltools::tagList(
-      htmltools::tags$def(
+      htmltools::tags$defs(
         htmltools::tags$linearGradient(
           id = id,
           x1 = 0, y1 = 0, x2 = 0, y2 = 1,
@@ -1528,7 +1528,7 @@ makeGradient <- function(breaks, colors, height, width, id, fillOpacity,
     )
   } else {
     htmltools::tagList(
-      htmltools::tags$def(
+      htmltools::tags$defs(
         htmltools::tags$linearGradient(
           id = id,
           x1 = 0, y1 = 0, x2 = 1, y2 = 0,
