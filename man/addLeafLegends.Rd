@@ -120,7 +120,8 @@ addLegendFactor(
 \item{height}{in pixels}
 
 \item{bins}{an approximate number of tick-marks on the color gradient for the
-colorNumeric palette}
+colorNumeric palette if it is of length one; you can also provide a
+numeric vector as the pre-defined breaks}
 
 \item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
 

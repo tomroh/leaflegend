@@ -835,3 +835,94 @@ leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
     width = defaultSize, height = defaultSize, position = 'topright') |>
   addLegendImage(images = pchSvgI, labels = i-1,
     width = defaultSize, height = defaultSize, position = 'topleft')
+
+# Test Pre-defined Bins colorNumeric --------------------------------------
+library(leaflet)
+data("quakes")
+numPal <- colorNumeric('viridis', quakes$mag)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    position = 'topright',
+    orientation = 'horizontal',
+    shape = 'rect',
+    decreasing = FALSE,
+    height = 20,
+    width = 100
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    bins = c(5,6),
+    position = 'topright',
+    orientation = 'horizontal',
+    shape = 'rect',
+    decreasing = FALSE,
+    height = 20,
+    width = 100
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    bins = ~range(mag),
+    position = 'topright',
+    orientation = 'horizontal',
+    shape = 'rect',
+    decreasing = FALSE,
+    height = 20,
+    width = 100
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    position = 'topright',
+    orientation = 'vertical',
+    title = 'Default',
+    shape = 'rect',
+    decreasing = FALSE,
+    height = 100,
+    width = 20
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    bins = seq(4, 6.4, length.out = 5),
+    numberFormat = function(x) sprintf('%.2f', x),
+    position = 'topright',
+    orientation = 'vertical',
+    title = htmltools::div('Manual Breaks', style ='margin-bottom:10px'),
+    shape = 'rect',
+    decreasing = TRUE,
+    height = 100,
+    width = 20
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    bins = ~range(mag),
+    position = 'topright',
+    orientation = 'vertical',
+    title = htmltools::div('Min/Max w/ Formula', style ='margin-bottom:10px'),
+    numberFormat = function(x) sprintf('%.2f', x),
+    shape = 'rect',
+    decreasing = FALSE,
+    height = 100,
+    width = 20
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~mag,
+    bins = c(4, 5.2, 6.4),
+    position = 'topright',
+    orientation = 'vertical',
+    labels = c('Low', 'Mid', 'High'),
+    title = htmltools::div('Labels', style ='margin-bottom:10px'),
+    numberFormat = function(x) sprintf('%.2f', x),
+    shape = 'rect',
+    decreasing = TRUE,
+    height = 100,
+    width = 20
+  )
+

@@ -1173,7 +1173,8 @@ addSymbolsSize <- function(
 #' @param bins
 #'
 #' an approximate number of tick-marks on the color gradient for the
-#' colorNumeric palette
+#' colorNumeric palette if it is of length one; you can also provide a
+#' numeric vector as the pre-defined breaks
 #'
 #' @param title
 #'
@@ -1445,20 +1446,29 @@ addLegendNumeric <- function(map,
                 length(map[["x"]][["calls"]]) + 1)
   values <- parseValues(values = values, data = data)
   rng <- range(values, na.rm = TRUE)
-  breaks <- pretty(values, bins)
+  bins <- parseValues(values = bins, data = data)
+  if (length(bins) > 1) {
+    if (!all(bins >= rng[1] & bins <= rng[2])) {
+      stop('Bins are outside range of values.')
+    }
+    breaks <- sort(c(rng, bins))
+  } else {
+    breaks <- pretty(values, bins)
+  }
   if (breaks[1] < rng[1]) {
     breaks[1] <- rng[1]
   }
   if (breaks[length(breaks)] > rng[2]) {
     breaks[length(breaks)] <- rng[2]
   }
-  colors <- pal(breaks)
   hasNa <- any(is.na(values))
   orientation <- match.arg(orientation)
   isVertical <- as.integer(orientation == 'vertical')
   isHorizontal <- as.integer(orientation == 'horizontal')
+  offsets <- seq(rng[1], rng[2], length.out = 10)
   if (decreasing) {
     breaks <- rev(breaks)
+    offsets <- rev(offsets)
     stdBreaks <- (1 - (breaks - rng[1]) / diff(rng)) *
       (height * isVertical + width * isHorizontal)
   } else {
@@ -1481,9 +1491,9 @@ addLegendNumeric <- function(map,
     orientation = orientation)
   tickText <- makeTickText(labels =  labels, breaks = stdBreaks[i],
     width = width, height = height, orientation = orientation)
-  svgGradient <- makeGradient(breaks = breaks, colors = colors,
-    height = height, width = width, id = id, fillOpacity = fillOpacity,
-    orientation = orientation, shape)
+  svgGradient <- makeGradient(breaks = offsets,
+    pal = pal,height = height, width = width, id = id,
+    fillOpacity = fillOpacity, orientation = orientation, shape)
   htmlElements <- assembleLegendWithTicks(
     width = width + (isVertical * tickLength * 2),
     height = height + (isHorizontal * tickLength * 2),
@@ -1501,11 +1511,11 @@ addLegendNumeric <- function(map,
     group = group, ...)
 }
 
-makeGradient <- function(breaks, colors, height, width, id, fillOpacity,
+makeGradient <- function(breaks, pal, height, width, id, fillOpacity,
   orientation, shape) {
   stops <- (breaks - min(breaks)) /
     (max(breaks) - min(breaks))
-  colors <- colors[order(stops)]
+  colors <- pal(breaks)[order(stops)]
   stops <- sort(stops)
   offsets <- sprintf('%.03f%%', 100 * stops)
   curvePercent <- ifelse(shape == 'stadium', '10%', '0')
