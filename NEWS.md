@@ -1,3 +1,9 @@
+# leaflegend 1.2.1
+
+* `addLegendNumeric` now has the ability to use manual tick breaks and labels 
+when the `bins` argument is a numeric vector greater than length 1. This 
+only applies to vertically oriented legends.
+
 # leaflegend 1.2.0
 
 * `addLegendNumeric` gains `labelStyle` argument and significant improvements 
