@@ -495,10 +495,21 @@ testthat::test_that('Numeric Legend', {
                          tickWidth = -1) %>%
     testthat::expect_error()
   # test results
-  numVert <- m %>% addLegendNumeric(pal = pal, values = c(1, NA, 3))
+  numVert <- m %>% addLegendNumeric(pal = pal, values = c(1, NA, 3),
+    decreasing = TRUE)
   numHori <- m %>% addLegendNumeric(pal = pal, values = c(1, NA, 3),
                                     orientation = 'horizontal',
     width = 100, height = 20)
+  numVert %>%
+    testthat::expect_no_error()
+  numHori %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, bins = c(10, 11)) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, bins = c(1, 3)) %>%
+    testthat::expect_no_error()
 #   numVert %>%
 #     getElement('x') %>%
 #     getElement('calls') %>%
@@ -629,6 +640,10 @@ testthat::test_that('Categorical Legends', {
                           values = ~x,
                           numberFormat = 'fun') %>%
     testthat::expect_error()
+  m %>% addLegendQuantile(pal = palQuantile,
+    values = ~x,
+    numberFormat = NULL) %>%
+    testthat::expect_no_error()
   # test Bin args
   m %>% addLegendBin(pal = palBin,
                      orientation = 'up') %>%

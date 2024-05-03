@@ -1106,8 +1106,7 @@ addSymbols <- function(
     leaflet::addMarkers(map = map, lng = lng, lat = lat, icon = iconSymbols,
       data = data, ...)
   } else {
-    leaflet::addMarkers(map = map, icon = iconSymbols,
-      data = data, ...)
+    leaflet::addMarkers(map = map, icon = iconSymbols, data = data, ...)
   }
 }
 #' @export
@@ -1142,10 +1141,9 @@ addSymbolsSize <- function(
       fillOpacity = fillOpacity, strokeWidth = strokeWidth,
       width = sizes, data = data, ...)
   } else {
-    addSymbols(map = map, shape = shape, color = color,
-               fillColor = fillColor, opacity = opacity,
-               fillOpacity = fillOpacity, strokeWidth = strokeWidth,
-               width = sizes, data = data, ...)
+    addSymbols(map = map, shape = shape, color = color, fillColor = fillColor,
+      opacity = opacity, fillOpacity = fillOpacity, strokeWidth = strokeWidth,
+      width = sizes, data = data, ...)
   }
 }
 
@@ -1658,11 +1656,8 @@ addLegendQuantile <- function(map,
   probs <- attr(pal, 'colorArgs')[['probs']]
   values <- parseValues(values = values, data = data)
   if ( is.null(numberFormat) ) {
-    labels <- sprintf(' %3.0f%%%s%3.0f%%',
-                      probs[-length(probs)] * 100,
-                      between,
+    labels <- sprintf(' %3.0f%%%s%3.0f%%', probs[-length(probs)] * 100, between,
                       probs[-1] * 100)
-
   } else {
     breaks <- stats::quantile(x = values, probs = probs, na.rm = TRUE)
     labels <- numberFormat(breaks)
