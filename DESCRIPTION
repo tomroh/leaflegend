@@ -19,7 +19,7 @@ Imports:
     base64enc,
     htmlwidgets
 RoxygenNote: 7.2.3
-URL: https://leaflegend.roh.engineering, https://github.com/tomroh/leaflegend
+URL: https://leaflegend.delveds.com, https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues
 Suggests: 
     covr,

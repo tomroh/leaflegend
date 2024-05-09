@@ -1,0 +1,8 @@
+bibentry(
+  key = "leaflegend",
+  bibtype  = "Manual",
+  title    = "leaflegend: Create Custom Legends for Leaflet",
+  author = c(person("Thomas", "Roh", comment = "Delve DS")),
+  year     = "2024",
+  url      = c("https://leaflegend.roh.engineering")
+)
