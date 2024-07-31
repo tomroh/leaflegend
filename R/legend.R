@@ -982,8 +982,8 @@ makeSymbolIcons <- function(shape,
   )
   leaflet::icons(
     iconUrl = unname(symbols),
-    iconAnchorX = width / 2,
-    iconAnchorY = height / 2
+    iconAnchorX = width / 2 + strokeWidth,
+    iconAnchorY = height / 2 + strokeWidth
   )
 }
 #' @param map
