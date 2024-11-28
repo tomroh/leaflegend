@@ -2514,14 +2514,14 @@ leaflegendAddControl <- function(map,
     htmlwidgets::onRender(lf, "
 function(el, x) {
   var updateLeafLegend = function() {
-    var controlGroups = document.querySelectorAll(
+    var controlGroups = el.querySelectorAll(
       'input.leaflet-control-layers-selector');
     controlGroups.forEach(g => {
       var groupName = g.nextSibling.innerText.substr(1);
       var className = 'leaflegend-group-' +
         groupName.replace(/[^a-zA-Z0-9]/g, '');
       var checked = g.checked;
-      document.querySelectorAll('.legend.' + className).forEach(l => {
+      el.querySelectorAll('.legend.' + className).forEach(l => {
         l.hidden = !checked;
       })
     })

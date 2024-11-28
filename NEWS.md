@@ -1,3 +1,8 @@
+# leaflegend 1.2.2
+
+* Fixes an issue when multi-map documents and group names are the same where 
+the layer control would only work for the last map.
+
 # leaflegend 1.2.1
 
 * `addLegendNumeric` now has the ability to use manual tick breaks and labels 
