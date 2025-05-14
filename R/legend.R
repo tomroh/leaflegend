@@ -1473,7 +1473,7 @@ addLegendNumeric <- function(map,
     stdBreaks <- (breaks - rng[1]) / diff(rng) *
       (height * isVertical + width * isHorizontal)
   }
-  if (orientation == 'vertical' && length(breaks) > 2) {
+  if (isVertical == 1 && length(breaks) > 2) {
     i <- seq(2L, length(breaks) - 1L, 1L)
   } else {
     i <- c(1, length(breaks))
@@ -2049,6 +2049,27 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'     position = 'bottomleft',
 #'     stacked = TRUE,
 #'     breaks = 5)
+#'     # dashed lines
+#' leaflet() %>%
+#'    addTiles() %>%
+#'    addLegendSymbol(color='black', dashArray = list("none", "24"),
+#'      shape = c("line", "line"), values = c('solid', 'dashed'),
+#'      strokeWidth = 10, height = 20, width = 100)
+#'
+#' #advanced shape customization, aesthetic arguments are propogated if
+#' # vectors are equal length or of size 1
+#' defaultShapes <- availableShapes()[["default"]]
+#' leaflet() %>%
+#'   addTiles() %>%
+#'   addLegendSymbol(
+#'     shape = defaultShapes,
+#'     color = "black",
+#'     fillColor =
+#'       colorRampPalette(c("blue",  "yellow"))(length(defaultShapes)),
+#'     width = seq(1L, length(defaultShapes), 1L) * length(defaultShapes),
+#'     values = factor(defaultShapes, defaultShapes),
+#'     strokeWidth = 2
+#'   )
 addLegendSize <- function(map,
                           pal,
                           values,

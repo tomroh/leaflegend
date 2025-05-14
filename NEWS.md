@@ -1,3 +1,7 @@
+# leaflegend 1.2.3
+
+* Added examples for advanced symbol customization
+
 # leaflegend 1.2.2
 
 * Fixes an issue when multi-map documents and group names are the same where 

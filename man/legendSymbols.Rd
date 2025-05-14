@@ -261,4 +261,25 @@ addTiles() \%>\%
     position = 'bottomleft',
     stacked = TRUE,
     breaks = 5)
+    # dashed lines
+leaflet() \%>\%
+   addTiles() \%>\%
+   addLegendSymbol(color='black', dashArray = list("none", "24"),
+     shape = c("line", "line"), values = c('solid', 'dashed'),
+     strokeWidth = 10, height = 20, width = 100)
+
+#advanced shape customization, aesthetic arguments are propogated if
+# vectors are equal length or of size 1
+defaultShapes <- availableShapes()[["default"]]
+leaflet() \%>\%
+  addTiles() \%>\%
+  addLegendSymbol(
+    shape = defaultShapes,
+    color = "black",
+    fillColor =
+      colorRampPalette(c("blue",  "yellow"))(length(defaultShapes)),
+    width = seq(1L, length(defaultShapes), 1L) * length(defaultShapes),
+    values = factor(defaultShapes, defaultShapes),
+    strokeWidth = 2
+  )
 }
