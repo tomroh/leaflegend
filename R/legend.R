@@ -207,6 +207,10 @@ addLegendImage <- function(
 #'
 #' width in pixels of symbol outline
 #'
+#' @param label
+#'
+#' label for the symbol
+#'
 #' @param ...
 #'
 #' arguments to be passed to svg shape tag
@@ -1873,7 +1877,8 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'
 #' @param breaks
 #'
-#' an integer specifying the number of breaks or a numeric vector of the breaks
+#' an integer specifying the number of breaks or a numeric vector of the breaks.
+#' if a named vector is given, the names are used as labels
 #'
 #' @param baseSize
 #'
