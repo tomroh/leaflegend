@@ -245,6 +245,10 @@ makeSymbolElement <- function(shape, width, height = width, color,
     svg <- pchSvg(shape = shape,  width = width, height = height,
       color = color, fillColor = fillColor, opacity = opacity,
       fillOpacity = fillOpacity, ...)
+  } else if (shape %in% availableShapes()[['special']]) {
+    svg <- specialSvg(shape = shape,  width = width, height = height,
+      color = color, fillColor = fillColor, opacity = opacity,
+      fillOpacity = fillOpacity, ...)
   } else {
     stop('Argument "shape" is invalid. See `availableShapes()`.')
   }
@@ -864,6 +868,87 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
     }
   }
   pchShape[[shape]]
+}
+specialSvg <- function(shape, width, height, color, fillColor, opacity,
+  fillOpacity, ...) {
+  strokeWidth <- 1
+  if ( shape %in% 'text' ) {
+    strokeWidth <- 0
+  }
+  if ( 'stroke-width' %in% names(list(...)) ) {
+    strokeWidth <- list(...)[['stroke-width']]
+  }
+  switch(
+    shape,
+    'text' = htmltools::tags$text(
+      id = 'text',
+      x = '50%',
+      y = '50%',
+      'dominant-baseline' = 'central',
+      'text-anchor' = 'middle',
+      'font-size' = paste0(round(min(width, height) * 0.6), 'px'),
+      # 'font-family' = 'sans-serif',
+      'textLength' = width,
+      'lengthAdjust' = 'spacingAndGlyphs',
+      fill = fillColor,
+      'fill-opacity' = fillOpacity,
+      stroke = color,
+      'stroke-opacity' = opacity,
+      'stroke-width' = strokeWidth,
+      'abc',
+      ...
+    ),
+    stop('Invalid shape argument.')
+  )
+}
+.makeSymbolFigure <- function(shape, dir = 'man/figures', color = 'black',
+    fillColor = NULL, opacity = 1, fillOpacity = 1, ...) {
+  shapes <- availableShapes()
+  if (is.null(fillColor)) {
+    fillColor <- 'transparent'
+    if (shape %in% shapes[['special']]) {
+      fillColor <- color
+    }
+  }
+  strokeWidth <- 2
+  inner <- 50
+  total <- inner + strokeWidth * 2
+  label_y <- total + 20
+  shapeElement <- makeSymbolElement(
+    shape = shape,
+    width = inner,
+    height = inner,
+    color = color,
+    fillColor = fillColor,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    'stroke-width' = strokeWidth,
+    ...
+  )
+  svgTag <- htmltools::tags$svg(
+    xmlns = 'http://www.w3.org/2000/svg',
+    version = '1.1',
+    width = total,
+    height = label_y,
+    style = 'background-color: white;',
+    shapeElement,
+    htmltools::tags$text(
+      x = total / 2,
+      y = label_y - 4,
+      'font-family' = 'sans-serif',
+      'text-anchor' = 'middle',
+      'font-size' = '12px',
+      shape
+    )
+  )
+  isPchOnly <- shape %in% shapes[['pch']] &&
+    !shape %in% c(shapes[['default']], shapes[['special']])
+  suffix <- '-pch.svg'
+  if (!isPchOnly) {
+    suffix <- '.svg'
+  }
+  filename <- sprintf('%s%s', shape, suffix)
+  writeLines(as.character(svgTag), file.path(dir, filename))
 }
 coalesceMissing <- function(x, y) {
   if (missing(x)) y else x
@@ -2567,7 +2652,8 @@ availableShapes <- function() {
         'cross-circle', 'triangle-rect', 'solid-rect', 'solid-circle-md',
         'solid-triangle', 'solid-diamond', 'solid-circle-bg', 'solid-circle-sm',
         'circle', 'rect', 'diamond', 'triangle', 'down-triangle'
-      )
+      ),
+    'special' = c('text')
   )
 }
 

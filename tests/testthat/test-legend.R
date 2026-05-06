@@ -133,6 +133,13 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(
       'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"3\" height=\"4\">\n  <polygon id=\"polygon\" points=\"1.5,1 1.02447174185242,1.69098300562505 1.20610737385376,2.80901699437495 1.79389262614624,2.80901699437495 1.97552825814758,1.69098300562505 1.5,1\" stroke=\"black\" fill=\"blue\" stroke-opacity=\"0.9\" fill-opacity=\"0.7\"></polygon>\n</svg>'
       )
+  makeSymbol('text', width = 1, height = 2,
+             color = 'black', fillColor = 'blue',
+             opacity = .9, fillOpacity = .7) %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"3\" height=\"4\">\n  <text id=\"text\" x=\"50%\" y=\"50%\" dominant-baseline=\"central\" text-anchor=\"middle\" font-size=\"1px\" textLength=\"1\" lengthAdjust=\"spacingAndGlyphs\" fill=\"blue\" fill-opacity=\"0.7\" stroke=\"black\" stroke-opacity=\"0.9\" stroke-width=\"0\">abc</text>\n</svg>'
+      )
   makeLegendSymbol(label = '', labelStyle = '', shape = 'rect', width = 1,
                    color = 'black') %>%
     as.character() %>%
