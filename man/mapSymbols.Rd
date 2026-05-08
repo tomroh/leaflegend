@@ -134,8 +134,6 @@ be this exact size}
 
 \item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks;
 if a named vector then the names are used as labels.}
-
-\item{label}{label for the symbol}
 }
 \value{
 HTML svg element

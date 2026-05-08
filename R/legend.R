@@ -207,10 +207,6 @@ addLegendImage <- function(
 #'
 #' width in pixels of symbol outline
 #'
-#' @param label
-#'
-#' label for the symbol
-#'
 #' @param ...
 #'
 #' arguments to be passed to svg shape tag

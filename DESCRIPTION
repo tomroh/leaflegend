@@ -18,10 +18,10 @@ Imports:
     stats, 
     base64enc,
     htmlwidgets
-RoxygenNote: 7.2.3
 URL: https://leaflegend.delveds.com, https://github.com/tomroh/leaflegend
 BugReports: https://github.com/tomroh/leaflegend/issues
 Suggests: 
     covr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
