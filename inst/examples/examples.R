@@ -304,7 +304,14 @@ leaflet() %>%
                                                 '(Omit Numbers)'),
                     numberFormat = NULL,
                     shape = 'rect') %>%
-  addLegend(pal = quantPal, values = quakes$mag, title = 'addLegend')
+  addLegend(pal = quantPal, values = quakes$mag, title = 'addLegend') %>%
+  addLegendQuantile(pal = quantPal,
+                    values = quakes$mag[-1],
+                    position = 'topright',
+                    title = htmltools::tags$div('addLegendQuantile',
+                                                htmltools::tags$br(),
+                                                '(Omit Numbers)')
+  )
 
 # Factor Legend -----------------------------------------------------------
 
@@ -835,6 +842,35 @@ leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
     width = defaultSize, height = defaultSize, position = 'topright') |>
   addLegendImage(images = pchSvgI, labels = i-1,
     width = defaultSize, height = defaultSize, position = 'topleft')
+
+# Text Symbol Size --------------------------------------------------------
+
+library(leaflet)
+data(quakes)
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet(quakes) |>
+  addTiles() |>
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'text',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = 1,
+    baseSize = 10
+  ) |>
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth',
+    baseSize = 10,
+    shape = 'text',
+    color = 'black',
+    fillColor = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
 
 # Test Pre-defined Bins colorNumeric --------------------------------------
 library(leaflet)

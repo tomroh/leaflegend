@@ -133,6 +133,13 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(
       'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"3\" height=\"4\">\n  <polygon id=\"polygon\" points=\"1.5,1 1.02447174185242,1.69098300562505 1.20610737385376,2.80901699437495 1.79389262614624,2.80901699437495 1.97552825814758,1.69098300562505 1.5,1\" stroke=\"black\" fill=\"blue\" stroke-opacity=\"0.9\" fill-opacity=\"0.7\"></polygon>\n</svg>'
       )
+  makeSymbol('text', width = 1, height = 2,
+             color = 'black', fillColor = 'blue',
+             opacity = .9, fillOpacity = .7) %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"3\" height=\"4\">\n  <text id=\"text\" x=\"50%\" y=\"50%\" dominant-baseline=\"central\" text-anchor=\"middle\" font-size=\"1px\" textLength=\"1\" lengthAdjust=\"spacingAndGlyphs\" fill=\"blue\" fill-opacity=\"0.7\" stroke=\"black\" stroke-opacity=\"0.9\" stroke-width=\"0\">abc</text>\n</svg>'
+      )
   makeLegendSymbol(label = '', labelStyle = '', shape = 'rect', width = 1,
                    color = 'black') %>%
     as.character() %>%
@@ -324,13 +331,13 @@ testthat::test_that('Symbol Legends', {
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="15.3333333333333" height="15.3333333333333">
   <rect id="rect" x="1" y="1" height="13.3333333333333" width="13.3333333333333" stroke="black" fill="#FFF5F0" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 6.66666666666667px; margin-left: 6.66666666666667px" height="13.3333333333333" width="13.3333333333333"/>
-  <span style="">1</span>
+  <span style="vertical-align: middle;">1</span>
 </div>
 <div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="28.6666666666667" height="28.6666666666667">
   <rect id="rect" x="1" y="1" height="26.6666666666667" width="26.6666666666667" stroke="black" fill="#67000D" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="26.6666666666667" width="26.6666666666667"/>
-  <span style="">2</span>
+  <span style="vertical-align: middle;">2</span>
 </div>')
   # test line legends
   m %>%
@@ -346,13 +353,13 @@ testthat::test_that('Symbol Legends', {
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="6.66666666666667">
   <rect id="rect" x="0" y="0" height="6.66666666666667" width="20" stroke="transparent" fill="black" stroke-opacity="1" fill-opacity="1" stroke-width="0"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="6.66666666666667" width="20"/>
-  <span style="">1</span>
+  <span style="vertical-align: middle;">1</span>
 </div>
 <div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="13.3333333333333">
   <rect id="rect" x="0" y="0" height="13.3333333333333" width="20" stroke="transparent" fill="black" stroke-opacity="1" fill-opacity="1" stroke-width="0"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="13.3333333333333" width="20"/>
-  <span style="">2</span>
+  <span style="vertical-align: middle;">2</span>
 </div>')
   m %>%
     addLegendSymbol(data = mapData, values = ~x, color = 'black',
@@ -368,13 +375,13 @@ testthat::test_that('Symbol Legends', {
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="22" height="22">
   <rect id="rect" x="1" y="1" height="20" width="20" stroke="black" fill="#E41A1C" stroke-opacity="1" fill-opacity="1" stroke-width="1" stroke-dasharray="none"></rect>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="20" width="20"/>
-  <span style="">1</span>
+  <span style="vertical-align: middle;">1</span>
 </div>
 <div>
   <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="22" height="22">
   <circle id="circle" cx="11" cy="11" r="10" stroke="black" fill="#4DAF4A" stroke-opacity="1" fill-opacity="1" stroke-width="1" stroke-dasharray="none"></circle>
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="20" width="20"/>
-  <span style="">2</span>
+  <span style="vertical-align: middle;">2</span>
 </div>')
 
   # Stacked
@@ -791,7 +798,7 @@ testthat::test_that('Awesome Legends', {
   <div style="vertical-align: middle; display:&#10;          inline-block; position: relative;" class="awesome-marker-icon-blue awesome-marker ">
     <i class="glyphicon glyphicon-home " style="color: white; ; margin-right: 0px"></i>
   </div>
-  <span style="">home</span>
+  <span style="vertical-align: middle;">home</span>
 </div>')
   m %>%
     addLegendAwesomeIcon(iconSet = iconSet, orientation = 'horizontal',
@@ -809,7 +816,7 @@ testthat::test_that('Awesome Legends', {
   <div style="vertical-align: middle; display:&#10;          inline-block; position: relative;" class="awesome-marker-icon-blue awesome-marker ">
     <i class="glyphicon glyphicon-home " style="color: white; ; margin-right: 0px"></i>
   </div>
-  <span style="">home</span>
+  <span style="vertical-align: middle;">home</span>
 </span>'
     )
 })
