@@ -105,7 +105,8 @@ function}
 
 \item{fillOpacity}{fill opacity of the legend items}
 
-\item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks}
+\item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks.
+if a named vector is given, the names are used as labels}
 
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}

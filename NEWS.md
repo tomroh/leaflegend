@@ -1,8 +1,12 @@
-# leaflegend 1.2.3
+
+
+# leaflegend 1.2.4
+
+* Changing defaults for size legends so labels are vertically aligned.
+
+* Adding text symbol see README
 
 * Added examples for advanced symbol customization
-
-# leaflegend 1.2.2
 
 * Fixes an issue when multi-map documents and group names are the same where 
 the layer control would only work for the last map.
