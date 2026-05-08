@@ -83,6 +83,10 @@ devtools::install_github("tomroh/leaflegend")
 <img src="man/figures/triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
 <img src="man/figures/down-triangle-pch.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
 
+**special**
+
+<img src="man/figures/text.svg" alt="line" width = 50 height = 70 style="margin: 5px;"></img>
+
 ## Example
 
 Use `addLegend*()` to create easily customizable legends for leaflet.
