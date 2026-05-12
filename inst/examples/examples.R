@@ -408,6 +408,143 @@ leaflet() %>%
             values = quakes$mag,
             title = 'addLegend')
 
+# Bin Legend Cutpoints ----------------------------------------------------
+
+binPal <- colorBin('YlOrRd', quakes$mag, bins = 6)
+
+# side-by-side comparison: standard vs labelCutpoints
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Standard'
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Cutpoints',
+    labelCutpoints = TRUE
+  )
+
+# shapes: circle and triangle
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'circle',
+    shape = 'circle',
+    labelCutpoints = TRUE
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'triangle',
+    shape = 'triangle',
+    labelCutpoints = TRUE
+  )
+
+# custom width/height and tick styling
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Wide bins',
+    width = 40,
+    height = 30,
+    labelCutpoints = TRUE
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Thick ticks',
+    labelCutpoints = TRUE,
+    tickLength = 8,
+    tickWidth = 3
+  )
+
+# custom labelStyle and numberFormat
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Styled labels',
+    labelCutpoints = TRUE,
+    labelStyle = 'font-size: 14px; font-weight: bold;'
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Custom format',
+    labelCutpoints = TRUE,
+    numberFormat = function(x) sprintf('%.1f M', x)
+  )
+
+# NA values
+quakes$mag[1] <- NA
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'With NA',
+    labelCutpoints = TRUE,
+    naLabel = 'Missing'
+  )
+quakes$mag[1] <- 4.0
+
 # README ------------------------------------------------------------------
 
 quakes[['group']] <- sample(c('A', 'B', 'C'), nrow(quakes), replace = TRUE)

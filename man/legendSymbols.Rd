@@ -12,7 +12,7 @@ addLegendSize(
   pal,
   values,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   shape = "rect",
   orientation = c("vertical", "horizontal"),
   color,
@@ -38,7 +38,7 @@ addLegendLine(
   pal,
   values,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   orientation = c("vertical", "horizontal"),
   width = 20,
   color,
@@ -61,7 +61,7 @@ addLegendSymbol(
   pal,
   values,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   shape,
   orientation = c("vertical", "horizontal"),
   color,
@@ -250,7 +250,7 @@ addTiles() \%>\%
     color = 'black',
     fillColor = 'red',
     opacity = 1,
-    baseSize = 5) |>
+    baseSize = 5) \%>\%
   addLegendSize(
     values = ~10^(mag),
     title = 'Magnitude',

@@ -1774,6 +1774,20 @@ addLegendQuantile <- function(map,
 #'
 #' a separator between legend range labels
 #'
+#' @param labelCutpoints
+#'
+#' if \code{TRUE}, labels are placed at bin boundaries (cutpoints) with tick
+#' marks instead of beside each symbol. Only supported for vertical
+#' orientation.
+#'
+#' @param tickLength
+#'
+#' length of tick marks in pixels, used when \code{labelCutpoints = TRUE}
+#'
+#' @param tickWidth
+#'
+#' stroke width of tick marks in pixels, used when \code{labelCutpoints = TRUE}
+#'
 #' @export
 #'
 #' @rdname addLeafLegends
@@ -1797,27 +1811,51 @@ addLegendBin <- function(map,
                          className = 'info legend leaflet-control',
                          naLabel = 'NA',
                          between = ' - ',
+                         labelCutpoints = FALSE,
+                         tickLength = 4,
+                         tickWidth = 1,
                          data = leaflet::getMapData(map),
                          ...) {
   stopifnot( attr(pal, 'colorType') == 'bin' )
   stopifnot( width >= 0 && height >= 0 )
   orientation <- match.arg(orientation)
+  if (isTRUE(labelCutpoints) && orientation == 'horizontal')
+    stop('labelCutpoints = TRUE is only supported for vertical orientation.')
   values <- parseValues(values = values, data = data)
   bins <- attr(pal, 'colorArgs')[['bins']]
-  labels <- sprintf(' %s%s%s', numberFormat(bins[-length(bins)]), between,
-                    numberFormat(bins[-1]))
   colors <- pal((bins[-1] + bins[-length(bins)]) / 2 )
-  htmlElements <- makeLegendCategorical(shape = shape, labels = labels,
-    colors = colors,
-    labelStyle = labelStyle,
-    height = height, width = width,
-    opacity = opacity,
-    fillOpacity = fillOpacity,
-    orientation = orientation,
-    title = title,
-    hasNa = any(is.na(values)),
-    naLabel = naLabel,
-    naColor = pal(NA))
+  if (isTRUE(labelCutpoints)) {
+    htmlElements <- makeLegendBinTicks(
+      bins = bins,
+      colors = colors,
+      shape = shape,
+      width = width,
+      height = height,
+      tickLength = tickLength,
+      tickWidth = tickWidth,
+      numberFormat = numberFormat,
+      labelStyle = labelStyle,
+      fillOpacity = fillOpacity,
+      title = title,
+      hasNa = any(is.na(values)),
+      naLabel = naLabel,
+      naColor = pal(NA)
+    )
+  } else {
+    labels <- sprintf(' %s%s%s', numberFormat(bins[-length(bins)]), between,
+                      numberFormat(bins[-1]))
+    htmlElements <- makeLegendCategorical(shape = shape, labels = labels,
+      colors = colors,
+      labelStyle = labelStyle,
+      height = height, width = width,
+      opacity = opacity,
+      fillOpacity = fillOpacity,
+      orientation = orientation,
+      title = title,
+      hasNa = any(is.na(values)),
+      naLabel = naLabel,
+      naColor = pal(NA))
+  }
   leaflegendAddControl(map, html = htmltools::tagList(htmlElements),
                        className = className, group = group, ...)
 }
@@ -1889,6 +1927,52 @@ makeLegendCategorical <- function(shape, labels, colors, labelStyle, height,
     shape = shape, labels = naLabel, colors = naColor, labelStyle = labelStyle,
     height = height, width = width, opacity = fillOpacity,
     fillOpacity = fillOpacity, strokeWidth = 1)
+  htmlElements
+}
+
+makeLegendBinTicks <- function(bins, colors, shape, width, height, tickLength,
+  tickWidth, numberFormat, labelStyle, fillOpacity, title, hasNa, naLabel,
+  naColor) {
+  nBins <- length(colors)
+  totalHeight <- nBins * height
+  pad <- ceiling(tickWidth / 2)
+  svgHeight <- totalHeight + 2 * pad
+  # breaks run high-to-low so tickLocations = svgHeight - breaks maps to
+  # y = pad (top boundary) through y = totalHeight + pad (bottom boundary)
+  stdBreaks <- seq(totalHeight + pad, pad, by = -height)
+  tickLabels <- numberFormat(bins)
+  shapeElements <- Map(
+    f = makeSymbolElement,
+    color = colors,
+    fillColor = colors,
+    shape = shape, width = width, height = height,
+    fillOpacity = fillOpacity, 'stroke-width' = 0
+  )
+  transforms <- sprintf('translate(0,%g)', pad + seq(0, by = height,
+    length.out = nBins))
+  shapeElements <- Map(htmltools::tags$g, shapeElements,
+    transform = transforms)
+  ticks <- makeTicks(breaks = stdBreaks, width = tickLength,
+    height = svgHeight, strokeWidth = tickWidth, stroke = 'black',
+    transform = sprintf('translate(%.03f,0)', width),
+    orientation = 'vertical')
+  tickText <- makeTickText(labels = tickLabels, breaks = stdBreaks,
+    width = width, height = svgHeight, orientation = 'vertical')
+  htmlElements <- assembleLegendWithTicks(
+    width = width + tickLength * 2,
+    height = svgHeight,
+    svgElements = shapeElements,
+    ticks = ticks,
+    tickText = tickText,
+    labelStyle = labelStyle,
+    marginRight = max(nchar(tickLabels)) * .5,
+    marginBottom = 0
+  )
+  htmlElements <- addTitle(title = title, htmlElements = list(htmlElements))
+  htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
+    shape = shape, labels = naLabel, colors = naColor,
+    labelStyle = labelStyle, height = width, width = width,
+    opacity = fillOpacity, fillOpacity = fillOpacity, strokeWidth = 0)  
   htmlElements
 }
 
@@ -2123,7 +2207,7 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'     color = 'black',
 #'     fillColor = 'red',
 #'     opacity = 1,
-#'     baseSize = 5) |>
+#'     baseSize = 5) %>%
 #'   addLegendSize(
 #'     values = ~10^(mag),
 #'     title = 'Magnitude',
