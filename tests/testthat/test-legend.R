@@ -670,6 +670,48 @@ testthat::test_that('Categorical Legends', {
   m %>% addLegendBin(pal = palBin,
                      numberFormat = 'fun') %>%
     testthat::expect_error()
+  # test labelCutpoints args
+  m %>% addLegendBin(pal = palBin,
+                     values = ~x,
+                     labelCutpoints = TRUE,
+                     orientation = 'horizontal') %>%
+    testthat::expect_error()
+  # test labelCutpoints results
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE) %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     shape = 'circle') %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     width = 40, height = 30) %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     tickLength = 8, tickWidth = 3) %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     labelStyle = 'font-size: 14px;') %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     numberFormat = function(x) sprintf('%.1f', x)) %>%
+    testthat::expect_no_error()
+  mapData$x[1] <- NA
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     naLabel = 'Missing') %>%
+    testthat::expect_no_error()
+  mapData$x[1] <- 1L
+  testthat::expect_equal(
+    m %>% addLegendBin(pal = palBin,
+                       values = ~x,
+                       labelCutpoints = TRUE) %>%
+      getElement(1) %>%
+      getElement('calls') %>%
+      getElement(1) %>%
+      getElement('args') %>%
+      getElement(1) %>%
+      as.character() %>%
+      URLdecode(),
+    "<div style=\"position: relative; margin-top:.5em; margin-bottom:.5em; ;&#10;      width: calc(32px + 1em + 2px); height: calc(50px + 0em);\">\n  <img src=\"data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"32\" height=\"50\">\n  <svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"32\" height=\"50\">\n    <g transform=\"translate(0,1)\">\n      <rect id=\"rect\" x=\"0\" y=\"0\" height=\"24\" width=\"24\" stroke=\"#DEEBF7\" fill=\"#DEEBF7\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"0\"></rect>\n    </g>\n    <g transform=\"translate(0,25)\">\n      <rect id=\"rect\" x=\"0\" y=\"0\" height=\"24\" width=\"24\" stroke=\"#3182BD\" fill=\"#3182BD\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"0\"></rect>\n    </g>\n    <line x1=\"0\" x2=\"4\" y1=\"1\" y2=\"1\" stroke-width=\"1\" stroke=\"black\" transform=\"translate(24.000,0)\"></line>\n    <line x1=\"0\" x2=\"4\" y1=\"25\" y2=\"25\" stroke-width=\"1\" stroke=\"black\" transform=\"translate(24.000,0)\"></line>\n    <line x1=\"0\" x2=\"4\" y1=\"49\" y2=\"49\" stroke-width=\"1\" stroke=\"black\" transform=\"translate(24.000,0)\"></line>\n  </svg>\n</svg>\" style=\"margin-left: 1px;\"/>\n  <p style=\"position: absolute; margin: 0; top: calc(1.00px - .5em);&#10;        right: 0; line-height:1;\">0</p>\n  <p style=\"position: absolute; margin: 0; top: calc(25.00px - .5em);&#10;        right: 0; line-height:1;\">5</p>\n  <p style=\"position: absolute; margin: 0; top: calc(49.00px - .5em);&#10;        right: 0; line-height:1;\">10</p>\n</div>"
+  )
   # test Factor args
   m %>% addLegendFactor(pal = palFactor,
                         values = ~y,

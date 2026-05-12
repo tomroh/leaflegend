@@ -8,7 +8,7 @@ addLegendAwesomeIcon(
   map,
   iconSet,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   orientation = c("vertical", "horizontal"),
   marker = TRUE,
   group = NULL,
