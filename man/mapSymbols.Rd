@@ -67,13 +67,21 @@ addSymbolsSize(
   fillOpacity = opacity,
   strokeWidth = 1,
   baseSize = 20,
+  minSize = NULL,
+  maxSize = NULL,
   data = leaflet::getMapData(map),
   ...
 )
 
-sizeNumeric(values, baseSize)
+sizeNumeric(
+  values,
+  baseSize,
+  minSize = NULL,
+  maxSize = NULL,
+  centerPoint = mean(values, na.rm = TRUE)
+)
 
-sizeBreaks(values, breaks, baseSize, ...)
+sizeBreaks(values, breaks, baseSize, minSize = NULL, maxSize = NULL, ...)
 
 makeSymbolsSize(
   values,
@@ -84,6 +92,8 @@ makeSymbolsSize(
   fillOpacity = opacity,
   strokeWidth = 1,
   baseSize,
+  minSize = NULL,
+  maxSize = NULL,
   ...
 )
 }
@@ -131,6 +141,16 @@ overridden}
 
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
+
+\item{minSize}{minimum size in pixels of a symbol; values that would scale below this are
+clamped to \code{minSize}; \code{baseSize} must be greater than \code{minSize}}
+
+\item{maxSize}{maximum size in pixels of a symbol; values that would scale above this are
+clamped to \code{maxSize}; \code{baseSize} must be less than \code{maxSize}}
+
+\item{centerPoint}{the value used as the center of the scaling; defaults to the mean of
+\code{values}; the symbol for \code{centerPoint} will be exactly
+\code{baseSize} pixels}
 
 \item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks;
 if a named vector then the names are used as labels.}

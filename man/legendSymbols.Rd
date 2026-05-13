@@ -22,6 +22,8 @@ addLegendSize(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 20,
+  minSize = NULL,
+  maxSize = NULL,
   numberFormat = function(x) {
      prettyNum(x, big.mark = ",", scientific = FALSE,
     digits = 1)
@@ -46,6 +48,8 @@ addLegendLine(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 10,
+  minSize = NULL,
+  maxSize = NULL,
   numberFormat = function(x) {
      prettyNum(x, big.mark = ",", scientific = FALSE,
     digits = 1)
@@ -110,6 +114,12 @@ if a named vector is given, the names are used as labels}
 
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
+
+\item{minSize}{minimum size in pixels of a symbol; values that would scale below this are
+clamped to \code{minSize}; \code{baseSize} must be greater than \code{minSize}}
+
+\item{maxSize}{maximum size in pixels of a symbol; values that would scale above this are
+clamped to \code{maxSize}; \code{baseSize} must be less than \code{maxSize}}
 
 \item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
 
