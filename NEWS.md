@@ -1,6 +1,10 @@
 
 
-# leaflegend 1.2.4
+# leaflegend 1.2.5
+
+* `addLegendBin` has a new method with the `labelCutpoints` argument that 
+produces a legend with labels at the tick marks e.g. a 0-10 bin has 0
+labeled at the top tick mark and 10 at the bottom tick mark.
 
 * Changing defaults for size legends so labels are vertically aligned.
 
