@@ -1,6 +1,9 @@
 
 
-# leaflegend 1.2.5
+# leaflegend 1.2.6
+
+* Size encodings get two new arguments `minSize` and `maxSize` that control the 
+bounds of the size scale. 
 
 * `addLegendBin` has a new method with the `labelCutpoints` argument that 
 produces a legend with labels at the tick marks e.g. a 0-10 bin has 0
