@@ -1009,6 +1009,276 @@ leaflet(quakes) |>
     breaks = 5
   )
 
+# Min Max Size ------------------------------------------------------------
+
+library(leaflet)
+data(quakes)
+numPal <- colorNumeric('viridis', quakes$depth)
+baseSize <- 20
+minSize <- 19
+maxSize <- 21
+
+# sizeNumeric with minSize only
+height <- sizeNumeric(quakes$depth, baseSize = baseSize, minSize = minSize)
+width <- height
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(
+    lat = ~lat,
+    lng = ~long,
+    icon = icons(iconUrl = makeSymbol('circle', width = 24, color = 'black'),
+                 iconWidth = width, iconHeight = height)
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    shape = 'circle',
+    color = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# sizeNumeric with maxSize only
+height <- sizeNumeric(quakes$depth, baseSize = baseSize, maxSize = maxSize)
+width <- height
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(
+    lat = ~lat,
+    lng = ~long,
+    icon = icons(iconUrl = makeSymbol('circle', width = 24, color = 'black'),
+                 iconWidth = width, iconHeight = height)
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    color = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# sizeNumeric with minSize and maxSize
+height <- sizeNumeric(quakes$depth, baseSize = baseSize, minSize = minSize, maxSize = maxSize)
+width <- height
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(
+    lat = ~lat,
+    lng = ~long,
+    icon = icons(iconUrl = makeSymbol('circle', width = 24, color = 'black'),
+                 iconWidth = width, iconHeight = height)
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    color = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addSymbolsSize with minSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = .7,
+    baseSize = baseSize,
+    minSize = minSize
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addSymbolsSize with maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = .7,
+    baseSize = baseSize,
+    maxSize = maxSize
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addSymbolsSize with minSize and maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = .7,
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# makeSymbolsSize with minSize
+sizeSymbols <- makeSymbolsSize(
+  quakes$depth,
+  shape = 'circle',
+  color = numPal(quakes$depth),
+  fillColor = numPal(quakes$depth),
+  opacity = .7,
+  baseSize = baseSize,
+  minSize = minSize
+)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(lat = ~lat, lng = ~long, icon = sizeSymbols) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# makeSymbolsSize with maxSize
+sizeSymbols <- makeSymbolsSize(
+  quakes$depth,
+  shape = 'circle',
+  color = numPal(quakes$depth),
+  fillColor = numPal(quakes$depth),
+  opacity = .7,
+  baseSize = baseSize,
+  maxSize = maxSize
+)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(lat = ~lat, lng = ~long, icon = sizeSymbols) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# makeSymbolsSize with minSize and maxSize
+sizeSymbols <- makeSymbolsSize(
+  quakes$depth,
+  shape = 'circle',
+  color = numPal(quakes$depth),
+  fillColor = numPal(quakes$depth),
+  opacity = .7,
+  baseSize = baseSize,
+  minSize = minSize,
+  maxSize = maxSize
+)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(lat = ~lat, lng = ~long, icon = sizeSymbols) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addLegendLine with minSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendLine(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addLegendLine with maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendLine(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addLegendLine with minSize and maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendLine(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    position = 'bottomleft',
+    breaks = 5
+  )
+
 # Test Pre-defined Bins colorNumeric --------------------------------------
 library(leaflet)
 data("quakes")

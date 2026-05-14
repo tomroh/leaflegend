@@ -165,6 +165,13 @@ testthat::test_that('Symbols', {
     testthat::expect_error()
   sizeBreaks(values = 1:4, breaks = -1, baseSize = 5) %>%
     testthat::expect_error()
+  # test minSize/maxSize validation for sizeBreaks
+  sizeBreaks(values = 1:4, breaks = 4, baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  sizeBreaks(values = 1:4, breaks = 4, baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  sizeBreaks(values = 1:4, breaks = 4, baseSize = 5, minSize = 3, maxSize = 4) %>%
+    testthat::expect_error()
   # test simple size outputs
   sizeNumeric(1:4, 5) %>%
     testthat::expect_equal(c(2, 4, 6, 8))
@@ -172,6 +179,11 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(stats::setNames(c(2, 4, 6, 8), c(1, 2, 3, 4)))
   sizeBreaks(1:4, 1:4, 5) %>%
     testthat::expect_equal(stats::setNames(c(2, 4, 6, 8), c(1, 2, 3, 4)))
+  # test sizeBreaks clamping
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, minSize = 3) >= 3))
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, maxSize = 7) <= 7))
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, minSize = 3, maxSize = 7) >= 3))
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, minSize = 3, maxSize = 7) <= 7))
   # test size icons args
   makeSymbolsSize(values = 1:4, shape = 'notashape', fillColor = 'black',
                   color = 'black', baseSize = 5) %>%
@@ -189,6 +201,15 @@ testthat::test_that('Symbols', {
   makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
                   color = 'black', baseSize = 5, opacity = 1,
                   strokeWidth = -1) %>%
+    testthat::expect_error()
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5, minSize = 3, maxSize = 4) %>%
     testthat::expect_error()
   makeSymbolsSize(values = 1:4, shape = 'rect', baseSize = 5, opacity = 1) %>%
     testthat::expect_error()
@@ -227,6 +248,12 @@ testthat::test_that('Symbols', {
       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">
   <rect id="rect" x="1" y="1" height="8" width="8" stroke="#67000D" fill="#FFF5F0" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>')
+  sizeNumeric(1:4, baseSize = 5) %>%
+    testthat::expect_equal(c(2, 4, 6, 8))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3) >= 3))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, maxSize = 7) <= 7))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3, maxSize = 7) >= 3))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3, maxSize = 7) <= 7))
   mapData <- data.frame(x = 1:2, lat = c(41,42), lng = c(-122, -122))
   m %>%
     addSymbols(lat = ~lat, lng = ~lng, color = ~pal(x), fillColor = ~pal(x),
@@ -287,6 +314,18 @@ testthat::test_that('Symbol Legends', {
                   shape = 'notashape') %>%
     testthat::expect_error()
   m %>%
+    addLegendSize(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 3, maxSize = 4) %>%
+    testthat::expect_error()
+  m %>%
     addLegendLine(data = mapData, values = ~x) %>%
     testthat::expect_error()
   m %>%
@@ -295,6 +334,18 @@ testthat::test_that('Symbol Legends', {
   m %>%
     addLegendLine(data = mapData, values = ~x, color = 'black',
                   numberFormat = 'fun') %>%
+    testthat::expect_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 3, maxSize = 4) %>%
     testthat::expect_error()
   m %>%
     addLegendSymbol(data = mapData, values = ~x) %>%
@@ -339,6 +390,18 @@ testthat::test_that('Symbol Legends', {
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="26.6666666666667" width="26.6666666666667"/>
   <span style="vertical-align: middle;">2</span>
 </div>')
+  m %>%
+    addLegendSize(data = mapData, values = ~x, pal = pal, breaks = 1,
+                  color = 'black', baseSize = 20, minSize = 5) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, pal = pal, breaks = 1,
+                  color = 'black', baseSize = 20, maxSize = 30) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, pal = pal, breaks = 1,
+                  color = 'black', baseSize = 20, minSize = 5, maxSize = 30) %>%
+    testthat::expect_no_error()
   # test line legends
   m %>%
     addLegendLine(data = mapData, values = ~x, color = 'black', breaks = 1) %>%
@@ -361,6 +424,18 @@ testthat::test_that('Symbol Legends', {
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="13.3333333333333" width="20"/>
   <span style="vertical-align: middle;">2</span>
 </div>')
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  breaks = 1, baseSize = 10, minSize = 5) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  breaks = 1, baseSize = 10, maxSize = 15) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  breaks = 1, baseSize = 10, minSize = 5, maxSize = 15) %>%
+    testthat::expect_no_error()
   m %>%
     addLegendSymbol(data = mapData, values = ~x, color = 'black',
                     pal = factorPal) %>%

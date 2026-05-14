@@ -1209,11 +1209,13 @@ addSymbolsSize <- function(
     fillOpacity = opacity,
     strokeWidth = 1,
     baseSize = 20,
+    minSize = NULL,
+    maxSize = NULL,
     data = leaflet::getMapData(map),
     ...
 ) {
   values <- parseValues(values, data)
-  sizes <- sizeNumeric(values, baseSize)
+  sizes <- sizeNumeric(values, baseSize, minSize = minSize, maxSize = maxSize)
   if ( inherits(color, 'formula') ) {
     color <- parseValues(color, data)
   }
@@ -2050,6 +2052,16 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #' re-scaling size in pixels of the mean of the values, the average value will
 #' be this exact size
 #'
+#' @param minSize
+#'
+#' minimum size in pixels of a symbol; values that would scale below this are
+#' clamped to \code{minSize}; \code{baseSize} must be greater than \code{minSize}
+#'
+#' @param maxSize
+#'
+#' maximum size in pixels of a symbol; values that would scale above this are
+#' clamped to \code{maxSize}; \code{baseSize} must be less than \code{maxSize}
+#'
 #' @param color
 #'
 #' the color of the legend symbols, if omitted pal is used
@@ -2254,6 +2266,8 @@ addLegendSize <- function(map,
                           fillOpacity = opacity,
                           breaks = 5,
                           baseSize = 20,
+                          minSize = NULL,
+                          maxSize = NULL,
                           numberFormat = function(x) {
                             prettyNum(x, big.mark = ',', scientific = FALSE,
                                       digits = 1)
@@ -2264,7 +2278,7 @@ addLegendSize <- function(map,
                           data = leaflet::getMapData(map),
                           ...) {
   values <- parseValues(values = values, data = data)
-  sizes <- sizeBreaks(values, breaks, baseSize)
+  sizes <- sizeBreaks(values, breaks, baseSize, minSize = minSize, maxSize = maxSize)
   if ( missing(color) ) {
     stopifnot( missing(color) & !missing(pal))
     colors <- pal(as.numeric(names(sizes)))
@@ -2296,7 +2310,7 @@ addLegendSize <- function(map,
                  fillOpacity = fillOpacity,
                  `stroke-width` = strokeWidth)
   if (isTRUE(stacked)) {
-    maxSize <- max(sizes)
+    stackedMax <- max(sizes)
     svgElements <- rev(Map(makeSymbolElement,
       shape = shape,
       width = sizes,
@@ -2306,18 +2320,18 @@ addLegendSize <- function(map,
       opacity = opacity,
       fillOpacity = fillOpacity,
       `stroke-width` = strokeWidth,
-      transform = sprintf('translate(%.02f,%.02f)', maxSize / 2 - sizes / 2,
-        maxSize - sizes)))
+      transform = sprintf('translate(%.02f,%.02f)', stackedMax / 2 - sizes / 2,
+        stackedMax - sizes)))
     ticks <- makeTicks(breaks = sizes - strokeWidth,
-      width = maxSize / 2 + strokeWidth, height = maxSize,
+      width = stackedMax / 2 + strokeWidth, height = stackedMax,
       orientation = 'vertical', strokeWidth = strokeWidth,
       `stroke-linecap` = 'square', stroke = 'black',
       transform = sprintf('translate(%.03f,0)',
-        maxSize / 2 + strokeWidth * 3 / 2))
+        stackedMax / 2 + strokeWidth * 3 / 2))
     tickText <- makeTickText(labels = labels, breaks = sizes - strokeWidth,
-      width = maxSize, height = maxSize, orientation = 'vertical')
-    htmlElements <- assembleLegendWithTicks(width = maxSize + strokeWidth * 2,
-      height = maxSize + strokeWidth * 2, svgElements = svgElements,
+      width = stackedMax, height = stackedMax, orientation = 'vertical')
+    htmlElements <- assembleLegendWithTicks(width = stackedMax + strokeWidth * 2,
+      height = stackedMax + strokeWidth * 2, svgElements = svgElements,
       ticks = ticks, tickText = tickText, labelStyle = labelStyle,
       marginRight = .5 * max(nchar(labels)),
       marginBottom = 0)
@@ -2334,12 +2348,47 @@ addLegendSize <- function(map,
 
 }
 
+#' @param minSize
+#'
+#' minimum size in pixels of a symbol; values that would scale below this are
+#' clamped to \code{minSize}; \code{baseSize} must be greater than \code{minSize}
+#'
+#' @param maxSize
+#'
+#' maximum size in pixels of a symbol; values that would scale above this are
+#' clamped to \code{maxSize}; \code{baseSize} must be less than \code{maxSize}
+#'
+#' @param centerPoint
+#'
+#' the value used as the center of the scaling; defaults to the mean of
+#' \code{values}; the symbol for \code{centerPoint} will be exactly
+#' \code{baseSize} pixels
+#'
 #' @export
 #'
 #' @rdname mapSymbols
-sizeNumeric <- function(values, baseSize) {
+sizeNumeric <- function(values, baseSize, minSize = NULL, maxSize = NULL,
+  centerPoint = mean(values, na.rm = TRUE)) {
   stopifnot(baseSize > 0)
-  values / mean(values, na.rm = TRUE) * baseSize
+  if ( !is.null(minSize) ) {
+    stopifnot(minSize > 0)
+    stopifnot(baseSize > minSize)
+  }
+  if ( !is.null(maxSize) ) {
+    stopifnot(maxSize > 0)
+    stopifnot(baseSize < maxSize)
+  }
+  if ( !is.null(minSize) && !is.null(maxSize) ) {
+    stopifnot(minSize < maxSize)
+  }
+  sizes <- values / centerPoint * baseSize
+  if ( !is.null(minSize) ) {
+    sizes <- pmax(sizes, minSize)
+  }
+  if ( !is.null(maxSize) ) {
+    sizes <- pmin(sizes, maxSize)
+  }
+  sizes
 }
 
 #' @param breaks
@@ -2359,12 +2408,14 @@ sizeNumeric <- function(values, baseSize) {
 #' @export
 #'
 #' @rdname mapSymbols
-sizeBreaks <- function(values, breaks, baseSize, ...) {
+sizeBreaks <- function(values, breaks, baseSize, minSize = NULL, maxSize = NULL, 
+  ...) {
   stopifnot(baseSize > 0)
   if ( length(breaks) == 1 ) {
     breaks <- pretty(values, breaks, ...)
   }
-  sizes <- breaks / mean(values, na.rm = TRUE) * baseSize
+  sizes <- sizeNumeric(values = breaks, baseSize = baseSize, minSize = minSize,
+    maxSize = maxSize, centerPoint = mean(values, na.rm = TRUE))
   stats::setNames(sizes, breaks)[breaks > 0 & breaks <= max(values)]
 }
 
@@ -2379,13 +2430,15 @@ makeSymbolsSize <- function(values,
                           fillOpacity = opacity,
                           strokeWidth = 1,
                           baseSize,
+                          minSize = NULL,
+                          maxSize = NULL,
                           ...
                           ) {
   stopifnot(strokeWidth >= 0)
   stopifnot(length(color) == 1 || length(color) == length(values))
   stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
   stopifnot(length(shape) < 2)
-  sizes <- sizeNumeric(values, baseSize)
+  sizes <- sizeNumeric(values, baseSize, minSize = minSize, maxSize = maxSize)
   makeSymbolIcons(
     shape = shape,
     width = sizes,
@@ -2417,6 +2470,8 @@ addLegendLine <- function(map,
                           fillOpacity = opacity,
                           breaks = 5,
                           baseSize = 10,
+                          minSize = NULL,
+                          maxSize = NULL,
                           numberFormat = function(x) {
                             prettyNum(x, big.mark = ',', scientific = FALSE,
                                       digits = 1)
@@ -2427,7 +2482,8 @@ addLegendLine <- function(map,
                           ...) {
   shape <- 'rect'
   values <- parseValues(values = values, data = data)
-  sizes <- sizeBreaks(values, breaks, baseSize)
+  sizes <- sizeBreaks(values, breaks, baseSize, minSize = minSize, 
+    maxSize = maxSize)
   if ( missing(color) ) {
     stopifnot( missing(color) & !missing(pal))
     colors <- pal(as.numeric(names(sizes)))
