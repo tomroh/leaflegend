@@ -1,6 +1,8 @@
 
 
-# leaflegend 1.2.6
+# leaflegend 1.2.7
+
+* Added ability to add text label to symbols.
 
 * Size encodings get two new arguments `minSize` and `maxSize` that control the 
 bounds of the size scale. 
