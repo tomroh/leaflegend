@@ -255,6 +255,15 @@ testthat::test_that('Symbols', {
   testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3, maxSize = 7) >= 3))
   testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3, maxSize = 7) <= 7))
   mapData <- data.frame(x = 1:2, lat = c(41,42), lng = c(-122, -122))
+  mapData$label <- c('A', 'B')
+  m %>%
+    addSymbols(lat = ~lat, lng = ~lng, color = 'black', data = mapData,
+               label = ~label) %>%
+    testthat::expect_no_error()
+  m %>%
+    addSymbols(lat = ~lat, lng = ~lng, color = 'black', data = mapData,
+               label = c('A', 'B')) %>%
+    testthat::expect_no_error()
   m %>%
     addSymbols(lat = ~lat, lng = ~lng, color = ~pal(x), fillColor = ~pal(x),
                values = ~x, data = mapData) %>%
@@ -290,6 +299,16 @@ testthat::test_that('Symbols', {
   symbolSvg('notashape', width = 20, height = 20, color = 'black', fillColor =
       'black', opacity = 1, fillOpacity = 1) %>%
     testthat::expect_error()
+  # label overlay
+  makeSymbol('circle', width = 20, color = 'black', label = 'A') %>%
+    URLdecode() %>%
+    testthat::expect_match('<text')
+  makeSymbol('circle', width = 20, color = 'black') %>%
+    URLdecode() %>%
+    testthat::expect_no_match('<text')
+  makeSymbol('rect', width = 20, color = 'black', label = 'B') %>%
+    URLdecode() %>%
+    testthat::expect_match('dominant-baseline')
 })
 
 testthat::test_that('Symbol Legends', {
@@ -459,6 +478,25 @@ testthat::test_that('Symbol Legends', {
   <span style="vertical-align: middle;">2</span>
 </div>')
 
+  mapData$label <- c('A', 'B')
+  m %>%
+    addLegendSymbol(data = mapData, values = ~x, color = 'black',
+                    label = c('A', 'B')) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSymbol(data = mapData, values = ~x, color = 'black',
+                    label = ~label) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSymbol(data = mapData, values = ~x, color = 'black',
+                    label = c('A', 'B')) %>%
+    getElement(1) %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(1) %>%
+    URLdecode() %>%
+    testthat::expect_match('<text')
   # Stacked
   m %>%
     addLegendSize(color = 'black', fillColor = 'red',

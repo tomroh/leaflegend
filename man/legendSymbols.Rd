@@ -78,6 +78,7 @@ addLegendSymbol(
   group = NULL,
   className = "info legend leaflet-control",
   dashArray = NULL,
+  label = NULL,
   data = leaflet::getMapData(map),
   ...
 )
@@ -151,6 +152,8 @@ spatial data frames from the \pkg{sf} package.}
 \item{height}{in pixels}
 
 \item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
+
+\item{label}{a character vector of labels to display at the center of each symbol}
 }
 \value{
 an object from \link[leaflet]{addControl}
@@ -292,5 +295,18 @@ leaflet() \%>\%
     width = seq(1L, length(defaultShapes), 1L) * length(defaultShapes),
     values = factor(defaultShapes, defaultShapes),
     strokeWidth = 2
+  )
+
+# label centered inside each legend symbol
+leaflet() \%>\%
+  addTiles() \%>\%
+  addLegendSymbol(
+    shape = c('circle', 'circle', 'circle'),
+    color = 'black',
+    fillColor = c('red', 'blue', 'green'),
+    fillOpacity = 0.8,
+    values = c('A', 'B', 'C'),
+    label = c('A', 'B', 'C'),
+    width = 24
   )
 }

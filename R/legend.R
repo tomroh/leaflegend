@@ -207,6 +207,10 @@ addLegendImage <- function(
 #'
 #' width in pixels of symbol outline
 #'
+#' @param label
+#'
+#' character string to display at the center of the symbol
+#'
 #' @param ...
 #'
 #' arguments to be passed to svg shape tag
@@ -215,15 +219,31 @@ addLegendImage <- function(
 #'
 #' HTML svg element
 #'
+#' @examples
+#' library(leaflet)
+#' data(quakes)
+#'
+#' # symbol with a label centered inside
+#' makeSymbol('circle', width = 24, color = 'black', fillColor = 'steelblue',
+#'            fillOpacity = 0.8, label = 'A')
+#'
+#' # map markers with per-point labels
+#' quakes$label <- as.character(seq_len(nrow(quakes)))
+#' leaflet(quakes[1:20, ]) %>%
+#'   addTiles() %>%
+#'   addSymbols(lat = ~lat, lng = ~long, color = 'black',
+#'              fillColor = 'steelblue', fillOpacity = 0.8,
+#'              label = ~label)
+#'
 #' @name mapSymbols
 #'
 #' @export
 #'
 makeSymbol <- function(shape, width, height = width, color, fillColor = color,
-                       opacity = 1, fillOpacity = opacity, ...) {
+                       opacity = 1, fillOpacity = opacity, label = NULL, ...) {
   svg <- makeSymbolElement(shape = shape, width, height = height,
     color = color, fillColor = fillColor, opacity = opacity,
-    fillOpacity = fillOpacity, ...)
+    fillOpacity = fillOpacity, label = label, ...)
   strokeWidth <- 1
   if ( 'stroke-width' %in% names(list(...)) ) {
     strokeWidth <- list(...)[['stroke-width']]
@@ -232,7 +252,7 @@ makeSymbol <- function(shape, width, height = width, color, fillColor = color,
     strokeWidth = strokeWidth)
 }
 makeSymbolElement <- function(shape, width, height = width, color,
-  fillColor = color, opacity = 1, fillOpacity = opacity, ...) {
+  fillColor = color, opacity = 1, fillOpacity = opacity, label = NULL, ...) {
   stopifnot(is.numeric(width) & is.numeric(height))
   stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
   stopifnot(!is.na(shape))
@@ -251,6 +271,20 @@ makeSymbolElement <- function(shape, width, height = width, color,
       fillOpacity = fillOpacity, ...)
   } else {
     stop('Argument "shape" is invalid. See `availableShapes()`.')
+  }
+  if ( !is.null(label) ) {
+    labelElement <- htmltools::tags$text(
+      x = '50%',
+      y = '50%',
+      'dominant-baseline' = 'central',
+      'text-anchor' = 'middle',
+      'font-size' = paste0(round(min(width, height) * 0.6), 'px'),
+      'font-family' = 'sans-serif',
+      fill = color,
+      'stroke-width' = 0,
+      label
+    )
+    svg <- htmltools::tagList(svg, labelElement)
   }
   svg
 }
@@ -1052,8 +1086,9 @@ makeSymbolIcons <- function(shape,
   strokeWidth = 1,
   width,
   height = width,
+  label = NULL,
   ...) {
-  symbols <- Map(
+  args <- list(
     makeSymbol,
     shape = shape,
     width = width,
@@ -1065,6 +1100,10 @@ makeSymbolIcons <- function(shape,
     `stroke-width` = strokeWidth,
     ...
   )
+  if (!is.null(label)) {
+    args <- append(args, list(label = label))
+  }
+  symbols <- do.call(Map, args)
   leaflet::icons(
     iconUrl = unname(symbols),
     iconAnchorX = width / 2 + strokeWidth,
@@ -1130,6 +1169,10 @@ makeSymbolIcons <- function(shape,
 #'
 #' a string or vector/list of strings that defines the stroke dash pattern
 #'
+#' @param label
+#'
+#' a character vector of labels to display at the center of each symbol
+#'
 #' @param data
 #'
 #' the data object from which the argument values are derived; by default, it
@@ -1157,10 +1200,11 @@ addSymbols <- function(
     width = 20,
     height = width,
     dashArray = NULL,
+    label = NULL,
     data = leaflet::getMapData(map),
     ...
 ) {
-  if (missing(shape)) {
+  if ( missing(shape) ) {
     shape <- availableShapes()[['default']]
   }
   if ( !missing(values) ) {
@@ -1172,21 +1216,22 @@ addSymbols <- function(
   } else {
     shape <- shape[1]
   }
-  if ( inherits(color, 'formula') ) {
-    color <- parseValues(color, data)
-  }
-  if ( inherits(fillColor, 'formula') ) {
-    fillColor <- parseValues(fillColor, data)
-  }
-  if (is.null(dashArray)) {
+  color <- parseValues(color, data)
+  fillColor <- parseValues(fillColor, data)
+  label <- parseValues(label, data)
+  if ( is.null(dashArray) ) {
     dashArray <- 'none'
   }
-  iconSymbols <- makeSymbolIcons(shape = shape, color = color,
-                                 fillColor = fillColor, opacity = opacity,
-                                 fillOpacity = fillOpacity,
-                                 strokeWidth = strokeWidth, width = width,
-                                 height = width,
-                                 `stroke-dasharray` = dashArray)
+  args <- list(shape = shape, color = color,
+               fillColor = fillColor, opacity = opacity,
+               fillOpacity = fillOpacity,
+               strokeWidth = strokeWidth, width = width,
+               height = width,
+               `stroke-dasharray` = dashArray)
+  if (!is.null(label)) {
+    args <- append(args, list(label = label))
+  }
+  iconSymbols <- do.call(makeSymbolIcons, args)
   if (!missing(lng) && !missing(lat)) {
     leaflet::addMarkers(map = map, lng = lng, lat = lat, icon = iconSymbols,
       data = data, ...)
@@ -1216,12 +1261,8 @@ addSymbolsSize <- function(
 ) {
   values <- parseValues(values, data)
   sizes <- sizeNumeric(values, baseSize, minSize = minSize, maxSize = maxSize)
-  if ( inherits(color, 'formula') ) {
-    color <- parseValues(color, data)
-  }
-  if ( inherits(fillColor, 'formula') ) {
-    fillColor <- parseValues(fillColor, data)
-  }
+  color <- parseValues(color, data)
+  fillColor <- parseValues(fillColor, data)
   if (!missing(lng) && !missing(lat)) {
     addSymbols(map = map,  lng = lng, lat = lat, shape = shape, color = color,
       fillColor = fillColor, opacity = opacity,
@@ -2252,6 +2293,19 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'     values = factor(defaultShapes, defaultShapes),
 #'     strokeWidth = 2
 #'   )
+#'
+#' # label centered inside each legend symbol
+#' leaflet() %>%
+#'   addTiles() %>%
+#'   addLegendSymbol(
+#'     shape = c('circle', 'circle', 'circle'),
+#'     color = 'black',
+#'     fillColor = c('red', 'blue', 'green'),
+#'     fillOpacity = 0.8,
+#'     values = c('A', 'B', 'C'),
+#'     label = c('A', 'B', 'C'),
+#'     width = 24
+#'   )
 addLegendSize <- function(map,
                           pal,
                           values,
@@ -2520,6 +2574,10 @@ addLegendLine <- function(map,
 #'
 #' a string or vector/list of strings that defines the stroke dash pattern
 #'
+#' @param label
+#'
+#' a character vector of labels to display at the center of each symbol
+#'
 #' @export
 #'
 #' @rdname legendSymbols
@@ -2540,6 +2598,7 @@ addLegendSymbol <- function(map,
                             group = NULL,
                             className = 'info legend leaflet-control',
                             dashArray = NULL,
+                            label = NULL,
                             data = leaflet::getMapData(map),
                             ...
 ) {
@@ -2571,16 +2630,21 @@ addLegendSymbol <- function(map,
   if (is.null(dashArray)) {
     dashArray <- 'none'
   }
-  symbols <- Map(makeSymbol,
-                 shape = shape,
-                 width = width,
-                 height = height,
-                 color = colors,
-                 fillColor = fillColors,
-                 opacity = opacity,
-                 fillOpacity = fillOpacity,
-                 `stroke-width` = strokeWidth,
-                 `stroke-dasharray` = dashArray)
+  label <- parseValues(label, data)
+  args <- list(makeSymbol,
+               shape = shape,
+               width = width,
+               height = height,
+               color = colors,
+               fillColor = fillColors,
+               opacity = opacity,
+               fillOpacity = fillOpacity,
+               `stroke-width` = strokeWidth,
+               `stroke-dasharray` = dashArray)
+  if (!is.null(label)) {
+    args <- append(args, list(label = label))
+  }
+  symbols <- do.call(Map, args)
   addLegendImage(map, images = symbols,
                  labels = as.character(values),
                  title = title, labelStyle = labelStyle,
