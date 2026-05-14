@@ -1369,3 +1369,42 @@ leaflet(quakes) %>%
     width = 20
   )
 
+# label centered inside map symbols
+library(leaflet)
+data(quakes)
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet(quakes[1:50, ]) %>%
+  addTiles() %>%
+  addSymbols(
+    lat = ~lat,
+    lng = ~long,
+    color = 'black',
+    fillColor = ~numPal(depth),
+    fillOpacity = 0.8,
+    width = 24,
+    label = ~depth,
+    popup = ~as.character(depth)
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~depth,
+    position = 'topright',
+    title = 'addLegendNumeric',
+    shape = 'rect',
+    width = 24,
+    height = 200)
+
+# label centered inside legend symbols
+
+leaflet() %>%
+  addTiles() %>%
+  addLegendSymbol(
+    shape = c('circle', 'circle', 'circle'),
+    color = 'black',
+    fillColor = c('red', 'blue', 'green'),
+    fillOpacity = 0.8,
+    values = factor(c('Low', 'Mid', 'High'), levels = c('Low', 'Mid', 'High')),
+    label = c('L', 'M', 'H'),
+    width = 24
+  )
+
