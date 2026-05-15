@@ -1,6 +1,7 @@
+# leaflegend 1.2.8
 
-
-# leaflegend 1.2.7
+* Intermediate ticks are now allowed for horizontal orientation in 
+`addLegendNumeric`.
 
 * Added ability to add text label to symbols.
 
