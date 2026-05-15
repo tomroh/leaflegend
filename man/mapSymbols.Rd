@@ -20,6 +20,7 @@ makeSymbol(
   fillColor = color,
   opacity = 1,
   fillOpacity = opacity,
+  label = NULL,
   ...
 )
 
@@ -34,6 +35,7 @@ makeSymbolIcons(
   strokeWidth = 1,
   width,
   height = width,
+  label = NULL,
   ...
 )
 
@@ -51,6 +53,7 @@ addSymbols(
   width = 20,
   height = width,
   dashArray = NULL,
+  label = NULL,
   data = leaflet::getMapData(map),
   ...
 )
@@ -67,13 +70,21 @@ addSymbolsSize(
   fillOpacity = opacity,
   strokeWidth = 1,
   baseSize = 20,
+  minSize = NULL,
+  maxSize = NULL,
   data = leaflet::getMapData(map),
   ...
 )
 
-sizeNumeric(values, baseSize)
+sizeNumeric(
+  values,
+  baseSize,
+  minSize = NULL,
+  maxSize = NULL,
+  centerPoint = mean(values, na.rm = TRUE)
+)
 
-sizeBreaks(values, breaks, baseSize, ...)
+sizeBreaks(values, breaks, baseSize, minSize = NULL, maxSize = NULL, ...)
 
 makeSymbolsSize(
   values,
@@ -84,6 +95,8 @@ makeSymbolsSize(
   fillOpacity = opacity,
   strokeWidth = 1,
   baseSize,
+  minSize = NULL,
+  maxSize = NULL,
   ...
 )
 }
@@ -101,6 +114,8 @@ makeSymbolsSize(
 \item{opacity}{stroke opacity}
 
 \item{fillOpacity}{fill opacity}
+
+\item{label}{a character vector of labels to display at the center of each symbol}
 
 \item{...}{arguments to pass to \code{pretty}}
 
@@ -132,6 +147,16 @@ overridden}
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
 
+\item{minSize}{minimum size in pixels of a symbol; values that would scale below this are
+clamped to \code{minSize}; \code{baseSize} must be greater than \code{minSize}}
+
+\item{maxSize}{maximum size in pixels of a symbol; values that would scale above this are
+clamped to \code{maxSize}; \code{baseSize} must be less than \code{maxSize}}
+
+\item{centerPoint}{the value used as the center of the scaling; defaults to the mean of
+\code{values}; the symbol for \code{centerPoint} will be exactly
+\code{baseSize} pixels}
+
 \item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks;
 if a named vector then the names are used as labels.}
 }
@@ -140,4 +165,21 @@ HTML svg element
 }
 \description{
 Create Map Symbols for 'leaflet' maps
+}
+\examples{
+library(leaflet)
+data(quakes)
+
+# symbol with a label centered inside
+makeSymbol('circle', width = 24, color = 'black', fillColor = 'steelblue',
+           fillOpacity = 0.8, label = 'A')
+
+# map markers with per-point labels
+quakes$label <- as.character(seq_len(nrow(quakes)))
+leaflet(quakes[1:20, ]) \%>\%
+  addTiles() \%>\%
+  addSymbols(lat = ~lat, lng = ~long, color = 'black',
+             fillColor = 'steelblue', fillOpacity = 0.8,
+             label = ~label)
+
 }

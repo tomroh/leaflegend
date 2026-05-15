@@ -67,7 +67,7 @@ leaflet() %>%
     shape = 'rect',
     decreasing = FALSE,
     height = 20,
-    width = 100
+    width = 500
   ) %>%
   addLegendNumeric(
     pal = numPal,
@@ -216,7 +216,7 @@ leaflet(quakes1000) %>%
     orientation = 'horizontal',
     shape = 'stadium',
     height = 18,
-    width = 129,
+    width = 300,
     bins = 5,
     title = 'depth',
     tickLength = 10,
@@ -261,7 +261,7 @@ leaflet() %>%
     shape = 'rect',
     decreasing = FALSE,
     height = 20,
-    width = 100
+    width = 200
   ) %>%
   addLegendNumeric(
     pal = numPal,
@@ -304,7 +304,14 @@ leaflet() %>%
                                                 '(Omit Numbers)'),
                     numberFormat = NULL,
                     shape = 'rect') %>%
-  addLegend(pal = quantPal, values = quakes$mag, title = 'addLegend')
+  addLegend(pal = quantPal, values = quakes$mag, title = 'addLegend') %>%
+  addLegendQuantile(pal = quantPal,
+                    values = quakes$mag[-1],
+                    position = 'topright',
+                    title = htmltools::tags$div('addLegendQuantile',
+                                                htmltools::tags$br(),
+                                                '(Omit Numbers)')
+  )
 
 # Factor Legend -----------------------------------------------------------
 
@@ -400,6 +407,143 @@ leaflet() %>%
   addLegend(pal = binPal,
             values = quakes$mag,
             title = 'addLegend')
+
+# Bin Legend Cutpoints ----------------------------------------------------
+
+binPal <- colorBin('YlOrRd', quakes$mag, bins = 6)
+
+# side-by-side comparison: standard vs labelCutpoints
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Standard'
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Cutpoints',
+    labelCutpoints = TRUE
+  )
+
+# shapes: circle and triangle
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'circle',
+    shape = 'circle',
+    labelCutpoints = TRUE
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'triangle',
+    shape = 'triangle',
+    labelCutpoints = TRUE
+  )
+
+# custom width/height and tick styling
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Wide bins',
+    width = 40,
+    height = 30,
+    labelCutpoints = TRUE
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Thick ticks',
+    labelCutpoints = TRUE,
+    tickLength = 8,
+    tickWidth = 3
+  )
+
+# custom labelStyle and numberFormat
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Styled labels',
+    labelCutpoints = TRUE,
+    labelStyle = 'font-size: 14px; font-weight: bold;'
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'Custom format',
+    labelCutpoints = TRUE,
+    numberFormat = function(x) sprintf('%.1f M', x)
+  )
+
+# NA values
+quakes$mag[1] <- NA
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = quakes,
+    lat = ~lat,
+    lng = ~long,
+    color = ~binPal(mag),
+    opacity = 1,
+    fillOpacity = 1
+  ) |>
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'topright',
+    title = 'With NA',
+    labelCutpoints = TRUE,
+    naLabel = 'Missing'
+  )
+quakes$mag[1] <- 4.0
 
 # README ------------------------------------------------------------------
 
@@ -836,6 +980,305 @@ leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
   addLegendImage(images = pchSvgI, labels = i-1,
     width = defaultSize, height = defaultSize, position = 'topleft')
 
+# Text Symbol Size --------------------------------------------------------
+
+library(leaflet)
+data(quakes)
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet(quakes) |>
+  addTiles() |>
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'text',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = 1,
+    baseSize = 10
+  ) |>
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth',
+    baseSize = 10,
+    shape = 'text',
+    color = 'black',
+    fillColor = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# Min Max Size ------------------------------------------------------------
+
+library(leaflet)
+data(quakes)
+numPal <- colorNumeric('viridis', quakes$depth)
+baseSize <- 20
+minSize <- 19
+maxSize <- 21
+
+# sizeNumeric with minSize only
+height <- sizeNumeric(quakes$depth, baseSize = baseSize, minSize = minSize)
+width <- height
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(
+    lat = ~lat,
+    lng = ~long,
+    icon = icons(iconUrl = makeSymbol('circle', width = 24, color = 'black'),
+                 iconWidth = width, iconHeight = height)
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    shape = 'circle',
+    color = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# sizeNumeric with maxSize only
+height <- sizeNumeric(quakes$depth, baseSize = baseSize, maxSize = maxSize)
+width <- height
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(
+    lat = ~lat,
+    lng = ~long,
+    icon = icons(iconUrl = makeSymbol('circle', width = 24, color = 'black'),
+                 iconWidth = width, iconHeight = height)
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    color = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# sizeNumeric with minSize and maxSize
+height <- sizeNumeric(quakes$depth, baseSize = baseSize, minSize = minSize, maxSize = maxSize)
+width <- height
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(
+    lat = ~lat,
+    lng = ~long,
+    icon = icons(iconUrl = makeSymbol('circle', width = 24, color = 'black'),
+                 iconWidth = width, iconHeight = height)
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    color = 'black',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addSymbolsSize with minSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = .7,
+    baseSize = baseSize,
+    minSize = minSize
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addSymbolsSize with maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = .7,
+    baseSize = baseSize,
+    maxSize = maxSize
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addSymbolsSize with minSize and maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addSymbolsSize(
+    values = ~depth,
+    lat = ~lat,
+    lng = ~long,
+    shape = 'circle',
+    color = ~numPal(depth),
+    fillColor = ~numPal(depth),
+    opacity = .7,
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize
+  ) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# makeSymbolsSize with minSize
+sizeSymbols <- makeSymbolsSize(
+  quakes$depth,
+  shape = 'circle',
+  color = numPal(quakes$depth),
+  fillColor = numPal(quakes$depth),
+  opacity = .7,
+  baseSize = baseSize,
+  minSize = minSize
+)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(lat = ~lat, lng = ~long, icon = sizeSymbols) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# makeSymbolsSize with maxSize
+sizeSymbols <- makeSymbolsSize(
+  quakes$depth,
+  shape = 'circle',
+  color = numPal(quakes$depth),
+  fillColor = numPal(quakes$depth),
+  opacity = .7,
+  baseSize = baseSize,
+  maxSize = maxSize
+)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(lat = ~lat, lng = ~long, icon = sizeSymbols) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# makeSymbolsSize with minSize and maxSize
+sizeSymbols <- makeSymbolsSize(
+  quakes$depth,
+  shape = 'circle',
+  color = numPal(quakes$depth),
+  fillColor = numPal(quakes$depth),
+  opacity = .7,
+  baseSize = baseSize,
+  minSize = minSize,
+  maxSize = maxSize
+)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addMarkers(lat = ~lat, lng = ~long, icon = sizeSymbols) %>%
+  addLegendSize(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    shape = 'circle',
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addLegendLine with minSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendLine(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addLegendLine with maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendLine(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (maxSize)',
+    baseSize = baseSize,
+    maxSize = maxSize,
+    position = 'bottomleft',
+    breaks = 5
+  )
+
+# addLegendLine with minSize and maxSize
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendLine(
+    values = ~depth,
+    pal = numPal,
+    title = 'Depth (minSize + maxSize)',
+    baseSize = baseSize,
+    minSize = minSize,
+    maxSize = maxSize,
+    position = 'bottomleft',
+    breaks = 5
+  )
+
 # Test Pre-defined Bins colorNumeric --------------------------------------
 library(leaflet)
 data("quakes")
@@ -924,5 +1367,163 @@ leaflet(quakes) %>%
     decreasing = TRUE,
     height = 100,
     width = 20
+  )
+
+# Horizontal Tick Placements ---------------------------------------------
+library(leaflet)
+data("quakes")
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet() %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    position = 'topright',
+    title = 'Default bins',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = 10,
+    position = 'topright',
+    title = 'bins = 10',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = seq(100, 600, by = 100),
+    position = 'topright',
+    title = 'Manual breaks',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = 10,
+    position = 'topright',
+    title = 'Decreasing',
+    orientation = 'horizontal',
+    shape = 'rect',
+    decreasing = TRUE,
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = c(100, 300, 500),
+    labels = c('Low', 'Mid', 'High'),
+    position = 'topright',
+    title = 'Custom labels',
+    orientation = 'horizontal',
+    shape = 'stadium',
+    height = 20,
+    width = 200,
+    tickLength = 8,
+    tickWidth = 2
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = 3,
+    position = 'topleft',
+    title = 'Large Text',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 300,
+    labelStyle = 'font-size: 40px; font-weight: bold;'
+  )
+dispareteBreaks <- c(1, 10, 500, 1000, 10000)
+leaflet::leaflet() %>%
+    addLegendNumeric(
+    pal = colorNumeric('viridis', dispareteBreaks),
+    values = dispareteBreaks,
+    bins = dispareteBreaks,
+    position = 'bottomleft',
+    title = 'disparate breaks',
+    orientation = 'horizontal',
+    decreasing = TRUE,
+    shape = 'stadium',
+    height = 20,
+    width = 500,
+    tickLength = 8,
+    tickWidth = 2
+  ) %>%
+  addLegendNumeric(
+    pal = colorNumeric('viridis', dispareteBreaks),
+    values = dispareteBreaks,
+    bins = dispareteBreaks,
+    position = 'topright',
+    title = 'disparate breaks',
+    orientation = 'vertical',
+    decreasing = TRUE,
+    shape = 'stadium',
+    height = 200,
+    width = 20,
+    tickLength = 8,
+    tickWidth = 2
+  )
+leaflet() %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = seq(100, 600, by = 100),
+    position = 'topright',
+    title = 'Vertical orientation',
+    orientation = 'vertical',
+    shape = 'rect',
+    height = 200,
+    width = 20
+  )
+# label centered inside map symbols
+library(leaflet)
+data(quakes)
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet(quakes[1:50, ]) %>%
+  addTiles() %>%
+  addSymbols(
+    lat = ~lat,
+    lng = ~long,
+    color = 'black',
+    fillColor = ~numPal(depth),
+    fillOpacity = 0.8,
+    width = 24,
+    label = ~depth,
+    popup = ~as.character(depth)
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = ~depth,
+    position = 'topright',
+    title = 'addLegendNumeric',
+    shape = 'rect',
+    width = 24,
+    height = 200)
+
+# label centered inside legend symbols
+
+leaflet() %>%
+  addTiles() %>%
+  addLegendSymbol(
+    shape = c('circle', 'circle', 'circle'),
+    color = 'black',
+    fillColor = c('red', 'blue', 'green'),
+    fillOpacity = 0.8,
+    values = factor(c('Low', 'Mid', 'High'), levels = c('Low', 'Mid', 'High')),
+    label = c('L', 'M', 'H'),
+    width = 24
   )
 

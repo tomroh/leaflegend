@@ -79,6 +79,9 @@ addLegendBin(
   className = "info legend leaflet-control",
   naLabel = "NA",
   between = " - ",
+  labelCutpoints = FALSE,
+  tickLength = 4,
+  tickWidth = 1,
   data = leaflet::getMapData(map),
   ...
 )
@@ -125,9 +128,9 @@ numeric vector as the pre-defined breaks}
 
 \item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
 
-\item{tickLength}{in pixels}
+\item{tickLength}{length of tick marks in pixels, used when \code{labelCutpoints = TRUE}}
 
-\item{tickWidth}{in pixels}
+\item{tickWidth}{stroke width of tick marks in pixels, used when \code{labelCutpoints = TRUE}}
 
 \item{decreasing}{order of numbers in the legend}
 
@@ -156,6 +159,10 @@ spatial data frames from the \pkg{sf} package.}
 \item{opacity}{opacity of the legend items}
 
 \item{between}{a separator between legend range labels}
+
+\item{labelCutpoints}{if \code{TRUE}, labels are placed at bin boundaries (cutpoints) with tick
+marks instead of beside each symbol. Only supported for vertical
+orientation.}
 }
 \value{
 an object from \link[leaflet]{addControl}
@@ -186,8 +193,9 @@ leaflet() \%>\%
     orientation = 'horizontal',
     shape = 'rect',
     decreasing = FALSE,
+    bins = 5,
     height = 20,
-    width = 100
+    width = 150
   ) \%>\%
   addLegendNumeric(
     pal = numPal,

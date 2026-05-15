@@ -12,7 +12,7 @@ addLegendSize(
   pal,
   values,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   shape = "rect",
   orientation = c("vertical", "horizontal"),
   color,
@@ -22,6 +22,8 @@ addLegendSize(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 20,
+  minSize = NULL,
+  maxSize = NULL,
   numberFormat = function(x) {
      prettyNum(x, big.mark = ",", scientific = FALSE,
     digits = 1)
@@ -38,7 +40,7 @@ addLegendLine(
   pal,
   values,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   orientation = c("vertical", "horizontal"),
   width = 20,
   color,
@@ -46,6 +48,8 @@ addLegendLine(
   fillOpacity = opacity,
   breaks = 5,
   baseSize = 10,
+  minSize = NULL,
+  maxSize = NULL,
   numberFormat = function(x) {
      prettyNum(x, big.mark = ",", scientific = FALSE,
     digits = 1)
@@ -61,7 +65,7 @@ addLegendSymbol(
   pal,
   values,
   title = NULL,
-  labelStyle = "",
+  labelStyle = "vertical-align: middle;",
   shape,
   orientation = c("vertical", "horizontal"),
   color,
@@ -74,6 +78,7 @@ addLegendSymbol(
   group = NULL,
   className = "info legend leaflet-control",
   dashArray = NULL,
+  label = NULL,
   data = leaflet::getMapData(map),
   ...
 )
@@ -105,10 +110,17 @@ function}
 
 \item{fillOpacity}{fill opacity of the legend items}
 
-\item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks}
+\item{breaks}{an integer specifying the number of breaks or a numeric vector of the breaks.
+if a named vector is given, the names are used as labels}
 
 \item{baseSize}{re-scaling size in pixels of the mean of the values, the average value will
 be this exact size}
+
+\item{minSize}{minimum size in pixels of a symbol; values that would scale below this are
+clamped to \code{minSize}; \code{baseSize} must be greater than \code{minSize}}
+
+\item{maxSize}{maximum size in pixels of a symbol; values that would scale above this are
+clamped to \code{maxSize}; \code{baseSize} must be less than \code{maxSize}}
 
 \item{numberFormat}{formatting functions for numbers that are displayed e.g. format, prettyNum}
 
@@ -140,6 +152,8 @@ spatial data frames from the \pkg{sf} package.}
 \item{height}{in pixels}
 
 \item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
+
+\item{label}{a character vector of labels to display at the center of each symbol}
 }
 \value{
 an object from \link[leaflet]{addControl}
@@ -249,7 +263,7 @@ addTiles() \%>\%
     color = 'black',
     fillColor = 'red',
     opacity = 1,
-    baseSize = 5) |>
+    baseSize = 5) \%>\%
   addLegendSize(
     values = ~10^(mag),
     title = 'Magnitude',
@@ -261,4 +275,38 @@ addTiles() \%>\%
     position = 'bottomleft',
     stacked = TRUE,
     breaks = 5)
+    # dashed lines
+leaflet() \%>\%
+   addTiles() \%>\%
+   addLegendSymbol(color='black', dashArray = list("none", "24"),
+     shape = c("line", "line"), values = c('solid', 'dashed'),
+     strokeWidth = 10, height = 20, width = 100)
+
+#advanced shape customization, aesthetic arguments are propogated if
+# vectors are equal length or of size 1
+defaultShapes <- availableShapes()[["default"]]
+leaflet() \%>\%
+  addTiles() \%>\%
+  addLegendSymbol(
+    shape = defaultShapes,
+    color = "black",
+    fillColor =
+      colorRampPalette(c("blue",  "yellow"))(length(defaultShapes)),
+    width = seq(1L, length(defaultShapes), 1L) * length(defaultShapes),
+    values = factor(defaultShapes, defaultShapes),
+    strokeWidth = 2
+  )
+
+# label centered inside each legend symbol
+leaflet() \%>\%
+  addTiles() \%>\%
+  addLegendSymbol(
+    shape = c('circle', 'circle', 'circle'),
+    color = 'black',
+    fillColor = c('red', 'blue', 'green'),
+    fillOpacity = 0.8,
+    values = c('A', 'B', 'C'),
+    label = c('A', 'B', 'C'),
+    width = 24
+  )
 }

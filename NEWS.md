@@ -1,3 +1,26 @@
+# leaflegend 1.2.8
+
+* Intermediate ticks are now allowed for horizontal orientation in 
+`addLegendNumeric`.
+
+* Added ability to add text label to symbols.
+
+* Size encodings get two new arguments `minSize` and `maxSize` that control the 
+bounds of the size scale. 
+
+* `addLegendBin` has a new method with the `labelCutpoints` argument that 
+produces a legend with labels at the tick marks e.g. a 0-10 bin has 0
+labeled at the top tick mark and 10 at the bottom tick mark.
+
+* Changing defaults for size legends so labels are vertically aligned.
+
+* Adding text symbol see README
+
+* Added examples for advanced symbol customization
+
+* Fixes an issue when multi-map documents and group names are the same where 
+the layer control would only work for the last map.
+
 # leaflegend 1.2.1
 
 * `addLegendNumeric` now has the ability to use manual tick breaks and labels 
