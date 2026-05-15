@@ -630,6 +630,18 @@ testthat::test_that('Numeric Legend', {
   m %>%
     addLegendNumeric(pal = pal, values = ~x, bins = c(1, 3)) %>%
     testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, orientation = 'horizontal',
+                     bins = 5) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, orientation = 'horizontal',
+                     bins = c(1.5, 2, 2.5)) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, orientation = 'horizontal',
+                     bins = 5, decreasing = TRUE) %>%
+    testthat::expect_no_error()
 #   numVert %>%
 #     getElement('x') %>%
 #     getElement('calls') %>%
