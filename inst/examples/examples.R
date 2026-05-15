@@ -67,7 +67,7 @@ leaflet() %>%
     shape = 'rect',
     decreasing = FALSE,
     height = 20,
-    width = 100
+    width = 500
   ) %>%
   addLegendNumeric(
     pal = numPal,
@@ -216,7 +216,7 @@ leaflet(quakes1000) %>%
     orientation = 'horizontal',
     shape = 'stadium',
     height = 18,
-    width = 129,
+    width = 300,
     bins = 5,
     title = 'depth',
     tickLength = 10,
@@ -261,7 +261,7 @@ leaflet() %>%
     shape = 'rect',
     decreasing = FALSE,
     height = 20,
-    width = 100
+    width = 200
   ) %>%
   addLegendNumeric(
     pal = numPal,
@@ -1369,6 +1369,125 @@ leaflet(quakes) %>%
     width = 20
   )
 
+# Horizontal Tick Placements ---------------------------------------------
+library(leaflet)
+data("quakes")
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet() %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    position = 'topright',
+    title = 'Default bins',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = 10,
+    position = 'topright',
+    title = 'bins = 10',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = seq(100, 600, by = 100),
+    position = 'topright',
+    title = 'Manual breaks',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = 10,
+    position = 'topright',
+    title = 'Decreasing',
+    orientation = 'horizontal',
+    shape = 'rect',
+    decreasing = TRUE,
+    height = 20,
+    width = 200
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = c(100, 300, 500),
+    labels = c('Low', 'Mid', 'High'),
+    position = 'topright',
+    title = 'Custom labels',
+    orientation = 'horizontal',
+    shape = 'stadium',
+    height = 20,
+    width = 200,
+    tickLength = 8,
+    tickWidth = 2
+  ) %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = 3,
+    position = 'topleft',
+    title = 'Large Text',
+    orientation = 'horizontal',
+    shape = 'rect',
+    height = 20,
+    width = 300,
+    labelStyle = 'font-size: 40px; font-weight: bold;'
+  )
+dispareteBreaks <- c(1, 10, 500, 1000, 10000)
+leaflet::leaflet() %>%
+    addLegendNumeric(
+    pal = colorNumeric('viridis', dispareteBreaks),
+    values = dispareteBreaks,
+    bins = dispareteBreaks,
+    position = 'bottomleft',
+    title = 'disparate breaks',
+    orientation = 'horizontal',
+    decreasing = TRUE,
+    shape = 'stadium',
+    height = 20,
+    width = 500,
+    tickLength = 8,
+    tickWidth = 2
+  ) %>%
+  addLegendNumeric(
+    pal = colorNumeric('viridis', dispareteBreaks),
+    values = dispareteBreaks,
+    bins = dispareteBreaks,
+    position = 'topright',
+    title = 'disparate breaks',
+    orientation = 'vertical',
+    decreasing = TRUE,
+    shape = 'stadium',
+    height = 200,
+    width = 20,
+    tickLength = 8,
+    tickWidth = 2
+  )
+leaflet() %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = numPal,
+    values = quakes$depth,
+    bins = seq(100, 600, by = 100),
+    position = 'topright',
+    title = 'Vertical orientation',
+    orientation = 'vertical',
+    shape = 'rect',
+    height = 200,
+    width = 20
+  )
 # label centered inside map symbols
 library(leaflet)
 data(quakes)

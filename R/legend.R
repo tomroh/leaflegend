@@ -1404,8 +1404,9 @@ addSymbolsSize <- function(
 #'     orientation = 'horizontal',
 #'     shape = 'rect',
 #'     decreasing = FALSE,
+#'     bins = 5,
 #'     height = 20,
-#'     width = 100
+#'     width = 150
 #'   ) %>%
 #'   addLegendNumeric(
 #'     pal = numPal,
@@ -1601,7 +1602,7 @@ addLegendNumeric <- function(map,
     stdBreaks <- (breaks - rng[1]) / diff(rng) *
       (height * isVertical + width * isHorizontal)
   }
-  if (isVertical == 1 && length(breaks) > 2) {
+  if (length(breaks) > 2) {
     i <- seq(2L, length(breaks) - 1L, 1L)
   } else {
     i <- c(1, length(breaks))
@@ -1609,7 +1610,9 @@ addLegendNumeric <- function(map,
   if (is.null(labels)) {
     labels <- numberFormat(breaks)[i]
   }
-  labels <- rev(labels)
+  if (isVertical) {
+    labels <- rev(labels)
+  }
   ticks <- makeTicks(breaks = stdBreaks[i], width = tickLength,
     height = height, strokeWidth = tickWidth, stroke = 'black', transform =
       sprintf('translate(%.03f,%.03f)', width * isVertical,
@@ -1620,12 +1623,17 @@ addLegendNumeric <- function(map,
   svgGradient <- makeGradient(breaks = offsets,
     pal = pal,height = height, width = width, id = id,
     fillOpacity = fillOpacity, orientation = orientation, shape)
+  hasHorizontalTickLabels <- isHorizontal && length(labels) > 2
   htmlElements <- assembleLegendWithTicks(
     width = width + (isVertical * tickLength * 2),
     height = height + (isHorizontal * tickLength * 2),
     svgElements = svgGradient, ticks = ticks, tickText = tickText,
     labelStyle = labelStyle,
-    marginRight = ifelse(isVertical, max(nchar(labels)) * .5, 0),
+    marginLeft = ifelse(hasHorizontalTickLabels,
+                        nchar(labels[1]) * .25, 0),
+    marginRight = ifelse(isVertical, max(nchar(labels)) * .5,
+                  ifelse(hasHorizontalTickLabels,
+                         nchar(labels[length(labels)]) * .25, 0)),
     marginBottom = ifelse(isHorizontal, 1, 0))
   naSize <- width * isVertical + height * isHorizontal
   htmlElements <- addNa(hasNa = hasNa, htmlElements = htmlElements,
@@ -1706,20 +1714,30 @@ makeTickText <- function(labels, breaks, width, height, orientation) {
         right: 0; line-height:1;',
         tickLocations)
     )
-  } else {
+  } else if (length(labels) > 2) {
     tickLocations <- breaks
+    halfWidthEm <- nchar(labels) * .25
+    Map(
+      htmltools::p,
+      labels,
+      style = sprintf(
+        'position: absolute; margin: 0; left: calc(%.2fpx + 1px - %sem); bottom: 0;
+        white-space: nowrap; line-height:1;',
+        tickLocations, halfWidthEm)
+    )
+  } else {
     Map(
       htmltools::p,
       labels,
       style = sprintf('position: absolute; margin: 0; %s: 0; bottom: 0;
         line-height:1;',
-        c('right', 'left'))
+        c('left', 'right'))
     )
   }
 
 }
 assembleLegendWithTicks <- function(width, height, svgElements, ticks, tickText,
-  labelStyle, marginRight, marginBottom) {
+  labelStyle, marginRight, marginBottom, marginLeft = 0) {
   htmlElements <- htmltools::tags$svg(
     xmlns = "http://www.w3.org/2000/svg",
     version = "1.1",
@@ -1730,14 +1748,31 @@ assembleLegendWithTicks <- function(width, height, svgElements, ticks, tickText,
   htmlElements <- htmltools::tags$img(src = makeSvgUri(htmlElements,
     width = width, height = height, strokeWidth = 0),
     style = 'margin-left: 1px;')
-  htmltools::tags$div(
-    style = sprintf(
-      'position: relative; margin-top:.5em; margin-bottom:.5em; %s;
+  if (marginLeft > 0) {
+    inner <- htmltools::tags$div(
+      style = sprintf(
+        'position: relative; width: calc(%spx + 2px); height: calc(%spx + %sem);',
+        width, height, marginBottom),
+      htmlElements,
+      tickText
+    )
+    htmltools::tags$div(
+      style = sprintf(
+        'display: inline-block; margin-top:.5em; margin-bottom:.5em; %s;
+        padding-left:%sem; padding-right:%sem;',
+        labelStyle, marginLeft, marginRight),
+      inner
+    )
+  } else {
+    htmltools::tags$div(
+      style = sprintf(
+        'position: relative; margin-top:.5em; margin-bottom:.5em; %s;
       width: calc(%spx + %sem + 2px); height: calc(%spx + %sem);',
-      labelStyle, width, marginRight, height, marginBottom),
-    htmlElements,
-    tickText
-  )
+        labelStyle, width, marginRight, height, marginBottom),
+      htmlElements,
+      tickText
+    )
+  }
 }
 
 addTitle <- function(title, htmlElements) {

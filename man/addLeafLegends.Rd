@@ -193,8 +193,9 @@ leaflet() \%>\%
     orientation = 'horizontal',
     shape = 'rect',
     decreasing = FALSE,
+    bins = 5,
     height = 20,
-    width = 100
+    width = 150
   ) \%>\%
   addLegendNumeric(
     pal = numPal,
