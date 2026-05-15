@@ -3,7 +3,7 @@ Type: Package
 Title: Add Custom Legends to 'leaflet' Maps
 Version: 1.2.8
 Authors@R: c(
-    person("Thomas", "Roh", email = "thomas@roh.engineering", role = c("aut", "cre")),
+    person("Thomas", "Roh", email = "thomas.roh@delveds.com", role = c("aut", "cre")),
     person("Ricardo Rodrigo", "Basa", email = "radbasa@gmail.com", role = c("ctb")))
 Description: Provides extensions to the 'leaflet' package to 
     customize legends with images, text styling, orientation, sizing,
