@@ -209,7 +209,15 @@ addLegendImage <- function(
 #'
 #' @param ...
 #'
-#' arguments to be passed to svg shape tag
+#' arguments to pass to
+#'
+#' svg shape tag for makeSymbol, makeSymbolIcons, makeSymbolsSize
+#'
+#' svg text tag for makeSymbolText, makeSymbolTextIcons
+#'
+#' \link[leaflet]{addMarkers} for addSymbols, addSymbolsSize, addText, addTextSize
+#'
+#' \link[base]{pretty} for sizeBreaks
 #'
 #' @return
 #'
@@ -871,33 +879,37 @@ pchSvg <- function(shape, width, height, color, fillColor, opacity,
 }
 specialSvg <- function(shape, width, height, color, fillColor, opacity,
   fillOpacity, ...) {
+  dots <- list(...)
   strokeWidth <- 1
   if ( shape %in% 'text' ) {
     strokeWidth <- 0
   }
-  if ( 'stroke-width' %in% names(list(...)) ) {
-    strokeWidth <- list(...)[['stroke-width']]
+  if ( 'stroke-width' %in% names(dots) ) {
+    strokeWidth <- dots[['stroke-width']]
+    dots[['stroke-width']] <- NULL
   }
   switch(
     shape,
-    'text' = htmltools::tags$text(
-      id = 'text',
-      x = '50%',
-      y = '50%',
-      'dominant-baseline' = 'central',
-      'text-anchor' = 'middle',
-      'font-size' = paste0(round(min(width, height) * 0.6), 'px'),
-      # 'font-family' = 'sans-serif',
-      'textLength' = width,
-      'lengthAdjust' = 'spacingAndGlyphs',
-      fill = fillColor,
-      'fill-opacity' = fillOpacity,
-      stroke = color,
-      'stroke-opacity' = opacity,
-      'stroke-width' = strokeWidth,
-      'abc',
-      ...
-    ),
+    'text' = do.call(htmltools::tags$text, c(
+      list(
+        id = 'text',
+        x = '50%',
+        y = '50%',
+        'dominant-baseline' = 'central',
+        'text-anchor' = 'middle',
+        'font-size' = paste0(round(min(width, height) * 0.6), 'px'),
+        # 'font-family' = 'sans-serif',
+        'textLength' = width,
+        'lengthAdjust' = 'spacingAndGlyphs',
+        fill = fillColor,
+        'fill-opacity' = fillOpacity,
+        stroke = color,
+        'stroke-opacity' = opacity,
+        'stroke-width' = strokeWidth,
+        'abc'
+      ),
+      dots
+    )),
     stop('Invalid shape argument.')
   )
 }
@@ -1071,6 +1083,123 @@ makeSymbolIcons <- function(shape,
     iconAnchorY = height / 2 + strokeWidth
   )
 }
+
+#' @param text
+#'
+#' character string to render inside the svg
+#'
+#' @param fontSize
+#'
+#' size of the text in pixels; defaults to \code{round(min(width, height) * 0.6)}
+#'
+#' @param fontFamily
+#'
+#' optional font family for the svg text; if \code{NULL} the browser default is
+#' used
+#'
+#' @examples
+#'
+#' library(leaflet)
+#' data(quakes)
+#' quakes1 <- quakes[1:10,]
+#'
+#' # makeSymbolText returns a single SVG data URI
+#' makeSymbolText(text = 'A', width = 30, color = 'red')
+#'
+#' # makeSymbolTextIcons builds a vector of icons
+#' iconSet <- makeSymbolTextIcons(text = LETTERS[1:nrow(quakes1)],
+#'                                width = 30, color = 'white',
+#'                                fillColor = 'navy')
+#' leaflet(quakes1) %>%
+#'   addTiles() %>%
+#'   addMarkers(lng = ~long, lat = ~lat, icon = iconSet)
+#'
+#' # addText draws text labels at each location
+#' leaflet(quakes1) %>%
+#'   addTiles() %>%
+#'   addText(lng = ~long, lat = ~lat,
+#'           text = ~as.character(seq_len(nrow(quakes1))),
+#'           color = 'white', fillColor = 'red', width = 30)
+#'
+#' # addTextSize scales text by a numeric variable
+#' leaflet(quakes1) %>%
+#'   addTiles() %>%
+#'   addTextSize(lng = ~long, lat = ~lat,
+#'               text = ~as.character(round(mag, 1)),
+#'               values = ~mag, color = 'black', fillColor = 'yellow',
+#'               baseSize = 30)
+#'
+#' @export
+#'
+#' @rdname mapSymbols
+makeSymbolText <- function(text, width, height = width, color = 'black',
+                           fillColor = color, opacity = 1,
+                           fillOpacity = opacity,
+                           fontSize = round(min(width, height) * 0.6),
+                           fontFamily = NULL, ...) {
+  stopifnot(is.numeric(width) & is.numeric(height))
+  stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
+  stopifnot(is.numeric(fontSize) && fontSize >= 0)
+  strokeWidth <- 0
+  if ( 'stroke-width' %in% names(list(...)) ) {
+    strokeWidth <- list(...)[['stroke-width']]
+  }
+  svg <- htmltools::tags$text(
+    id = 'text',
+    x = '50%',
+    y = '50%',
+    'dominant-baseline' = 'central',
+    'text-anchor' = 'middle',
+    'font-size' = paste0(fontSize, 'px'),
+    'font-family' = fontFamily,
+    'textLength' = width,
+    'lengthAdjust' = 'spacingAndGlyphs',
+    fill = fillColor,
+    'fill-opacity' = fillOpacity,
+    stroke = color,
+    'stroke-opacity' = opacity,
+    text,
+    ...
+  )
+  makeSvgUri(svg = svg, width = width, height = height,
+             strokeWidth = strokeWidth)
+}
+
+#' @export
+#'
+#' @rdname mapSymbols
+makeSymbolTextIcons <- function(text,
+                                color = 'black',
+                                fillColor = color,
+                                opacity = 1,
+                                fillOpacity = opacity,
+                                strokeWidth = 0,
+                                width,
+                                height = width,
+                                fontFamily = NULL,
+                                ...) {
+  mapArgs <- list(
+    f = makeSymbolText,
+    text = text,
+    width = width,
+    height = height,
+    color = color,
+    fillColor = fillColor,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    `stroke-width` = strokeWidth,
+    ...
+  )
+  if (!is.null(fontFamily)) {
+    mapArgs[['fontFamily']] <- fontFamily
+  }
+  symbols <- do.call(Map, mapArgs)
+  leaflet::icons(
+    iconUrl = unname(symbols),
+    iconAnchorX = width / 2 + strokeWidth,
+    iconAnchorY = height / 2 + strokeWidth
+  )
+}
 #' @param map
 #'
 #' a map widget object created from 'leaflet'
@@ -1135,10 +1264,6 @@ makeSymbolIcons <- function(shape,
 #' the data object from which the argument values are derived; by default, it
 #' is the \code{data} object provided to \code{leaflet()} initially, but can be
 #' overridden
-#'
-#' @param ...
-#'
-#' arguments to be passed to \link[leaflet]{addMarkers}
 #'
 #' @export
 #'
@@ -1227,6 +1352,79 @@ addSymbolsSize <- function(
       width = sizes, data = data, ...)
   } else {
     addSymbols(map = map, shape = shape, color = color, fillColor = fillColor,
+      opacity = opacity, fillOpacity = fillOpacity, strokeWidth = strokeWidth,
+      width = sizes, data = data, ...)
+  }
+}
+#' @export
+#'
+#' @rdname mapSymbols
+addText <- function(
+    map,
+    lng,
+    lat,
+    text,
+    color = 'black',
+    fillColor = color,
+    opacity = 1,
+    fillOpacity = opacity,
+    strokeWidth = 0,
+    width = 20,
+    height = width,
+    data = leaflet::getMapData(map),
+    ...
+) {
+  text <- parseValues(text, data)
+  if ( inherits(color, 'formula') ) {
+    color <- parseValues(color, data)
+  }
+  if ( inherits(fillColor, 'formula') ) {
+    fillColor <- parseValues(fillColor, data)
+  }
+  iconSymbols <- makeSymbolTextIcons(text = text, color = color,
+                                     fillColor = fillColor, opacity = opacity,
+                                     fillOpacity = fillOpacity,
+                                     strokeWidth = strokeWidth, width = width,
+                                     height = height)
+  if (!missing(lng) && !missing(lat)) {
+    leaflet::addMarkers(map = map, lng = lng, lat = lat, icon = iconSymbols,
+      data = data, ...)
+  } else {
+    leaflet::addMarkers(map = map, icon = iconSymbols, data = data, ...)
+  }
+}
+#' @export
+#'
+#' @rdname mapSymbols
+addTextSize <- function(
+    map,
+    lng,
+    lat,
+    values,
+    text,
+    color = 'black',
+    fillColor = color,
+    opacity = 1,
+    fillOpacity = opacity,
+    strokeWidth = 0,
+    baseSize = 20,
+    data = leaflet::getMapData(map),
+    ...
+) {
+  values <- parseValues(values, data)
+  sizes <- sizeNumeric(values, baseSize)
+  if ( inherits(color, 'formula') ) {
+    color <- parseValues(color, data)
+  }
+  if ( inherits(fillColor, 'formula') ) {
+    fillColor <- parseValues(fillColor, data)
+  }
+  if (!missing(lng) && !missing(lat)) {
+    addText(map = map, lng = lng, lat = lat, text = text, color = color,
+      fillColor = fillColor, opacity = opacity, fillOpacity = fillOpacity,
+      strokeWidth = strokeWidth, width = sizes, data = data, ...)
+  } else {
+    addText(map = map, text = text, color = color, fillColor = fillColor,
       opacity = opacity, fillOpacity = fillOpacity, strokeWidth = strokeWidth,
       width = sizes, data = data, ...)
   }
@@ -1333,7 +1531,8 @@ addSymbolsSize <- function(
 #'
 #' @param ...
 #'
-#' arguments to pass to \link[leaflet]{addControl}
+#' arguments to pass to \link[leaflet]{addControl} for addLegendNumeric,
+#' addLegendQuantile, addLegendBin, and addLegendFactor
 #'
 #' @export
 #'
@@ -2004,13 +2203,8 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'
 #' @param ...
 #'
-#' arguments to pass to
-#'
-#' \link[leaflet]{addControl} for addLegendSize
-#'
-#' \link[base]{pretty} for sizeBreaks
-#'
-#' \link[leaflegend]{makeSymbol} for makeSymbolsSize
+#' arguments to pass to \link[leaflet]{addControl} for addLegendSize,
+#' addLegendLine, addLegendSymbol, addLegendText, and addLegendTextSize
 #'
 #' @return
 #'
@@ -2134,6 +2328,28 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'     position = 'bottomleft',
 #'     stacked = TRUE,
 #'     breaks = 5)
+#'
+#' # Text legend (categorical)
+#' quakes$grp <- sample(c('A', 'B', 'C'), nrow(quakes), replace = TRUE)
+#' grpPal <- colorFactor('Dark2', quakes$grp)
+#' leaflet(quakes) %>%
+#'   addTiles() %>%
+#'   addText(lng = ~long, lat = ~lat, text = ~grp,
+#'           color = 'white', fillColor = ~grpPal(grp), width = 20) %>%
+#'   addLegendText(pal = grpPal, values = ~grp, title = 'Group',
+#'                 position = 'topright', fontFamily = 'sans-serif')
+#'
+#' # Text size legend (auto-computed font size)
+#' leaflet(quakes) %>%
+#'   addTiles() %>%
+#'   addTextSize(lng = ~long, lat = ~lat,
+#'               text = ~as.character(round(mag, 1)),
+#'               values = ~mag, color = 'black', fillColor = 'yellow',
+#'               baseSize = 30) %>%
+#'   addLegendTextSize(pal = colorNumeric('viridis', quakes$mag),
+#'                     values = ~mag, title = 'Magnitude',
+#'                     baseSize = 30, breaks = 5,
+#'                     position = 'bottomright')
 addLegendSize <- function(map,
                           pal,
                           values,
@@ -2245,10 +2461,6 @@ sizeNumeric <- function(values, baseSize) {
 #'
 #' re-scaling size in pixels of the mean of the values, the average value will
 #' be this exact size
-#'
-#' @param ...
-#'
-#' arguments to pass to \code{pretty}
 #'
 #' @export
 #'
@@ -2423,6 +2635,164 @@ addLegendSymbol <- function(map,
                  labels = as.character(values),
                  title = title, labelStyle = labelStyle,
                  orientation = orientation, width = width, height = height,
+                 group = group, className = className, ...)
+}
+
+#' @param text
+#'
+#' optional character vector of labels to render inside each symbol. For
+#' addLegendText, length must match the number of unique values; if omitted
+#' the levels themselves are used. For addLegendTextSize, length must match
+#' the number of breaks; if omitted the formatted break labels are used.
+#'
+#' @param fontSize
+#'
+#' size of the text in pixels for addLegendText; defaults to
+#' \code{round(min(width, height) * 0.6)}
+#'
+#' @param fontFamily
+#'
+#' optional font family for the svg text; if \code{NULL} the browser default
+#' is used
+#'
+#' @export
+#'
+#' @rdname legendSymbols
+addLegendText <- function(map,
+                          pal,
+                          values,
+                          text,
+                          title = NULL,
+                          labelStyle = 'vertical-align: middle;',
+                          orientation = c('vertical', 'horizontal'),
+                          color,
+                          fillColor = color,
+                          opacity = 1,
+                          fillOpacity = opacity,
+                          width = 20,
+                          height = width,
+                          fontSize = round(min(width, height) * 0.6),
+                          fontFamily = NULL,
+                          group = NULL,
+                          className = 'info legend leaflet-control',
+                          data = leaflet::getMapData(map),
+                          ...) {
+  values <- sort(unique(as.factor(parseValues(values, data))))
+  if (missing(text)) {
+    text <- as.character(values)
+  } else {
+    stopifnot(length(text) == length(values))
+  }
+  if ( missing(color) ) {
+    stopifnot( missing(color) & !missing(pal))
+    colors <- pal(values)
+  } else {
+    stopifnot(length(color) == 1 || length(color) == length(values))
+    colors <- color
+  }
+  if ( missing(fillColor) ) {
+    if ( !missing(pal) ) {
+      fillColors <- pal(values)
+    } else {
+      fillColors <- colors
+    }
+  } else {
+    stopifnot(length(fillColor) == 1 || length(fillColor) == length(values))
+    fillColors <- fillColor
+  }
+  mapArgs <- list(
+    f = makeSymbolText,
+    text = text,
+    width = width,
+    height = height,
+    color = colors,
+    fillColor = fillColors,
+    opacity = opacity,
+    fillOpacity = fillOpacity,
+    fontSize = fontSize
+  )
+  if (!is.null(fontFamily)) {
+    mapArgs[['fontFamily']] <- fontFamily
+  }
+  symbols <- do.call(Map, mapArgs)
+  addLegendImage(map, images = symbols,
+                 labels = as.character(values),
+                 title = title, labelStyle = labelStyle,
+                 orientation = orientation, width = width, height = height,
+                 group = group, className = className, ...)
+}
+
+#' @export
+#'
+#' @rdname legendSymbols
+addLegendTextSize <- function(map,
+                              pal,
+                              values,
+                              text = NULL,
+                              title = NULL,
+                              labelStyle = 'vertical-align: middle;',
+                              orientation = c('vertical', 'horizontal'),
+                              color,
+                              fillColor = color,
+                              opacity = 1,
+                              fillOpacity = opacity,
+                              breaks = 5,
+                              baseSize = 20,
+                              numberFormat = function(x) {
+                                prettyNum(x, big.mark = ',', scientific = FALSE,
+                                          digits = 1)
+                                },
+                              fontFamily = NULL,
+                              group = NULL,
+                              className = 'info legend leaflet-control',
+                              data = leaflet::getMapData(map),
+                              ...) {
+  values <- parseValues(values = values, data = data)
+  sizes <- sizeBreaks(values, breaks, baseSize)
+  if ( missing(color) ) {
+    stopifnot( missing(color) & !missing(pal))
+    colors <- pal(as.numeric(names(sizes)))
+  } else {
+    stopifnot(length(color) == 1 || length(color) == length(breaks))
+    colors <- color
+  }
+  if ( missing(fillColor) ) {
+    if ( !missing(pal) ) {
+      fillColors <- pal(as.numeric(names(sizes)))
+    } else {
+      fillColors <- colors
+    }
+  } else {
+    stopifnot(length(fillColor) == 1 || length(fillColor) == length(breaks))
+    fillColors <- fillColor
+  }
+  labels <- numberFormat(as.numeric(names(sizes)))
+  if (length(names(breaks)) == length(breaks) && length(breaks) > 1) {
+    labels <- names(breaks)
+  }
+  if (is.null(text)) {
+    text <- labels
+  } else {
+    stopifnot(length(text) == length(sizes))
+  }
+  mapArgs <- list(
+    f = makeSymbolText,
+    text = text,
+    width = sizes,
+    height = sizes,
+    color = colors,
+    fillColor = fillColors,
+    opacity = opacity,
+    fillOpacity = fillOpacity
+  )
+  if (!is.null(fontFamily)) {
+    mapArgs[['fontFamily']] <- fontFamily
+  }
+  symbols <- do.call(Map, mapArgs)
+  addLegendImage(map, images = symbols,
+                 labels = labels,
+                 title = title, labelStyle = labelStyle,
+                 orientation = orientation, width = sizes, height = sizes,
                  group = group, className = className, ...)
 }
 

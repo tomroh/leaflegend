@@ -918,3 +918,171 @@ testthat::test_that('utils', {
   verifyIconLibrary('bad') %>%
     testthat::expect_error()
 })
+
+testthat::test_that('Text Symbols', {
+  mapData <- data.frame(x = 1:2,
+                        label = c('A', 'B'),
+                        lng = c(-122, -121),
+                        lat = c(41, 42))
+  m <- leaflet::leaflet()
+  # arg validation
+  makeSymbolText('A', width = '1') %>%
+    testthat::expect_error()
+  makeSymbolText('A', width = 1, height = '1') %>%
+    testthat::expect_error()
+  makeSymbolText('A', width = 1, opacity = '1') %>%
+    testthat::expect_error()
+  makeSymbolText('A', width = 1, opacity = 1, fillOpacity = '1') %>%
+    testthat::expect_error()
+  # direct output
+  makeSymbolText('A', width = 20, color = 'red') %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="20">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="12px" textLength="20" lengthAdjust="spacingAndGlyphs" fill="red" fill-opacity="1" stroke="red" stroke-opacity="1">A</text>\n</svg>'
+    )
+  # icons output
+  ic <- makeSymbolTextIcons(text = c('A', 'BB'), width = 1, color = 'black',
+                            fillColor = 'red')
+  ic$iconUrl[[1]] %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1" height="1">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="1px" textLength="1" lengthAdjust="spacingAndGlyphs" fill="red" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">A</text>\n</svg>'
+    )
+  ic$iconUrl[[2]] %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1" height="1">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="1px" textLength="1" lengthAdjust="spacingAndGlyphs" fill="red" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">BB</text>\n</svg>'
+    )
+  # addText via formula
+  m %>%
+    addText(lat = ~lat, lng = ~lng, text = ~label,
+            color = 'black', width = 1, data = mapData) %>%
+    getElement('x') %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(3) %>%
+    getElement('iconUrl') %>%
+    getElement('data') %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      c('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1" height="1">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="1px" textLength="1" lengthAdjust="spacingAndGlyphs" fill="black" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">A</text>\n</svg>',
+        'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1" height="1">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="1px" textLength="1" lengthAdjust="spacingAndGlyphs" fill="black" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">B</text>\n</svg>')
+    )
+  # addTextSize scales width by values
+  m %>%
+    addTextSize(lat = ~lat, lng = ~lng, text = ~label, values = ~x,
+                color = 'black', baseSize = 10, data = mapData) %>%
+    getElement('x') %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(3) %>%
+    getElement('iconUrl') %>%
+    getElement('data') %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      c('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="6.66666666666667" height="6.66666666666667">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="4px" textLength="6.66666666666667" lengthAdjust="spacingAndGlyphs" fill="black" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">A</text>\n</svg>',
+        'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="13.3333333333333" height="13.3333333333333">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="8px" textLength="13.3333333333333" lengthAdjust="spacingAndGlyphs" fill="black" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">B</text>\n</svg>')
+    )
+  # addText / addTextSize accept calls without lng/lat (uses data columns)
+  m %>%
+    addText(text = ~label, color = 'black', width = 1, data = mapData) %>%
+    inherits('leaflet') %>%
+    testthat::expect_true()
+  m %>%
+    addTextSize(text = ~label, values = ~x, color = 'black', baseSize = 10,
+                data = mapData) %>%
+    inherits('leaflet') %>%
+    testthat::expect_true()
+  # fontSize arg validation
+  makeSymbolText('A', width = 20, fontSize = '14') %>%
+    testthat::expect_error()
+  makeSymbolText('A', width = 20, fontSize = -1) %>%
+    testthat::expect_error()
+  # fontSize + fontFamily rendered into the svg
+  makeSymbolText('A', width = 20, color = 'red',
+                 fontSize = 14, fontFamily = 'Arial') %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="20">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="14px" font-family="Arial" textLength="20" lengthAdjust="spacingAndGlyphs" fill="red" fill-opacity="1" stroke="red" stroke-opacity="1">A</text>\n</svg>'
+    )
+  # fontFamily flows through makeSymbolTextIcons via Map
+  icf <- makeSymbolTextIcons(text = c('A', 'B'), width = 20, color = 'black',
+                             fontFamily = 'Arial')
+  icf$iconUrl[[1]] %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="20">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="12px" font-family="Arial" textLength="20" lengthAdjust="spacingAndGlyphs" fill="black" fill-opacity="1" stroke="black" stroke-opacity="1" stroke-width="0">A</text>\n</svg>'
+    )
+})
+
+testthat::test_that('Text Legends', {
+  # addLegendText
+  mapData <- data.frame(group = c('A', 'B'), stringsAsFactors = FALSE)
+  pal <- leaflet::colorFactor(c('red', 'blue'), mapData$group)
+  m <- leaflet::leaflet()
+  # arg validation
+  m %>%
+    addLegendText(values = ~group, data = mapData) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendText(pal = pal, values = ~group, data = mapData,
+                  text = c('only one')) %>%
+    testthat::expect_error()
+  # output: factor levels become symbols + labels, colors from pal,
+  # fontFamily flows through
+  m %>%
+    addLegendText(pal = pal, values = ~group, data = mapData,
+                  title = 'G', fontFamily = 'Arial', width = 10) %>%
+    getElement('x') %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(1) %>%
+    as.character() %>%
+    URLdecode() %>%
+    testthat::expect_equal(
+      '<div>\n  <strong>G</strong>\n</div>\n<div>\n  <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="6px" font-family="Arial" textLength="10" lengthAdjust="spacingAndGlyphs" fill="#FF0000" fill-opacity="1" stroke="#FF0000" stroke-opacity="1">A</text>\n</svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="10" width="10"/>\n  <span style="vertical-align: middle;">A</span>\n</div>\n<div>\n  <img src="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">\n  <text id="text" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="6px" font-family="Arial" textLength="10" lengthAdjust="spacingAndGlyphs" fill="#0000FF" fill-opacity="1" stroke="#0000FF" stroke-opacity="1">B</text>\n</svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="10" width="10"/>\n  <span style="vertical-align: middle;">B</span>\n</div>'
+    )
+
+  # addLegendTextSize
+  # arg validation
+  m %>%
+    addLegendTextSize(values = 1:3, breaks = 3) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendTextSize(color = 'black', values = 1:3, breaks = 3,
+                      text = c('only one')) %>%
+    testthat::expect_error()
+  # output: width auto-scales by value, font-size auto-computed as
+  # round(width * 0.6); no font-family attr when not supplied
+  m %>%
+    addLegendTextSize(color = 'black', values = 1:3,
+                      breaks = 3, baseSize = 20, title = 'X') %>%
+    getElement('x') %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(1) %>%
+    as.character() %>%
+    URLdecode() -> out
+  testthat::expect_true(grepl('width="10"', out, fixed = TRUE))
+  testthat::expect_true(grepl('font-size="6px"', out, fixed = TRUE))
+  testthat::expect_true(grepl('width="30"', out, fixed = TRUE))
+  testthat::expect_true(grepl('font-size="18px"', out, fixed = TRUE))
+  testthat::expect_false(grepl('font-family', out, fixed = TRUE))
+  # fontFamily flows through addLegendTextSize when provided
+  m %>%
+    addLegendTextSize(color = 'black', values = 1:3,
+                      breaks = 3, baseSize = 20, fontFamily = 'Courier') %>%
+    getElement('x') %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(1) %>%
+    as.character() %>%
+    URLdecode() %>%
+    grepl('font-family="Courier"', ., fixed = TRUE) %>%
+    testthat::expect_true()
+})
