@@ -16,3 +16,4 @@ inst/examples/recipes.md
 inst/examples/viz-test.R
 inst/examples/gen-symbol-svg.R
 revdep/
+settings.local.json
