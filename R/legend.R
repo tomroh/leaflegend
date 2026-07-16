@@ -2852,7 +2852,9 @@ leaflegendAddControl <- function(map,
                                  ...) {
 
   if ( !is.null(group) ) {
-    leafLegendClassName <- paste('leaflegend-group', gsub('\\W|_', '', group),
+    groupText <- gsub('<[^>]*>', '', group)
+    leafLegendClassName <- paste('leaflegend-group',
+                                 gsub('[^a-zA-Z0-9]', '', groupText),
                                  sep = '-')
     className <- paste(className, leafLegendClassName)
 

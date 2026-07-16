@@ -1006,6 +1006,15 @@ testthat::test_that('Helper Functions', {
     getElement('args') %>%
     getElement(4) %>%
     testthat::expect_equal(' leaflegend-group-Test')
+  m %>%
+    leaflegendAddControl(html = '', className = '',
+                         group = 'NO<sub>X</sub>') %>%
+    getElement(1) %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(4) %>%
+    testthat::expect_equal(' leaflegend-group-NOX')
   leafletAwesomeMarkersDependencies() %>%
     testthat::expect_equal(leaflet:::leafletAwesomeMarkersDependencies())
   leafletAmFontAwesomeDependencies() %>%
