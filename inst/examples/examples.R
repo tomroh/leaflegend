@@ -884,6 +884,27 @@ leaflet() %>%
     position = 'bottomright'
   )
 
+# Group Layers with HTML in Group Name ------------------------------------
+library(leaflet)
+library(leaflegend)
+data(quakes)
+binPal <- colorBin('Set1', quakes$mag)
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = quakes, group = 'NO<sub>X</sub>', 
+lng = ~long, lat = ~lat) %>%
+  addLegendBin(
+    pal = binPal,
+    values = quakes$mag,
+    position = 'bottomleft',
+    title = 'NO<sub>X</sub>',
+    group = 'NO<sub>X</sub>'
+  ) %>%
+  addLayersControl(
+    overlayGroups = c('NO<sub>X</sub>'),
+    position = 'bottomright'
+  )
+
 # Multipe Image Legend Sizes ----------------------------------------------
 library(leaflet)
 data(quakes)
