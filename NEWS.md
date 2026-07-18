@@ -1,3 +1,17 @@
+# leaflegend (development version)
+
+* Fixed `addLegendNumeric` placing ticks and labels at mirrored positions on
+vertical legends so that they did not align with the color gradient when
+breaks were not symmetric within the range of values (#105, #106).
+
+* Fixed `addLegendNumeric` with `decreasing = TRUE` not reversing the color
+gradient, which left labels in the opposite order of the colors.
+
+* User supplied `labels` in `addLegendNumeric` now always pair with the bins
+in ascending order of value for both orientations, e.g. for
+`bins = c(1000, 3000, 6000)` and `labels = c('low', 'med', 'high')`, 'low'
+labels the 1000 tick even when `decreasing = TRUE`.
+
 # leaflegend 1.2.8
 
 * Intermediate ticks are now allowed for horizontal orientation in 

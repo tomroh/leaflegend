@@ -1602,6 +1602,10 @@ addLegendNumeric <- function(map,
     stdBreaks <- (breaks - rng[1]) / diff(rng) *
       (height * isVertical + width * isHorizontal)
   }
+  if (isVertical) {
+    # makeTicks/makeTickText place vertical positions at height - breaks
+    stdBreaks <- height - stdBreaks
+  }
   if (length(breaks) > 2) {
     i <- seq(2L, length(breaks) - 1L, 1L)
   } else {
@@ -1609,8 +1613,8 @@ addLegendNumeric <- function(map,
   }
   if (is.null(labels)) {
     labels <- numberFormat(breaks)[i]
-  }
-  if (isVertical) {
+  } else if (decreasing) {
+    # user labels pair with bins in ascending order; match reversed breaks
     labels <- rev(labels)
   }
   ticks <- makeTicks(breaks = stdBreaks[i], width = tickLength,
@@ -1647,10 +1651,9 @@ addLegendNumeric <- function(map,
 
 makeGradient <- function(breaks, pal, height, width, id, fillOpacity,
   orientation, shape) {
-  stops <- (breaks - min(breaks)) /
-    (max(breaks) - min(breaks))
-  colors <- pal(breaks)[order(stops)]
-  stops <- sort(stops)
+  stops <- (breaks - breaks[1]) /
+    (breaks[length(breaks)] - breaks[1])
+  colors <- pal(breaks)
   offsets <- sprintf('%.03f%%', 100 * stops)
   curvePercent <- ifelse(shape == 'stadium', '10%', '0')
   if (orientation == 'vertical') {
