@@ -236,7 +236,7 @@ leaflet(quakes1000) %>%
     height = 18,
     width = 129,
     decreasing = TRUE,
-    labels = c('high', 'low'),
+    labels = c('low', 'high'),
     bins = 5,
     title = 'depth',
     tickLength = 10,
@@ -979,28 +979,6 @@ htmltools::browsable(
 
 
 
-# Pch Symbols -------------------------------------------------------------
-
-pchNames <- stats::setNames(seq(0L, 25L, 1L),
-  c('open-rect', 'open-circle', 'open-triangle', 'simple-plus',
-    'simple-cross', 'open-diamond', 'open-down-triangle', 'cross-rect',
-    'simple-star', 'plus-diamond', 'plus-circle', 'hexagram', 'plus-rect',
-    'cross-circle', 'triangle-rect', 'solid-rect', 'solid-circle-md',
-    'solid-triangle', 'solid-diamond', 'solid-circle-bg', 'solid-circle-sm', 'circle',
-    'rect', 'diamond', 'triangle', 'down-triangle'
-  ))
-defaultSize <- 20
-i <- 1:26
-pchSvg <- lapply(names(pchNames)[i], makePch, width = defaultSize,
-  color = 'black', `stroke-width` = 2, fillOpacity = .5)
-pchSvgI <- lapply(i-1, makePch, width = defaultSize,
-  color = 'black', `stroke-width` = 2, fillOpacity = .5)
-leaflet::leaflet(options = leaflet::leafletOptions(zoomControl = FALSE)) |>
-  addLegendImage(images = pchSvg, labels =names(pchNames),
-    width = defaultSize, height = defaultSize, position = 'topright') |>
-  addLegendImage(images = pchSvgI, labels = i-1,
-    width = defaultSize, height = defaultSize, position = 'topleft')
-
 # Text Symbol Size --------------------------------------------------------
 
 library(leaflet)
@@ -1546,5 +1524,126 @@ leaflet() %>%
     values = factor(c('Low', 'Mid', 'High'), levels = c('Low', 'Mid', 'High')),
     label = c('L', 'M', 'H'),
     width = 24
+  )
+
+# Numeric Legend Value Alignment ------------------------------------------
+
+# https://github.com/tomroh/leaflegend/issues/106
+# values span 0-6408 so pretty breaks are clamped and asymmetric within the
+# range; the markers are colored with pal(1000) and should match both legends
+# at the 1,000 tick
+x <- c(52, 1272, 6408, 1061, 2658, 2386, 2408, 186, 56, 712, 538,
+       146, 214, 372, 180, 206, 490, 993, 202, 159, 222, 615, 492, 1132,
+       171, 406, 395, 282, 303, 252, 1226, 1471, 475, 516, 916, 480,
+       545, 576, 937, 728, 1374, 678, 572, 313, 754, 990, 676, 482,
+       641, 772, 543, 389, 365, 838, 704, 295, 637, 2, 661, 302, 88,
+       438, 418, 403, 195, 163, 185, 213, 0, 0, 243, 0, 0, 0, 25, 0,
+       0, 0, 0, 157, 124, 21, 0, 0, 556, 702, 0, 209, 66, 941, 386,
+       282, 0, 0, 52, 617, 0, 1956, 33, 1745, 1157, 0, 2163, 547, 778,
+       424, 166, 1747, 646, 807, 470, 242, 2119, 64, 60, 1256, 2, 201,
+       217, 100, 181, 0, 168, 232, 2249, 1476, 442, 148, 521, 958, 1403,
+       1474, 535, 1440, 388, 388, 365, 388, 388, 554, 1142, 1103, 160,
+       209, 56, 70, 17, 28, 42, 21, 14, 13)
+
+pal <- scales::col_numeric(palette = viridisLite::turbo(100), domain = x)
+leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(
+    lat = 1:2,
+    lng = 1,
+    color = pal(1000),
+    fillColor = pal(1000),
+    opacity = 1,
+    fillOpacity = 1
+  ) %>%
+  addLegend(pal = pal, values = x, opacity = 1, title = 'addLegend') %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'topright',
+    title = 'Vertical',
+    height = 150
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'topright',
+    title = 'Decreasing',
+    decreasing = TRUE,
+    height = 150
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'topleft',
+    title = 'Manual Bins',
+    bins = c(1000, 2500, 5500),
+    height = 150,
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'bottomleft',
+    title = 'Horizontal',
+    orientation = 'horizontal',
+    height = 20,
+    width = 400
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'bottomleft',
+    title = 'Horizontal Decreasing',
+    orientation = 'horizontal',
+    decreasing = TRUE,
+    height = 20,
+    width = 400
+  )
+
+# custom labels pair with bins in ascending order for both orientations,
+# even when decreasing; 'Low' always labels the 1000 tick
+leaflet() %>%
+  addTiles() %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'topright',
+    title = 'Custom Labels',
+    bins = c(1000, 3000, 6000),
+    labels = c('Low', 'Mid', 'High'),
+    height = 150
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'topright',
+    title = 'Custom Labels (Decreasing)',
+    bins = c(1000, 3000, 6000),
+    labels = c('Low', 'Mid', 'High'),
+    decreasing = TRUE,
+    height = 150
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'bottomleft',
+    title = 'Custom Labels (Horizontal)',
+    bins = c(1000, 3000, 6000),
+    labels = c('Low', 'Mid', 'High'),
+    orientation = 'horizontal',
+    height = 20,
+    width = 400
+  ) %>%
+  addLegendNumeric(
+    pal = pal,
+    values = x,
+    position = 'bottomleft',
+    title = 'Custom Labels (Horizontal Decreasing)',
+    bins = c(1000, 3000, 6000),
+    labels = c('Low', 'Mid', 'High'),
+    orientation = 'horizontal',
+    decreasing = TRUE,
+    height = 20,
+    width = 400
   )
 

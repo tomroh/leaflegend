@@ -739,6 +739,86 @@ testthat::test_that('Numeric Legend', {
 
 })
 
+testthat::test_that('Numeric Legend ticks and labels align with gradient', {
+  # breaks intentionally asymmetric within the range so mirrored placement
+  # would not line up with the gradient (#105, #106)
+  vals <- c(0, 6408)
+  bins <- c(1000, 3000, 5000)
+  pal <- leaflet::colorNumeric('viridis', vals)
+  legendHtml <- function(m) {
+    calls <- m[['x']][['calls']]
+    as.character(calls[[length(calls)]][['args']][[1]])
+  }
+  legendSvg <- function(html) {
+    utils::URLdecode(regmatches(html,
+      regexpr('data:image/svg\\+xml,[^"]+', html)))
+  }
+  tickPositions <- function(svg, axis = 'y1') {
+    ticks <- regmatches(svg, gregexpr('<line [^>]+>', svg))[[1]]
+    pattern <- sprintf('(?<=%s=")[0-9.]+', axis)
+    as.numeric(regmatches(ticks, regexpr(pattern, ticks, perl = TRUE)))
+  }
+  stopColors <- function(svg) {
+    regmatches(svg, gregexpr('(?<=stop-color=")[^"]+', svg, perl = TRUE))[[1]]
+  }
+  labelPositions <- function(html) {
+    ps <- regmatches(html, gregexpr('<p [^>]+>', html))[[1]]
+    as.numeric(regmatches(ps, regexpr('(?<=calc\\()[0-9.]+', ps,
+      perl = TRUE)))
+  }
+  m <- leaflet::leaflet()
+  vert <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, height = 100, width = 20))
+  svg <- legendSvg(vert)
+  testthat::expect_equal(tickPositions(svg), bins / 6408 * 100)
+  testthat::expect_equal(labelPositions(vert), bins / 6408 * 100,
+    tolerance = 1e-3)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(0, 6408)))
+  vertDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, height = 100, width = 20, decreasing = TRUE))
+  svg <- legendSvg(vertDec)
+  testthat::expect_equal(tickPositions(svg), (1 - rev(bins) / 6408) * 100)
+  testthat::expect_equal(labelPositions(vertDec), (1 - rev(bins) / 6408) * 100,
+    tolerance = 1e-3)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(6408, 0)))
+  hori <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, orientation = 'horizontal', height = 20, width = 100))
+  svg <- legendSvg(hori)
+  testthat::expect_equal(tickPositions(svg, axis = 'x1'), bins / 6408 * 100)
+  testthat::expect_equal(labelPositions(hori), bins / 6408 * 100,
+    tolerance = 1e-3)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(0, 6408)))
+  horiDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, orientation = 'horizontal', height = 20, width = 100,
+    decreasing = TRUE))
+  svg <- legendSvg(horiDec)
+  testthat::expect_equal(tickPositions(svg, axis = 'x1'),
+    (1 - rev(bins) / 6408) * 100)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(6408, 0)))
+  # user supplied labels pair with bins in ascending order, regardless of
+  # orientation or decreasing
+  labelText <- function(html) {
+    regmatches(html, gregexpr('(?<=>)[^<>]+(?=</p>)', html, perl = TRUE))[[1]]
+  }
+  vertLabs <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, labels = c('Low', 'Mid', 'High'), height = 100, width = 20))
+  testthat::expect_equal(labelText(vertLabs), c('Low', 'Mid', 'High'))
+  testthat::expect_equal(labelPositions(vertLabs), bins / 6408 * 100,
+    tolerance = 1e-3)
+  vertLabsDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, labels = c('Low', 'Mid', 'High'), height = 100, width = 20,
+    decreasing = TRUE))
+  testthat::expect_equal(labelText(vertLabsDec), c('High', 'Mid', 'Low'))
+  testthat::expect_equal(labelPositions(vertLabsDec),
+    (1 - rev(bins) / 6408) * 100, tolerance = 1e-3)
+  horiLabsDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, labels = c('Low', 'Mid', 'High'), height = 20, width = 100,
+    orientation = 'horizontal', decreasing = TRUE))
+  testthat::expect_equal(labelText(horiLabsDec), c('High', 'Mid', 'Low'))
+  testthat::expect_equal(labelPositions(horiLabsDec),
+    (1 - rev(bins) / 6408) * 100, tolerance = 1e-3)
+})
+
 testthat::test_that('Categorical Legends', {
   # test Quantile args
   mapData <- data.frame(x = 1:10,
