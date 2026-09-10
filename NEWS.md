@@ -13,7 +13,10 @@ are exposed.
 text symbols, analogous to `addLegendSymbol` and `addLegendSize`. 
 `addLegendText` exposes both `fontSize` and `fontFamily`; 
 `addLegendTextSize` exposes only `fontFamily` and auto-computes 
-`font-size` from each break's width.
+`font-size` from each break's width. `addLegendText` takes an optional 
+`labels` argument; by default no labels are placed beside the text symbols. 
+`addLegendTextSize` requires a single `text` string that is rendered at 
+each break size.
 
 * corrected the `...` documentation for `mapSymbols`, `legendSymbols`, and 
 `addLeafLegends`. The grouped help pages now state which pass-through 

@@ -85,6 +85,7 @@ addLegendText(
   pal,
   values,
   text,
+  labels = NULL,
   title = NULL,
   labelStyle = "vertical-align: middle;",
   orientation = c("vertical", "horizontal"),
@@ -106,7 +107,7 @@ addLegendTextSize(
   map,
   pal,
   values,
-  text = NULL,
+  text,
   title = NULL,
   labelStyle = "vertical-align: middle;",
   orientation = c("vertical", "horizontal"),
@@ -185,10 +186,14 @@ addLegendLine, addLegendSymbol, addLegendText, and addLegendTextSize}
 
 \item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
 
-\item{text}{optional character vector of labels to render inside each symbol. For
+\item{text}{character vector of labels to render inside each symbol. For
 addLegendText, length must match the number of unique values; if omitted
-the levels themselves are used. For addLegendTextSize, length must match
-the number of breaks; if omitted the formatted break labels are used.}
+the levels themselves are used. For addLegendTextSize, required and must be
+a single string, which is rendered at each break size.}
+
+\item{labels}{optional character vector of labels to display beside each text symbol in
+addLegendText; length must match the number of unique values. If
+\code{NULL} (the default) no labels are added and only the symbols are shown.}
 
 \item{fontSize}{size of the text in pixels for addLegendText; defaults to
 \code{round(min(width, height) * 0.6)}}
@@ -325,6 +330,7 @@ leaflet(quakes) \%>\%
   addText(lng = ~long, lat = ~lat, text = ~grp,
           color = 'white', fillColor = ~grpPal(grp), width = 20) \%>\%
   addLegendText(pal = grpPal, values = ~grp, title = 'Group',
+                labels = c('Group A', 'Group B', 'Group C'),
                 position = 'topright', fontFamily = 'sans-serif')
 
 # Text size legend (auto-computed font size)
@@ -335,7 +341,7 @@ leaflet(quakes) \%>\%
               values = ~mag, color = 'black', fillColor = 'yellow',
               baseSize = 30) \%>\%
   addLegendTextSize(pal = colorNumeric('viridis', quakes$mag),
-                    values = ~mag, title = 'Magnitude',
+                    values = ~mag, text = 'M', title = 'Magnitude',
                     baseSize = 30, breaks = 5,
                     position = 'bottomright')
 }

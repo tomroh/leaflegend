@@ -1549,3 +1549,171 @@ leaflet::leaflet() |>
   leaflegend::addLegendNumeric(pal = pal, values = x, position = "topright", height = 1000) |>
   leaflet::addCircleMarkers(color = pal(1000), opacity = 1, lat = 1, lng = 1, fillColor = pal(1000), fillOpacity = 1) |>
   leaflet::addCircleMarkers(color = pal(1000), opacity = 1, lat = 2, lng = 1, fillColor = pal(1000), fillOpacity = 1)
+
+# Text Symbols ------------------------------------------------------------
+
+library(leaflet)
+library(leaflegend)
+data(quakes)
+quakes10 <- quakes[1:10, ]
+quakes10[['label']] <- LETTERS[seq_len(nrow(quakes10))]
+
+# makeSymbolText returns a single SVG data URI
+makeSymbolText(text = 'A', width = 30, color = 'red')
+
+# makeSymbolTextIcons builds an icon set; compare with leaflet's
+# addLabelOnlyMarkers which renders labels as HTML instead of svg markers
+textIcons <- makeSymbolTextIcons(
+  text = quakes10$label,
+  width = 30,
+  color = 'white',
+  fillColor = 'navy'
+)
+leaflet(quakes10) %>%
+  addTiles() %>%
+  addMarkers(lng = ~long, lat = ~lat, icon = textIcons) %>%
+  addLabelOnlyMarkers(
+    lng = ~long + 2,
+    lat = ~lat,
+    label = ~label,
+    labelOptions = labelOptions(noHide = TRUE, textOnly = TRUE,
+      textsize = '18px')
+  )
+
+# addText draws text markers at each location; same comparison with
+# addLabelOnlyMarkers offset to the right
+quakes10[['magLabel']] <- as.character(round(quakes10$mag, 1))
+leaflet(quakes10) %>%
+  addTiles() %>%
+  addText(
+    lng = ~long,
+    lat = ~lat,
+    text = ~magLabel,
+    color = 'white',
+    fillColor = 'red',
+    width = 30
+  ) %>%
+  addLabelOnlyMarkers(
+    lng = ~long + 2,
+    lat = ~lat,
+    label = ~magLabel,
+    labelOptions = labelOptions(noHide = TRUE, textOnly = TRUE,
+      textsize = '18px')
+  )
+
+# addTextSize scales the text by a numeric variable; leaflet labels only
+# support a single fixed textsize per layer
+leaflet(quakes10) %>%
+  addTiles() %>%
+  addTextSize(
+    lng = ~long,
+    lat = ~lat,
+    text = ~magLabel,
+    values = ~mag,
+    color = 'black',
+    fillColor = 'black',
+    baseSize = 30
+  ) %>%
+  addLabelOnlyMarkers(
+    lng = ~long + 2,
+    lat = ~lat,
+    label = ~magLabel,
+    labelOptions = labelOptions(noHide = TRUE, textOnly = TRUE,
+      textsize = '18px')
+  )
+
+# Text Legends ------------------------------------------------------------
+
+library(leaflet)
+library(leaflegend)
+data(quakes)
+quakes[['group']] <- factor(sample(c('A', 'B', 'C'), nrow(quakes),
+  replace = TRUE))
+factorPal <- colorFactor('Dark2', quakes$group)
+
+# addLegendText vs leaflet's addLegend for a factor palette
+leaflet(quakes) %>%
+  addTiles() %>%
+  addText(
+    lng = ~long,
+    lat = ~lat,
+    text = ~as.character(group),
+    fillColor = ~factorPal(group),
+    width = 30
+  ) %>%
+  addLegendText(
+    pal = factorPal,
+    values = ~group,
+    title = 'addLegendText',
+    width = 30,
+    position = 'topright'
+  ) %>%
+  addLegend(pal = factorPal, values = ~group, title = 'addLegend')
+
+# labels beside each symbol; length must match the number of unique values
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendText(
+    pal = factorPal,
+    values = ~group,
+    labels = c('Group A', 'Group B', 'Group C'),
+    title = 'addLegendText',
+    width = 20,
+    position = 'topright'
+  ) %>%
+  addLegend(pal = factorPal, values = ~group, title = 'addLegend')
+
+# custom text, font, and horizontal orientation
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendText(
+    pal = factorPal,
+    values = ~group,
+    text = c('Alpha', 'Bravo', 'Charlie'),
+    title = 'addLegendText',
+    width = 60,
+    height = 30,
+    fontSize = 18,
+    fontFamily = 'sans-serif',
+    orientation = 'horizontal',
+    position = 'topright'
+  ) %>%
+  addLegend(pal = factorPal, values = ~group, title = 'addLegend')
+
+# addLegendTextSize vs leaflet's addLegend for a numeric palette
+numPal <- colorNumeric('viridis', quakes$depth)
+leaflet(quakes) %>%
+  addTiles() %>%
+  addTextSize(
+    lng = ~long,
+    lat = ~lat,
+    text = ~as.character(depth),
+    values = ~depth,
+    fillColor = ~numPal(depth),
+    baseSize = 20
+  ) %>%
+  addLegendTextSize(
+    pal = numPal,
+    values = ~depth,
+    text = 'Depth',
+    title = 'addLegendTextSize',
+    baseSize = 20,
+    breaks = 5,
+    position = 'topright'
+  ) %>%
+  addLegend(pal = numPal, values = quakes$depth, title = 'addLegend')
+
+# explicit breaks; text is a single string rendered at each break size
+leaflet(quakes) %>%
+  addTiles() %>%
+  addLegendTextSize(
+    values = ~depth,
+    color = 'black',
+    text = 'Depth',
+    title = 'addLegendTextSize',
+    baseSize = 20,
+    breaks = seq(100, 600, by = 100),
+    orientation = 'horizontal',
+    position = 'topright'
+  ) %>%
+  addLegend(pal = numPal, values = quakes$depth, title = 'addLegend')

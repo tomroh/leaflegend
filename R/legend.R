@@ -899,8 +899,8 @@ specialSvg <- function(shape, width, height, color, fillColor, opacity,
         'text-anchor' = 'middle',
         'font-size' = paste0(round(min(width, height) * 0.6), 'px'),
         # 'font-family' = 'sans-serif',
-        'textLength' = width,
-        'lengthAdjust' = 'spacingAndGlyphs',
+        # 'textLength' = width,
+        # 'lengthAdjust' = 'spacingAndGlyphs',
         fill = fillColor,
         'fill-opacity' = fillOpacity,
         stroke = color,
@@ -1140,27 +1140,32 @@ makeSymbolText <- function(text, width, height = width, color = 'black',
   stopifnot(is.numeric(width) & is.numeric(height))
   stopifnot(is.numeric(opacity) & is.numeric(fillOpacity))
   stopifnot(is.numeric(fontSize) && fontSize >= 0)
+  dots <- list(...)
   strokeWidth <- 0
-  if ( 'stroke-width' %in% names(list(...)) ) {
-    strokeWidth <- list(...)[['stroke-width']]
+  if ( 'stroke-width' %in% names(dots) ) {
+    strokeWidth <- dots[['stroke-width']]
+    dots[['stroke-width']] <- NULL
   }
-  svg <- htmltools::tags$text(
-    id = 'text',
-    x = '50%',
-    y = '50%',
-    'dominant-baseline' = 'central',
-    'text-anchor' = 'middle',
-    'font-size' = paste0(fontSize, 'px'),
-    'font-family' = fontFamily,
-    'textLength' = width,
-    'lengthAdjust' = 'spacingAndGlyphs',
-    fill = fillColor,
-    'fill-opacity' = fillOpacity,
-    stroke = color,
-    'stroke-opacity' = opacity,
-    text,
-    ...
-  )
+  svg <- do.call(htmltools::tags$text, c(
+    list(
+      id = 'text',
+      x = '50%',
+      y = '50%',
+      'dominant-baseline' = 'central',
+      'text-anchor' = 'middle',
+      'font-size' = paste0(fontSize, 'px'),
+      'font-family' = fontFamily,
+      # 'textLength' = width,
+      # 'lengthAdjust' = 'spacingAndGlyphs',
+      fill = fillColor,
+      'fill-opacity' = fillOpacity,
+      stroke = color,
+      'stroke-opacity' = opacity,
+      'stroke-width' = strokeWidth,
+      text
+    ),
+    dots
+  ))
   makeSvgUri(svg = svg, width = width, height = height,
              strokeWidth = strokeWidth)
 }
@@ -2337,6 +2342,7 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'   addText(lng = ~long, lat = ~lat, text = ~grp,
 #'           color = 'white', fillColor = ~grpPal(grp), width = 20) %>%
 #'   addLegendText(pal = grpPal, values = ~grp, title = 'Group',
+#'                 labels = c('Group A', 'Group B', 'Group C'),
 #'                 position = 'topright', fontFamily = 'sans-serif')
 #'
 #' # Text size legend (auto-computed font size)
@@ -2347,7 +2353,7 @@ addNa <- function(hasNa, htmlElements, shape, labels, colors,
 #'               values = ~mag, color = 'black', fillColor = 'yellow',
 #'               baseSize = 30) %>%
 #'   addLegendTextSize(pal = colorNumeric('viridis', quakes$mag),
-#'                     values = ~mag, title = 'Magnitude',
+#'                     values = ~mag, text = 'M', title = 'Magnitude',
 #'                     baseSize = 30, breaks = 5,
 #'                     position = 'bottomright')
 addLegendSize <- function(map,
@@ -2640,10 +2646,16 @@ addLegendSymbol <- function(map,
 
 #' @param text
 #'
-#' optional character vector of labels to render inside each symbol. For
+#' character vector of labels to render inside each symbol. For
 #' addLegendText, length must match the number of unique values; if omitted
-#' the levels themselves are used. For addLegendTextSize, length must match
-#' the number of breaks; if omitted the formatted break labels are used.
+#' the levels themselves are used. For addLegendTextSize, required and must be
+#' a single string, which is rendered at each break size.
+#'
+#' @param labels
+#'
+#' optional character vector of labels to display beside each text symbol in
+#' addLegendText; length must match the number of unique values. If
+#' \code{NULL} (the default) no labels are added and only the symbols are shown.
 #'
 #' @param fontSize
 #'
@@ -2662,6 +2674,7 @@ addLegendText <- function(map,
                           pal,
                           values,
                           text,
+                          labels = NULL,
                           title = NULL,
                           labelStyle = 'vertical-align: middle;',
                           orientation = c('vertical', 'horizontal'),
@@ -2682,6 +2695,11 @@ addLegendText <- function(map,
     text <- as.character(values)
   } else {
     stopifnot(length(text) == length(values))
+  }
+  if (is.null(labels)) {
+    labels <- rep('', length(values))
+  } else {
+    stopifnot(length(labels) == length(values))
   }
   if ( missing(color) ) {
     stopifnot( missing(color) & !missing(pal))
@@ -2716,7 +2734,7 @@ addLegendText <- function(map,
   }
   symbols <- do.call(Map, mapArgs)
   addLegendImage(map, images = symbols,
-                 labels = as.character(values),
+                 labels = labels,
                  title = title, labelStyle = labelStyle,
                  orientation = orientation, width = width, height = height,
                  group = group, className = className, ...)
@@ -2728,7 +2746,7 @@ addLegendText <- function(map,
 addLegendTextSize <- function(map,
                               pal,
                               values,
-                              text = NULL,
+                              text,
                               title = NULL,
                               labelStyle = 'vertical-align: middle;',
                               orientation = c('vertical', 'horizontal'),
@@ -2747,6 +2765,7 @@ addLegendTextSize <- function(map,
                               className = 'info legend leaflet-control',
                               data = leaflet::getMapData(map),
                               ...) {
+  stopifnot(!missing(text), length(text) == 1)
   values <- parseValues(values = values, data = data)
   sizes <- sizeBreaks(values, breaks, baseSize)
   if ( missing(color) ) {
@@ -2770,20 +2789,17 @@ addLegendTextSize <- function(map,
   if (length(names(breaks)) == length(breaks) && length(breaks) > 1) {
     labels <- names(breaks)
   }
-  if (is.null(text)) {
-    text <- labels
-  } else {
-    stopifnot(length(text) == length(sizes))
-  }
+  widths <- sizes * 0.6 * nchar(text)
   mapArgs <- list(
     f = makeSymbolText,
     text = text,
-    width = sizes,
+    width = widths,
     height = sizes,
     color = colors,
     fillColor = fillColors,
     opacity = opacity,
-    fillOpacity = fillOpacity
+    fillOpacity = fillOpacity,
+    fontSize = round(sizes * 0.6)
   )
   if (!is.null(fontFamily)) {
     mapArgs[['fontFamily']] <- fontFamily
@@ -2792,7 +2808,9 @@ addLegendTextSize <- function(map,
   addLegendImage(map, images = symbols,
                  labels = labels,
                  title = title, labelStyle = labelStyle,
-                 orientation = orientation, width = sizes, height = sizes,
+                 orientation = orientation,
+                 width = widths,
+                 height = sizes,
                  group = group, className = className, ...)
 }
 

@@ -16,3 +16,4 @@ inst/img/leaves.svg
 ^codecov\.yml$
 ^\.lintr$
 ^CRAN-SUBMISSION$
+revdep/
