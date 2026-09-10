@@ -5,6 +5,8 @@
 \alias{addLegendSize}
 \alias{addLegendLine}
 \alias{addLegendSymbol}
+\alias{addLegendText}
+\alias{addLegendTextSize}
 \title{Add a legend for the sizing of symbols or the width of lines}
 \usage{
 addLegendSize(
@@ -82,6 +84,54 @@ addLegendSymbol(
   data = leaflet::getMapData(map),
   ...
 )
+
+addLegendText(
+  map,
+  pal,
+  values,
+  text,
+  labels = NULL,
+  title = NULL,
+  labelStyle = "vertical-align: middle;",
+  orientation = c("vertical", "horizontal"),
+  color,
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  width = 20,
+  height = width,
+  fontSize = round(min(width, height) * 0.6),
+  fontFamily = NULL,
+  group = NULL,
+  className = "info legend leaflet-control",
+  data = leaflet::getMapData(map),
+  ...
+)
+
+addLegendTextSize(
+  map,
+  pal,
+  values,
+  text,
+  title = NULL,
+  labelStyle = "vertical-align: middle;",
+  orientation = c("vertical", "horizontal"),
+  color,
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  breaks = 5,
+  baseSize = 20,
+  numberFormat = function(x) {
+     prettyNum(x, big.mark = ",", scientific = FALSE,
+    digits = 1)
+ },
+  fontFamily = NULL,
+  group = NULL,
+  className = "info legend leaflet-control",
+  data = leaflet::getMapData(map),
+  ...
+)
 }
 \arguments{
 \item{map}{a map widget object created from 'leaflet'}
@@ -139,13 +189,8 @@ frames, spatial objects from the \pkg{sp} package
 \code{SpatialLinesDataFrame}), and
 spatial data frames from the \pkg{sf} package.}
 
-\item{...}{arguments to pass to
-
-\link[leaflet]{addControl} for addLegendSize
-
-\link[base]{pretty} for sizeBreaks
-
-\link[leaflegend]{makeSymbol} for makeSymbolsSize}
+\item{...}{arguments to pass to \link[leaflet]{addControl} for addLegendSize,
+addLegendLine, addLegendSymbol, addLegendText, and addLegendTextSize}
 
 \item{width}{width in pixels of the lines}
 
@@ -153,6 +198,20 @@ spatial data frames from the \pkg{sf} package.}
 
 \item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
 
+\item{text}{character vector of labels to render inside each symbol. For
+addLegendText, length must match the number of unique values; if omitted
+the levels themselves are used. For addLegendTextSize, required and must be
+a single string, which is rendered at each break size.}
+
+\item{labels}{optional character vector of labels to display beside each text symbol in
+addLegendText; length must match the number of unique values. If
+\code{NULL} (the default) no labels are added and only the symbols are shown.}
+
+\item{fontSize}{size of the text in pixels for addLegendText; defaults to
+\code{round(min(width, height) * 0.6)}}
+
+\item{fontFamily}{optional font family for the svg text; if \code{NULL} the browser default
+is used}
 \item{label}{a character vector of labels to display at the center of each symbol}
 }
 \value{
@@ -275,6 +334,29 @@ addTiles() \%>\%
     position = 'bottomleft',
     stacked = TRUE,
     breaks = 5)
+
+# Text legend (categorical)
+quakes$grp <- sample(c('A', 'B', 'C'), nrow(quakes), replace = TRUE)
+grpPal <- colorFactor('Dark2', quakes$grp)
+leaflet(quakes) \%>\%
+  addTiles() \%>\%
+  addText(lng = ~long, lat = ~lat, text = ~grp,
+          color = 'white', fillColor = ~grpPal(grp), width = 20) \%>\%
+  addLegendText(pal = grpPal, values = ~grp, title = 'Group',
+                labels = c('Group A', 'Group B', 'Group C'),
+                position = 'topright', fontFamily = 'sans-serif')
+
+# Text size legend (auto-computed font size)
+leaflet(quakes) \%>\%
+  addTiles() \%>\%
+  addTextSize(lng = ~long, lat = ~lat,
+              text = ~as.character(round(mag, 1)),
+              values = ~mag, color = 'black', fillColor = 'yellow',
+              baseSize = 30) \%>\%
+  addLegendTextSize(pal = colorNumeric('viridis', quakes$mag),
+                    values = ~mag, text = 'M', title = 'Magnitude',
+                    baseSize = 30, breaks = 5,
+                    position = 'bottomright')
     # dashed lines
 leaflet() \%>\%
    addTiles() \%>\%

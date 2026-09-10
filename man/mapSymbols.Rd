@@ -5,8 +5,12 @@
 \alias{makeSymbol}
 \alias{makeSvgUri}
 \alias{makeSymbolIcons}
+\alias{makeSymbolText}
+\alias{makeSymbolTextIcons}
 \alias{addSymbols}
 \alias{addSymbolsSize}
+\alias{addText}
+\alias{addTextSize}
 \alias{sizeNumeric}
 \alias{sizeBreaks}
 \alias{makeSymbolsSize}
@@ -36,6 +40,32 @@ makeSymbolIcons(
   width,
   height = width,
   label = NULL,
+  ...
+)
+
+makeSymbolText(
+  text,
+  width,
+  height = width,
+  color = "black",
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  fontSize = round(min(width, height) * 0.6),
+  fontFamily = NULL,
+  ...
+)
+
+makeSymbolTextIcons(
+  text,
+  color = "black",
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  strokeWidth = 0,
+  width,
+  height = width,
+  fontFamily = NULL,
   ...
 )
 
@@ -76,6 +106,39 @@ addSymbolsSize(
   ...
 )
 
+addText(
+  map,
+  lng,
+  lat,
+  text,
+  color = "black",
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  strokeWidth = 0,
+  width = 20,
+  height = width,
+  data = leaflet::getMapData(map),
+  ...
+)
+
+addTextSize(
+  map,
+  lng,
+  lat,
+  values,
+  text,
+  color = "black",
+  fillColor = color,
+  opacity = 1,
+  fillOpacity = opacity,
+  strokeWidth = 0,
+  baseSize = 20,
+  data = leaflet::getMapData(map),
+  ...
+)
+
+sizeNumeric(values, baseSize)
 sizeNumeric(
   values,
   baseSize,
@@ -115,6 +178,15 @@ makeSymbolsSize(
 
 \item{fillOpacity}{fill opacity}
 
+\item{...}{arguments to pass to
+
+svg shape tag for makeSymbol, makeSymbolIcons, makeSymbolsSize
+
+svg text tag for makeSymbolText, makeSymbolTextIcons
+
+\link[leaflet]{addMarkers} for addSymbols, addSymbolsSize, addText, addTextSize
+
+\link[base]{pretty} for sizeBreaks}
 \item{label}{a character vector of labels to display at the center of each symbol}
 
 \item{...}{arguments to pass to \code{pretty}}
@@ -122,6 +194,13 @@ makeSymbolsSize(
 \item{svg}{inner svg tags for symbol}
 
 \item{strokeWidth}{stroke width in pixels}
+
+\item{text}{character string to render inside the svg}
+
+\item{fontSize}{size of the text in pixels; defaults to \code{round(min(width, height) * 0.6)}}
+
+\item{fontFamily}{optional font family for the svg text; if \code{NULL} the browser default is
+used}
 
 \item{map}{a map widget object created from 'leaflet'}
 
@@ -167,6 +246,36 @@ HTML svg element
 Create Map Symbols for 'leaflet' maps
 }
 \examples{
+
+library(leaflet)
+data(quakes)
+quakes1 <- quakes[1:10,]
+
+# makeSymbolText returns a single SVG data URI
+makeSymbolText(text = 'A', width = 30, color = 'red')
+
+# makeSymbolTextIcons builds a vector of icons
+iconSet <- makeSymbolTextIcons(text = LETTERS[1:nrow(quakes1)],
+                               width = 30, color = 'white',
+                               fillColor = 'navy')
+leaflet(quakes1) \%>\%
+  addTiles() \%>\%
+  addMarkers(lng = ~long, lat = ~lat, icon = iconSet)
+
+# addText draws text labels at each location
+leaflet(quakes1) \%>\%
+  addTiles() \%>\%
+  addText(lng = ~long, lat = ~lat,
+          text = ~as.character(seq_len(nrow(quakes1))),
+          color = 'white', fillColor = 'red', width = 30)
+
+# addTextSize scales text by a numeric variable
+leaflet(quakes1) \%>\%
+  addTiles() \%>\%
+  addTextSize(lng = ~long, lat = ~lat,
+              text = ~as.character(round(mag, 1)),
+              values = ~mag, color = 'black', fillColor = 'yellow',
+              baseSize = 30)
 library(leaflet)
 data(quakes)
 

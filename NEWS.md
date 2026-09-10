@@ -1,3 +1,26 @@
+# leaflegend 1.3.0
+
+* added `makeSymbolText` and `makeSymbolTextIcons` for building SVG text 
+symbols that can be used as 'leaflet' icons. Unlike the existing `'text'` 
+shape in `makeSymbol`, these take an explicit `text` argument so each 
+symbol can show a different label. `fontSize` and `fontFamily` arguments 
+are exposed.
+
+* added `addText` and `addTextSize` as convenience wrappers analogous to 
+`addSymbols` and `addSymbolsSize` for placing text symbols on a map.
+
+* added `addLegendText` and `addLegendTextSize` for legend support of 
+text symbols, analogous to `addLegendSymbol` and `addLegendSize`. 
+`addLegendText` exposes both `fontSize` and `fontFamily`; 
+`addLegendTextSize` exposes only `fontFamily` and auto-computes 
+`font-size` from each break's width. `addLegendText` takes an optional 
+`labels` argument; by default no labels are placed beside the text symbols. 
+`addLegendTextSize` requires a single `text` string that is rendered at 
+each break size.
+
+* corrected the `...` documentation for `mapSymbols`, `legendSymbols`, and 
+`addLeafLegends`. The grouped help pages now state which pass-through 
+target applies to each function in the group.
 # leaflegend (development version)
 
 * Fixed `addLegendNumeric` placing ticks and labels at mirrored positions on
