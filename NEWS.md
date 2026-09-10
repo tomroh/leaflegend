@@ -21,6 +21,42 @@ each break size.
 * corrected the `...` documentation for `mapSymbols`, `legendSymbols`, and 
 `addLeafLegends`. The grouped help pages now state which pass-through 
 target applies to each function in the group.
+# leaflegend (development version)
+
+* Fixed `addLegendNumeric` placing ticks and labels at mirrored positions on
+vertical legends so that they did not align with the color gradient when
+breaks were not symmetric within the range of values (#105, #106).
+
+* Fixed `addLegendNumeric` with `decreasing = TRUE` not reversing the color
+gradient, which left labels in the opposite order of the colors.
+
+* User supplied `labels` in `addLegendNumeric` now always pair with the bins
+in ascending order of value for both orientations, e.g. for
+`bins = c(1000, 3000, 6000)` and `labels = c('low', 'med', 'high')`, 'low'
+labels the 1000 tick even when `decreasing = TRUE`.
+
+# leaflegend 1.2.8
+
+* Intermediate ticks are now allowed for horizontal orientation in 
+`addLegendNumeric`.
+
+* Added ability to add text label to symbols.
+
+* Size encodings get two new arguments `minSize` and `maxSize` that control the 
+bounds of the size scale. 
+
+* `addLegendBin` has a new method with the `labelCutpoints` argument that 
+produces a legend with labels at the tick marks e.g. a 0-10 bin has 0
+labeled at the top tick mark and 10 at the bottom tick mark.
+
+* Changing defaults for size legends so labels are vertically aligned.
+
+* Adding text symbol see README
+
+* Added examples for advanced symbol customization
+
+* Fixes an issue when multi-map documents and group names are the same where 
+the layer control would only work for the last map.
 
 # leaflegend 1.2.1
 

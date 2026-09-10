@@ -165,6 +165,13 @@ testthat::test_that('Symbols', {
     testthat::expect_error()
   sizeBreaks(values = 1:4, breaks = -1, baseSize = 5) %>%
     testthat::expect_error()
+  # test minSize/maxSize validation for sizeBreaks
+  sizeBreaks(values = 1:4, breaks = 4, baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  sizeBreaks(values = 1:4, breaks = 4, baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  sizeBreaks(values = 1:4, breaks = 4, baseSize = 5, minSize = 3, maxSize = 4) %>%
+    testthat::expect_error()
   # test simple size outputs
   sizeNumeric(1:4, 5) %>%
     testthat::expect_equal(c(2, 4, 6, 8))
@@ -172,6 +179,11 @@ testthat::test_that('Symbols', {
     testthat::expect_equal(stats::setNames(c(2, 4, 6, 8), c(1, 2, 3, 4)))
   sizeBreaks(1:4, 1:4, 5) %>%
     testthat::expect_equal(stats::setNames(c(2, 4, 6, 8), c(1, 2, 3, 4)))
+  # test sizeBreaks clamping
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, minSize = 3) >= 3))
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, maxSize = 7) <= 7))
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, minSize = 3, maxSize = 7) >= 3))
+  testthat::expect_true(all(sizeBreaks(1:4, 4, 5, minSize = 3, maxSize = 7) <= 7))
   # test size icons args
   makeSymbolsSize(values = 1:4, shape = 'notashape', fillColor = 'black',
                   color = 'black', baseSize = 5) %>%
@@ -189,6 +201,15 @@ testthat::test_that('Symbols', {
   makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
                   color = 'black', baseSize = 5, opacity = 1,
                   strokeWidth = -1) %>%
+    testthat::expect_error()
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  makeSymbolsSize(values = 1:4, shape = 'rect', fillColor = 'black',
+                  color = 'black', baseSize = 5, minSize = 3, maxSize = 4) %>%
     testthat::expect_error()
   makeSymbolsSize(values = 1:4, shape = 'rect', baseSize = 5, opacity = 1) %>%
     testthat::expect_error()
@@ -227,7 +248,22 @@ testthat::test_that('Symbols', {
       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="10" height="10">
   <rect id="rect" x="1" y="1" height="8" width="8" stroke="#67000D" fill="#FFF5F0" stroke-opacity="1" fill-opacity="1" stroke-width="1"></rect>
 </svg>')
+  sizeNumeric(1:4, baseSize = 5) %>%
+    testthat::expect_equal(c(2, 4, 6, 8))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3) >= 3))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, maxSize = 7) <= 7))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3, maxSize = 7) >= 3))
+  testthat::expect_true(all(sizeNumeric(1:4, baseSize = 5, minSize = 3, maxSize = 7) <= 7))
   mapData <- data.frame(x = 1:2, lat = c(41,42), lng = c(-122, -122))
+  mapData$label <- c('A', 'B')
+  m %>%
+    addSymbols(lat = ~lat, lng = ~lng, color = 'black', data = mapData,
+               label = ~label) %>%
+    testthat::expect_no_error()
+  m %>%
+    addSymbols(lat = ~lat, lng = ~lng, color = 'black', data = mapData,
+               label = c('A', 'B')) %>%
+    testthat::expect_no_error()
   m %>%
     addSymbols(lat = ~lat, lng = ~lng, color = ~pal(x), fillColor = ~pal(x),
                values = ~x, data = mapData) %>%
@@ -263,6 +299,16 @@ testthat::test_that('Symbols', {
   symbolSvg('notashape', width = 20, height = 20, color = 'black', fillColor =
       'black', opacity = 1, fillOpacity = 1) %>%
     testthat::expect_error()
+  # label overlay
+  makeSymbol('circle', width = 20, color = 'black', label = 'A') %>%
+    URLdecode() %>%
+    testthat::expect_match('<text')
+  makeSymbol('circle', width = 20, color = 'black') %>%
+    URLdecode() %>%
+    testthat::expect_no_match('<text')
+  makeSymbol('rect', width = 20, color = 'black', label = 'B') %>%
+    URLdecode() %>%
+    testthat::expect_match('dominant-baseline')
 })
 
 testthat::test_that('Symbol Legends', {
@@ -287,6 +333,18 @@ testthat::test_that('Symbol Legends', {
                   shape = 'notashape') %>%
     testthat::expect_error()
   m %>%
+    addLegendSize(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 3, maxSize = 4) %>%
+    testthat::expect_error()
+  m %>%
     addLegendLine(data = mapData, values = ~x) %>%
     testthat::expect_error()
   m %>%
@@ -295,6 +353,18 @@ testthat::test_that('Symbol Legends', {
   m %>%
     addLegendLine(data = mapData, values = ~x, color = 'black',
                   numberFormat = 'fun') %>%
+    testthat::expect_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 6) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, maxSize = 4) %>%
+    testthat::expect_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  baseSize = 5, minSize = 3, maxSize = 4) %>%
     testthat::expect_error()
   m %>%
     addLegendSymbol(data = mapData, values = ~x) %>%
@@ -339,6 +409,18 @@ testthat::test_that('Symbol Legends', {
 </svg>" style="vertical-align: middle; margin: 5px; margin-right: 0px; margin-left: 0px" height="26.6666666666667" width="26.6666666666667"/>
   <span style="vertical-align: middle;">2</span>
 </div>')
+  m %>%
+    addLegendSize(data = mapData, values = ~x, pal = pal, breaks = 1,
+                  color = 'black', baseSize = 20, minSize = 5) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, pal = pal, breaks = 1,
+                  color = 'black', baseSize = 20, maxSize = 30) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSize(data = mapData, values = ~x, pal = pal, breaks = 1,
+                  color = 'black', baseSize = 20, minSize = 5, maxSize = 30) %>%
+    testthat::expect_no_error()
   # test line legends
   m %>%
     addLegendLine(data = mapData, values = ~x, color = 'black', breaks = 1) %>%
@@ -362,6 +444,18 @@ testthat::test_that('Symbol Legends', {
   <span style="vertical-align: middle;">2</span>
 </div>')
   m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  breaks = 1, baseSize = 10, minSize = 5) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  breaks = 1, baseSize = 10, maxSize = 15) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendLine(data = mapData, values = ~x, color = 'black',
+                  breaks = 1, baseSize = 10, minSize = 5, maxSize = 15) %>%
+    testthat::expect_no_error()
+  m %>%
     addLegendSymbol(data = mapData, values = ~x, color = 'black',
                     pal = factorPal) %>%
     getElement(1) %>%
@@ -384,6 +478,25 @@ testthat::test_that('Symbol Legends', {
   <span style="vertical-align: middle;">2</span>
 </div>')
 
+  mapData$label <- c('A', 'B')
+  m %>%
+    addLegendSymbol(data = mapData, values = ~x, color = 'black',
+                    label = c('A', 'B')) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSymbol(data = mapData, values = ~x, color = 'black',
+                    label = ~label) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendSymbol(data = mapData, values = ~x, color = 'black',
+                    label = c('A', 'B')) %>%
+    getElement(1) %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(1) %>%
+    URLdecode() %>%
+    testthat::expect_match('<text')
   # Stacked
   m %>%
     addLegendSize(color = 'black', fillColor = 'red',
@@ -517,6 +630,18 @@ testthat::test_that('Numeric Legend', {
   m %>%
     addLegendNumeric(pal = pal, values = ~x, bins = c(1, 3)) %>%
     testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, orientation = 'horizontal',
+                     bins = 5) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, orientation = 'horizontal',
+                     bins = c(1.5, 2, 2.5)) %>%
+    testthat::expect_no_error()
+  m %>%
+    addLegendNumeric(pal = pal, values = ~x, orientation = 'horizontal',
+                     bins = 5, decreasing = TRUE) %>%
+    testthat::expect_no_error()
 #   numVert %>%
 #     getElement('x') %>%
 #     getElement('calls') %>%
@@ -614,6 +739,86 @@ testthat::test_that('Numeric Legend', {
 
 })
 
+testthat::test_that('Numeric Legend ticks and labels align with gradient', {
+  # breaks intentionally asymmetric within the range so mirrored placement
+  # would not line up with the gradient (#105, #106)
+  vals <- c(0, 6408)
+  bins <- c(1000, 3000, 5000)
+  pal <- leaflet::colorNumeric('viridis', vals)
+  legendHtml <- function(m) {
+    calls <- m[['x']][['calls']]
+    as.character(calls[[length(calls)]][['args']][[1]])
+  }
+  legendSvg <- function(html) {
+    utils::URLdecode(regmatches(html,
+      regexpr('data:image/svg\\+xml,[^"]+', html)))
+  }
+  tickPositions <- function(svg, axis = 'y1') {
+    ticks <- regmatches(svg, gregexpr('<line [^>]+>', svg))[[1]]
+    pattern <- sprintf('(?<=%s=")[0-9.]+', axis)
+    as.numeric(regmatches(ticks, regexpr(pattern, ticks, perl = TRUE)))
+  }
+  stopColors <- function(svg) {
+    regmatches(svg, gregexpr('(?<=stop-color=")[^"]+', svg, perl = TRUE))[[1]]
+  }
+  labelPositions <- function(html) {
+    ps <- regmatches(html, gregexpr('<p [^>]+>', html))[[1]]
+    as.numeric(regmatches(ps, regexpr('(?<=calc\\()[0-9.]+', ps,
+      perl = TRUE)))
+  }
+  m <- leaflet::leaflet()
+  vert <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, height = 100, width = 20))
+  svg <- legendSvg(vert)
+  testthat::expect_equal(tickPositions(svg), bins / 6408 * 100)
+  testthat::expect_equal(labelPositions(vert), bins / 6408 * 100,
+    tolerance = 1e-3)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(0, 6408)))
+  vertDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, height = 100, width = 20, decreasing = TRUE))
+  svg <- legendSvg(vertDec)
+  testthat::expect_equal(tickPositions(svg), (1 - rev(bins) / 6408) * 100)
+  testthat::expect_equal(labelPositions(vertDec), (1 - rev(bins) / 6408) * 100,
+    tolerance = 1e-3)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(6408, 0)))
+  hori <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, orientation = 'horizontal', height = 20, width = 100))
+  svg <- legendSvg(hori)
+  testthat::expect_equal(tickPositions(svg, axis = 'x1'), bins / 6408 * 100)
+  testthat::expect_equal(labelPositions(hori), bins / 6408 * 100,
+    tolerance = 1e-3)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(0, 6408)))
+  horiDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, orientation = 'horizontal', height = 20, width = 100,
+    decreasing = TRUE))
+  svg <- legendSvg(horiDec)
+  testthat::expect_equal(tickPositions(svg, axis = 'x1'),
+    (1 - rev(bins) / 6408) * 100)
+  testthat::expect_equal(stopColors(svg)[c(1, 10)], pal(c(6408, 0)))
+  # user supplied labels pair with bins in ascending order, regardless of
+  # orientation or decreasing
+  labelText <- function(html) {
+    regmatches(html, gregexpr('(?<=>)[^<>]+(?=</p>)', html, perl = TRUE))[[1]]
+  }
+  vertLabs <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, labels = c('Low', 'Mid', 'High'), height = 100, width = 20))
+  testthat::expect_equal(labelText(vertLabs), c('Low', 'Mid', 'High'))
+  testthat::expect_equal(labelPositions(vertLabs), bins / 6408 * 100,
+    tolerance = 1e-3)
+  vertLabsDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, labels = c('Low', 'Mid', 'High'), height = 100, width = 20,
+    decreasing = TRUE))
+  testthat::expect_equal(labelText(vertLabsDec), c('High', 'Mid', 'Low'))
+  testthat::expect_equal(labelPositions(vertLabsDec),
+    (1 - rev(bins) / 6408) * 100, tolerance = 1e-3)
+  horiLabsDec <- legendHtml(m %>% addLegendNumeric(pal = pal, values = vals,
+    bins = bins, labels = c('Low', 'Mid', 'High'), height = 20, width = 100,
+    orientation = 'horizontal', decreasing = TRUE))
+  testthat::expect_equal(labelText(horiLabsDec), c('High', 'Mid', 'Low'))
+  testthat::expect_equal(labelPositions(horiLabsDec),
+    (1 - rev(bins) / 6408) * 100, tolerance = 1e-3)
+})
+
 testthat::test_that('Categorical Legends', {
   # test Quantile args
   mapData <- data.frame(x = 1:10,
@@ -670,6 +875,48 @@ testthat::test_that('Categorical Legends', {
   m %>% addLegendBin(pal = palBin,
                      numberFormat = 'fun') %>%
     testthat::expect_error()
+  # test labelCutpoints args
+  m %>% addLegendBin(pal = palBin,
+                     values = ~x,
+                     labelCutpoints = TRUE,
+                     orientation = 'horizontal') %>%
+    testthat::expect_error()
+  # test labelCutpoints results
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE) %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     shape = 'circle') %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     width = 40, height = 30) %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     tickLength = 8, tickWidth = 3) %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     labelStyle = 'font-size: 14px;') %>%
+    testthat::expect_no_error()
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     numberFormat = function(x) sprintf('%.1f', x)) %>%
+    testthat::expect_no_error()
+  mapData$x[1] <- NA
+  m %>% addLegendBin(pal = palBin, values = ~x, labelCutpoints = TRUE,
+                     naLabel = 'Missing') %>%
+    testthat::expect_no_error()
+  mapData$x[1] <- 1L
+  testthat::expect_equal(
+    m %>% addLegendBin(pal = palBin,
+                       values = ~x,
+                       labelCutpoints = TRUE) %>%
+      getElement(1) %>%
+      getElement('calls') %>%
+      getElement(1) %>%
+      getElement('args') %>%
+      getElement(1) %>%
+      as.character() %>%
+      URLdecode(),
+    "<div style=\"position: relative; margin-top:.5em; margin-bottom:.5em; ;&#10;      width: calc(32px + 1em + 2px); height: calc(50px + 0em);\">\n  <img src=\"data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"32\" height=\"50\">\n  <svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"32\" height=\"50\">\n    <g transform=\"translate(0,1)\">\n      <rect id=\"rect\" x=\"0\" y=\"0\" height=\"24\" width=\"24\" stroke=\"#DEEBF7\" fill=\"#DEEBF7\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"0\"></rect>\n    </g>\n    <g transform=\"translate(0,25)\">\n      <rect id=\"rect\" x=\"0\" y=\"0\" height=\"24\" width=\"24\" stroke=\"#3182BD\" fill=\"#3182BD\" stroke-opacity=\"1\" fill-opacity=\"1\" stroke-width=\"0\"></rect>\n    </g>\n    <line x1=\"0\" x2=\"4\" y1=\"1\" y2=\"1\" stroke-width=\"1\" stroke=\"black\" transform=\"translate(24.000,0)\"></line>\n    <line x1=\"0\" x2=\"4\" y1=\"25\" y2=\"25\" stroke-width=\"1\" stroke=\"black\" transform=\"translate(24.000,0)\"></line>\n    <line x1=\"0\" x2=\"4\" y1=\"49\" y2=\"49\" stroke-width=\"1\" stroke=\"black\" transform=\"translate(24.000,0)\"></line>\n  </svg>\n</svg>\" style=\"margin-left: 1px;\"/>\n  <p style=\"position: absolute; margin: 0; top: calc(1.00px - .5em);&#10;        right: 0; line-height:1;\">0</p>\n  <p style=\"position: absolute; margin: 0; top: calc(25.00px - .5em);&#10;        right: 0; line-height:1;\">5</p>\n  <p style=\"position: absolute; margin: 0; top: calc(49.00px - .5em);&#10;        right: 0; line-height:1;\">10</p>\n</div>"
+  )
   # test Factor args
   m %>% addLegendFactor(pal = palFactor,
                         values = ~y,
@@ -839,6 +1086,15 @@ testthat::test_that('Helper Functions', {
     getElement('args') %>%
     getElement(4) %>%
     testthat::expect_equal(' leaflegend-group-Test')
+  m %>%
+    leaflegendAddControl(html = '', className = '',
+                         group = 'NO<sub>X</sub>') %>%
+    getElement(1) %>%
+    getElement('calls') %>%
+    getElement(1) %>%
+    getElement('args') %>%
+    getElement(4) %>%
+    testthat::expect_equal(' leaflegend-group-NOX')
   leafletAwesomeMarkersDependencies() %>%
     testthat::expect_equal(leaflet:::leafletAwesomeMarkersDependencies())
   leafletAmFontAwesomeDependencies() %>%

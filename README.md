@@ -1,4 +1,4 @@
-# leaflegend <a href='https://leaflegend.roh.engineering'><img src='man/figures/logo.png' align="right" height="106" /></a>
+# leaflegend <a href='https://leaflegend.delveds.com'><img src='man/figures/logo.png' align="right" height="106" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/leaflegend)](https://CRAN.R-project.org/package=leaflegend)
