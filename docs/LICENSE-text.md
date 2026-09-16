@@ -1,4 +1,4 @@
 # License
 
-    YEAR: 2021
-    COPYRIGHT HOLDER: Thomas P. Roh
+YEAR: 2021\
+COPYRIGHT HOLDER: Thomas P. Roh\

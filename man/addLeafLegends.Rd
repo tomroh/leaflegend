@@ -154,7 +154,8 @@ frames, spatial objects from the \pkg{sp} package
 \code{SpatialLinesDataFrame}), and
 spatial data frames from the \pkg{sf} package.}
 
-\item{...}{arguments to pass to \link[leaflet]{addControl}}
+\item{...}{arguments to pass to \link[leaflet]{addControl} for addLegendNumeric,
+addLegendQuantile, addLegendBin, and addLegendFactor}
 
 \item{opacity}{opacity of the legend items}
 
