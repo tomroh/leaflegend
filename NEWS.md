@@ -23,6 +23,12 @@ each break size.
 target applies to each function in the group.
 # leaflegend (development version)
 
+* Fixed legends with a `group` not matching the state of the layers control
+when the map renders inside an initially hidden container, e.g. an inactive
+Quarto/bslib tab or a hidden Shiny tab (#110). Legend visibility now re-syncs
+after deferred rendering completes and also responds to `showGroup`/
+`hideGroup`.
+
 * Fixed `addLegendNumeric` placing ticks and labels at mirrored positions on
 vertical legends so that they did not align with the color gradient when
 breaks were not symmetric within the range of values (#105, #106).

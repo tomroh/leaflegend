@@ -2107,3 +2107,41 @@ leaflet() %>%
     width = 400
   )
 
+# Test delayed loading of groups
+
+library(leaflet)
+library(leaflegend)
+
+pal = colorNumeric("viridis", 1:10)
+
+map = leaflet() |>
+  addTiles() |>
+  addCircleMarkers(lng = c(0, 0), lat = c(0, 10), group = c("A", "A")) |>
+  addCircleMarkers(lng = c(10, 10), lat = c(0, 10), group = c("B", "B")) |>
+  addLayersControl(baseGroups = c("A", "B"),
+                   options = layersControlOptions(collapsed = FALSE)) |>
+  addLegendNumeric(pal = pal, values = 1:10, title = "A", group = "A") |>
+  addLegendNumeric(pal = pal, values = 1:10, title = "B", group = "B")
+
+# simulate the widget rendering inside a hidden container; innerText returns
+# "" for invisible elements so group names could not be matched; only legend
+# "A" should be visible after clicking "Show map"
+htmltools::browsable(htmltools::tagList(
+  htmltools::tags$button(
+    "Show map",
+    onclick =
+      "document.getElementById('hidden-tab').style.visibility = 'visible';"
+  ),
+  htmltools::tags$div(id = "hidden-tab", style = "visibility: hidden;", map)
+))
+
+# render inside an initially hidden bslib/Quarto tab; the map does not render
+# until its tab is activated; only legend "A" should be visible after
+# switching to the "Map" tab
+htmltools::browsable(bslib::page_fluid(
+  bslib::navset_tab(
+    bslib::nav_panel("Tab 1", "Switch to the Map tab"),
+    bslib::nav_panel("Map", map
+    )
+  )
+))
