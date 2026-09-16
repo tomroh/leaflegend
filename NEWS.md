@@ -21,7 +21,6 @@ each break size.
 * corrected the `...` documentation for `mapSymbols`, `legendSymbols`, and 
 `addLeafLegends`. The grouped help pages now state which pass-through 
 target applies to each function in the group.
-# leaflegend (development version)
 
 * Fixed legends with a `group` not matching the state of the layers control
 when the map renders inside an initially hidden container, e.g. an inactive

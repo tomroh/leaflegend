@@ -138,7 +138,6 @@ addTextSize(
   ...
 )
 
-sizeNumeric(values, baseSize)
 sizeNumeric(
   values,
   baseSize,
@@ -178,6 +177,8 @@ makeSymbolsSize(
 
 \item{fillOpacity}{fill opacity}
 
+\item{label}{a character vector of labels to display at the center of each symbol}
+
 \item{...}{arguments to pass to
 
 svg shape tag for makeSymbol, makeSymbolIcons, makeSymbolsSize
@@ -187,9 +188,6 @@ svg text tag for makeSymbolText, makeSymbolTextIcons
 \link[leaflet]{addMarkers} for addSymbols, addSymbolsSize, addText, addTextSize
 
 \link[base]{pretty} for sizeBreaks}
-\item{label}{a character vector of labels to display at the center of each symbol}
-
-\item{...}{arguments to pass to \code{pretty}}
 
 \item{svg}{inner svg tags for symbol}
 
@@ -246,6 +244,21 @@ HTML svg element
 Create Map Symbols for 'leaflet' maps
 }
 \examples{
+library(leaflet)
+data(quakes)
+
+# symbol with a label centered inside
+makeSymbol('circle', width = 24, color = 'black', fillColor = 'steelblue',
+           fillOpacity = 0.8, label = 'A')
+
+# map markers with per-point labels
+quakes$label <- as.character(seq_len(nrow(quakes)))
+leaflet(quakes[1:20, ]) \%>\%
+  addTiles() \%>\%
+  addSymbols(lat = ~lat, lng = ~long, color = 'black',
+             fillColor = 'steelblue', fillOpacity = 0.8,
+             label = ~label)
+
 
 library(leaflet)
 data(quakes)
@@ -276,19 +289,5 @@ leaflet(quakes1) \%>\%
               text = ~as.character(round(mag, 1)),
               values = ~mag, color = 'black', fillColor = 'yellow',
               baseSize = 30)
-library(leaflet)
-data(quakes)
-
-# symbol with a label centered inside
-makeSymbol('circle', width = 24, color = 'black', fillColor = 'steelblue',
-           fillOpacity = 0.8, label = 'A')
-
-# map markers with per-point labels
-quakes$label <- as.character(seq_len(nrow(quakes)))
-leaflet(quakes[1:20, ]) \%>\%
-  addTiles() \%>\%
-  addSymbols(lat = ~lat, lng = ~long, color = 'black',
-             fillColor = 'steelblue', fillOpacity = 0.8,
-             label = ~label)
 
 }

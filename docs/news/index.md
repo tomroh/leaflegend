@@ -1,6 +1,53 @@
 # Changelog
 
+## leaflegend 1.3.0
+
+- added `makeSymbolText` and `makeSymbolTextIcons` for building SVG text
+  symbols that can be used as ‘leaflet’ icons. Unlike the existing
+  `'text'` shape in `makeSymbol`, these take an explicit `text` argument
+  so each symbol can show a different label. `fontSize` and `fontFamily`
+  arguments are exposed.
+
+- added `addText` and `addTextSize` as convenience wrappers analogous to
+  `addSymbols` and `addSymbolsSize` for placing text symbols on a map.
+
+- added `addLegendText` and `addLegendTextSize` for legend support of
+  text symbols, analogous to `addLegendSymbol` and `addLegendSize`.
+  `addLegendText` exposes both `fontSize` and `fontFamily`;
+  `addLegendTextSize` exposes only `fontFamily` and auto-computes
+  `font-size` from each break’s width. `addLegendText` takes an optional
+  `labels` argument; by default no labels are placed beside the text
+  symbols. `addLegendTextSize` requires a single `text` string that is
+  rendered at each break size.
+
+- corrected the `...` documentation for `mapSymbols`, `legendSymbols`,
+  and `addLeafLegends`. The grouped help pages now state which
+  pass-through target applies to each function in the group.
+
+- Fixed legends with a `group` not matching the state of the layers
+  control when the map renders inside an initially hidden container,
+  e.g. an inactive Quarto/bslib tab or a hidden Shiny tab
+  ([\#110](https://github.com/tomroh/leaflegend/issues/110)). Legend
+  visibility now re-syncs after deferred rendering completes and also
+  responds to `showGroup`/ `hideGroup`.
+
+- Fixed `addLegendNumeric` placing ticks and labels at mirrored
+  positions on vertical legends so that they did not align with the
+  color gradient when breaks were not symmetric within the range of
+  values ([\#105](https://github.com/tomroh/leaflegend/issues/105),
+  [\#106](https://github.com/tomroh/leaflegend/issues/106)).
+
+- Fixed `addLegendNumeric` with `decreasing = TRUE` not reversing the
+  color gradient, which left labels in the opposite order of the colors.
+
+- User supplied `labels` in `addLegendNumeric` now always pair with the
+  bins in ascending order of value for both orientations, e.g. for
+  `bins = c(1000, 3000, 6000)` and `labels = c('low', 'med', 'high')`,
+  ‘low’ labels the 1000 tick even when `decreasing = TRUE`.
+
 ## leaflegend 1.2.8
+
+CRAN release: 2026-05-16
 
 - Intermediate ticks are now allowed for horizontal orientation in
   `addLegendNumeric`.

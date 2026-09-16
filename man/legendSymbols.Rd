@@ -198,6 +198,8 @@ addLegendLine, addLegendSymbol, addLegendText, and addLegendTextSize}
 
 \item{dashArray}{a string or vector/list of strings that defines the stroke dash pattern}
 
+\item{label}{a character vector of labels to display at the center of each symbol}
+
 \item{text}{character vector of labels to render inside each symbol. For
 addLegendText, length must match the number of unique values; if omitted
 the levels themselves are used. For addLegendTextSize, required and must be
@@ -212,7 +214,6 @@ addLegendText; length must match the number of unique values. If
 
 \item{fontFamily}{optional font family for the svg text; if \code{NULL} the browser default
 is used}
-\item{label}{a character vector of labels to display at the center of each symbol}
 }
 \value{
 an object from \link[leaflet]{addControl}

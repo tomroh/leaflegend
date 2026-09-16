@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">leaflegend</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.8" id="leaflegend-128">leaflegend 1.2.8<a class="anchor" aria-label="anchor" href="#leaflegend-128"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.3.0" id="leaflegend-130">leaflegend 1.3.0<a class="anchor" aria-label="anchor" href="#leaflegend-130"></a></h2>
+<ul><li><p>added <code>makeSymbolText</code> and <code>makeSymbolTextIcons</code> for building SVG text symbols that can be used as ‘leaflet’ icons. Unlike the existing <code>'text'</code> shape in <code>makeSymbol</code>, these take an explicit <code>text</code> argument so each symbol can show a different label. <code>fontSize</code> and <code>fontFamily</code> arguments are exposed.</p></li>
+<li><p>added <code>addText</code> and <code>addTextSize</code> as convenience wrappers analogous to <code>addSymbols</code> and <code>addSymbolsSize</code> for placing text symbols on a map.</p></li>
+<li><p>added <code>addLegendText</code> and <code>addLegendTextSize</code> for legend support of text symbols, analogous to <code>addLegendSymbol</code> and <code>addLegendSize</code>. <code>addLegendText</code> exposes both <code>fontSize</code> and <code>fontFamily</code>; <code>addLegendTextSize</code> exposes only <code>fontFamily</code> and auto-computes <code>font-size</code> from each break’s width. <code>addLegendText</code> takes an optional <code>labels</code> argument; by default no labels are placed beside the text symbols. <code>addLegendTextSize</code> requires a single <code>text</code> string that is rendered at each break size.</p></li>
+<li><p>corrected the <code>...</code> documentation for <code>mapSymbols</code>, <code>legendSymbols</code>, and <code>addLeafLegends</code>. The grouped help pages now state which pass-through target applies to each function in the group.</p></li>
+<li><p>Fixed legends with a <code>group</code> not matching the state of the layers control when the map renders inside an initially hidden container, e.g. an inactive Quarto/bslib tab or a hidden Shiny tab (<a href="https://github.com/tomroh/leaflegend/issues/110" class="external-link">#110</a>). Legend visibility now re-syncs after deferred rendering completes and also responds to <code>showGroup</code>/ <code>hideGroup</code>.</p></li>
+<li><p>Fixed <code>addLegendNumeric</code> placing ticks and labels at mirrored positions on vertical legends so that they did not align with the color gradient when breaks were not symmetric within the range of values (<a href="https://github.com/tomroh/leaflegend/issues/105" class="external-link">#105</a>, <a href="https://github.com/tomroh/leaflegend/issues/106" class="external-link">#106</a>).</p></li>
+<li><p>Fixed <code>addLegendNumeric</code> with <code>decreasing = TRUE</code> not reversing the color gradient, which left labels in the opposite order of the colors.</p></li>
+<li><p>User supplied <code>labels</code> in <code>addLegendNumeric</code> now always pair with the bins in ascending order of value for both orientations, e.g. for <code>bins = c(1000, 3000, 6000)</code> and <code>labels = c('low', 'med', 'high')</code>, ‘low’ labels the 1000 tick even when <code>decreasing = TRUE</code>.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.8" id="leaflegend-128">leaflegend 1.2.8<a class="anchor" aria-label="anchor" href="#leaflegend-128"></a></h2><p class="text-muted">CRAN release: 2026-05-16</p>
 <ul><li><p>Intermediate ticks are now allowed for horizontal orientation in <code>addLegendNumeric</code>.</p></li>
 <li><p>Added ability to add text label to symbols.</p></li>
 <li><p>Size encodings get two new arguments <code>minSize</code> and <code>maxSize</code> that control the bounds of the size scale.</p></li>
