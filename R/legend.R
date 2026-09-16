@@ -2868,7 +2868,7 @@ function(el, x) {
     var controlGroups = el.querySelectorAll(
       'input.leaflet-control-layers-selector');
     controlGroups.forEach(g => {
-      var groupName = g.nextSibling.innerText.substr(1);
+      var groupName = g.nextSibling.textContent.substr(1);
       var className = 'leaflegend-group-' +
         groupName.replace(/[^a-zA-Z0-9]/g, '');
       var checked = g.checked;
@@ -2877,11 +2877,21 @@ function(el, x) {
       })
     })
   }
+  // wait for the current batch of map updates to finish; rendering is
+  // deferred while the map is hidden and the layers control does not exist
+  // until it completes
+  var updateTimer = null;
+  var scheduleUpdate = function() {
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(updateLeafLegend, 0);
+  }
 
   updateLeafLegend();
-  this.on('baselayerchange', el => updateLeafLegend())
-  this.on('overlayadd', el => updateLeafLegend());
-  this.on('overlayremove', el => updateLeafLegend());
+  this.on('layeradd', scheduleUpdate);
+  this.on('layerremove', scheduleUpdate);
+  this.on('baselayerchange', scheduleUpdate);
+  this.on('overlayadd', scheduleUpdate);
+  this.on('overlayremove', scheduleUpdate);
 }
                         ")
   } else {
